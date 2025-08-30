@@ -26,4 +26,28 @@
   // Footer year
   const y = document.getElementById('year');
   if (y) y.textContent = String(new Date().getFullYear());
+
+  // Lightbox open/close
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxClose = document.querySelector('.lightbox-close');
+  if (lightbox && lightboxImg) {
+    document.querySelectorAll('a[data-full]').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = link.getAttribute('href');
+        if (!href) return;
+        lightboxImg.src = href;
+        lightbox.removeAttribute('hidden');
+      });
+    });
+    const close = () => lightbox.setAttribute('hidden', '');
+    if (lightboxClose) lightboxClose.addEventListener('click', close);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+  }
 })();
