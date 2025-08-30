@@ -28,18 +28,14 @@
   <body>
     <header class="site-header" role="banner">
       <div class="container header-inner">
-        <a class="brand" href="#home" aria-label="DDD home">
-          <img src="./assets/logo/logo.svg" alt="DDD logo" width="120" height="30" />
-        </a>
+        <a class="brand brand-text" href="#home" aria-label="DDD home">DDD</a>
         <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation">
           <span></span><span></span>
         </button>
         <nav id="primary-nav" class="site-nav" aria-label="Primary">
-          <a href="#about">Sobre</a>
-          <a href="#next">Próxima transmissão</a>
+          <a href="#idea">Ideia</a>
           <a href="#locations">Locações</a>
-          <a href="#sets">Sets</a>
-          <a href="#gallery">Galeria</a>
+          <a href="#team">Equipe</a>
           <a href="#contact">Contato</a>
         </nav>
       </div>
@@ -48,83 +44,53 @@
     <main id="home">
       <section class="hero" aria-label="Hero">
         <div class="container hero-inner">
-          <h1>DDD — Discagem Direta a Distancia</h1>
-          <p class="tagline">Transmissões de DJ ao vivo em locações especiais por Brasília.</p>
+          <h1>DDD — DISCAGEM DIRETA A DISTANCIA</h1>
+          <p class="tagline">APRESENTAÇÃO DO PROJETO. TRANSMISSÕES DE DJ EM BRASÍLIA.</p>
           <div class="cta">
-            <a class="button primary" href="#next">Assistir</a>
-            <a class="button" href="https://instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a class="button" href="#contact">CONTATO</a>
           </div>
         </div>
       </section>
 
-      <section id="about" class="section">
+      <section id="idea" class="section">
         <div class="container">
-          <h2>O que é a DDD?</h2>
-          <p class="muted">Placeholder: breve descrição da proposta, vibe e formato. Envie o texto e atualizamos aqui.</p>
-        </div>
-      </section>
-
-      <section id="next" class="section">
-        <div class="container">
-          <h2>Próxima transmissão</h2>
-          <div class="next-grid">
-            <div>
-              <p class="muted">Data</p>
-              <p class="value" id="next-date">DD MMM YYYY, 23:00 (BRT)</p>
-              <p class="muted">Local</p>
-              <p class="value" id="next-location">Local especial em Brasília — TBA</p>
-              <div class="cta">
-                <a class="button primary" href="#" aria-disabled="true">Link do stream (em breve)</a>
-              </div>
-            </div>
-            <div>
-              <p class="muted">Contagem regressiva</p>
-              <div id="countdown" class="countdown" aria-live="polite" data-datetime="2025-12-31T23:00:00-03:00">
-                <div><span id="cd-days">00</span><small>d</small></div>
-                <div><span id="cd-hours">00</span><small>h</small></div>
-                <div><span id="cd-mins">00</span><small>m</small></div>
-                <div><span id="cd-secs">00</span><small>s</small></div>
-              </div>
-            </div>
-          </div>
+          <h2>IDEIA</h2>
+          <p>PROJETO DE TRANSMISSÃO AO VIVO EM LOCAÇÕES URBANAS DE BRASÍLIA. FORMATO ENXUTO, CAPTAÇÃO IMERSIVA E FOCO NA MÚSICA E NO ESPAÇO. ESTE É UM PLACEHOLDER DE TEXTO QUE VAMOS SUBSTITUIR PELO DESCRITIVO DO PATROCÍNIO.</p>
         </div>
       </section>
 
       <section id="locations" class="section">
         <div class="container">
-          <h2>Locações</h2>
-          <p class="muted">Teaser: sets em telhados, monumentos e espaços improváveis de Brasília.</p>
-          <div class="embed-placeholder" role="img" aria-label="Mapa/Embed placeholder">Mapa/Embed (em breve)</div>
-        </div>
-      </section>
-
-      <section id="sets" class="section">
-        <div class="container">
-          <h2>Sets anteriores</h2>
-          <div class="card-grid">
-            <article class="card"><div class="thumb"></div><h3>DJ Nome — Local</h3><p class="muted">Em breve</p></article>
-            <article class="card"><div class="thumb"></div><h3>DJ Nome — Local</h3><p class="muted">Em breve</p></article>
-            <article class="card"><div class="thumb"></div><h3>DJ Nome — Local</h3><p class="muted">Em breve</p></article>
+          <h2>LOCAÇÕES</h2>
+          <p>FOTOS ILUSTRATIVAS DOS LOCAIS PRETENDIDOS (PLACEHOLDER).</p>
+          <div class="loc-grid">
+            <figure class="photo" aria-label="LOCAL 1"><figcaption>LOCAL 1</figcaption></figure>
+            <figure class="photo" aria-label="LOCAL 2"><figcaption>LOCAL 2</figcaption></figure>
+            <figure class="photo" aria-label="LOCAL 3"><figcaption>LOCAL 3</figcaption></figure>
+            <figure class="photo" aria-label="LOCAL 4"><figcaption>LOCAL 4</figcaption></figure>
+            <figure class="photo" aria-label="LOCAL 5"><figcaption>LOCAL 5</figcaption></figure>
+            <figure class="photo" aria-label="LOCAL 6"><figcaption>LOCAL 6</figcaption></figure>
           </div>
         </div>
       </section>
 
-      <section id="gallery" class="section">
+      <section id="team" class="section">
         <div class="container">
-          <h2>Galeria</h2>
-          <div class="gallery-grid">
-            <div class="tile"></div><div class="tile"></div><div class="tile"></div>
-            <div class="tile"></div><div class="tile"></div><div class="tile"></div>
+          <h2>EQUIPE</h2>
+          <div class="team-grid">
+            <article class="member"><div class="avatar">DDD</div><h3>NOME 1</h3><p>CO-FUNDADOR</p></article>
+            <article class="member"><div class="avatar">DDD</div><h3>NOME 2</h3><p>CO-FUNDADOR</p></article>
+            <article class="member"><div class="avatar">DDD</div><h3>NOME 3</h3><p>PRODUÇÃO</p></article>
           </div>
         </div>
       </section>
 
       <section id="contact" class="section">
         <div class="container">
-          <h2>Newsletter e contato</h2>
-          <p class="muted">Envie seu e-mail, redes e press kit para futuro contato.</p>
+          <h2>CONTATO</h2>
+          <p>ENVIE E-MAIL E PRESS KIT.</p>
           <div class="cta">
-            <a class="button" href="mailto:contato@example.com">contato@example.com</a>
+            <a class="button" href="mailto:contato@example.com">CONTATO@EXAMPLE.COM</a>
           </div>
         </div>
       </section>
@@ -132,11 +98,7 @@
 
     <footer class="site-footer">
       <div class="container footer-inner">
-        <p>© <span id="year"></span> DDD — Discagem Direta a Distancia</p>
-        <div class="socials">
-          <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
-          <a href="#" aria-disabled="true">YouTube</a>
-        </div>
+        <p>© <span id="year"></span> DDD — DISCAGEM DIRETA A DISTANCIA</p>
       </div>
     </footer>
   </body>
