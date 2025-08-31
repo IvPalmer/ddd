@@ -47,7 +47,7 @@
         else if (filename.includes('torre')) caption = 'TORRE DIGITAL';
         else if (filename.includes('panteao')) caption = 'PANTEÃO DA PÁTRIA';
         else if (filename.includes('ruinas')) caption = 'RUÍNAS DA UNB';
-        else if (filename.includes('galeria')) caption = 'GALERIA';
+        else if (filename.includes('galeria')) caption = 'GALERIA INDEX';
         if (lightboxCaption) lightboxCaption.textContent = caption;
         lightbox.removeAttribute('hidden');
       });
