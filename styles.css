@@ -65,6 +65,10 @@ img { max-width: 100%; height: auto; display: block; }
   .loc-grid { grid-template-columns: 1fr; gap: 12px; }
   .container { padding: 0 12px; }
 }
+/* Force single column on phones (e.g., iPhone 15 Pro ~430px) */
+@media (max-width: 600px) {
+  .loc-grid { grid-template-columns: 1fr !important; }
+}
 .photo { display: block; }
 .photo a { display: block; width: 100%; aspect-ratio: 4/3; border: 1px solid #2a2a2a; overflow: hidden; background: var(--bg); }
 .photo img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(100%); }
