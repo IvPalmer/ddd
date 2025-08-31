@@ -52,7 +52,10 @@
         lightbox.removeAttribute('hidden');
       });
     });
-    const close = () => lightbox.setAttribute('hidden', '');
+    const close = () => {
+      lightbox.setAttribute('hidden', '');
+      if (lightboxImg) lightboxImg.removeAttribute('src');
+    };
     if (lightboxClose) lightboxClose.addEventListener('click', close);
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) close();
