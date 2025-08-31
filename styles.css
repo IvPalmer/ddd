@@ -59,7 +59,8 @@ img { max-width: 100%; height: auto; display: block; }
 .list li { margin: 6px 0; font-size: 12px; letter-spacing: 0.08em; }
 
 .loc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-@media (max-width: 860px) { .loc-grid { grid-template-columns: 1fr 1fr; gap: 14px; } }
+@media (max-width: 860px) { .loc-grid { grid-template-columns: 1fr 1fr; gap: 12px; } }
+@media (max-width: 520px) { .loc-grid { grid-template-columns: 1fr; gap: 12px; } }
 .photo { display: block; }
 .photo a { display: block; width: 100%; aspect-ratio: 4/3; border: 1px solid #2a2a2a; overflow: hidden; background: var(--bg); }
 .photo img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(100%); }
