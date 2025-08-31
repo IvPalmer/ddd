@@ -43,8 +43,8 @@
         const urlParts = href.split('/');
         const filename = urlParts[urlParts.length - 1];
         let caption = '';
-        if (filename.includes('teatro')) caption = 'TEATRO NACIONAL';
-        else if (filename.includes('torre')) caption = 'TORRE DIGITAL';
+        if (filename.includes('teatro')) caption = 'TERRAÇO DO TEATRO NACIONAL';
+        else if (filename.includes('torre')) caption = 'CÚPULA DATORRE DIGITAL';
         else if (filename.includes('panteao')) caption = 'PANTEÃO DA PÁTRIA';
         else if (filename.includes('ruinas')) caption = 'RUÍNAS DA UNB';
         else if (filename.includes('galeria')) caption = 'GALERIA INDEX';
