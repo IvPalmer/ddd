@@ -30,6 +30,7 @@
   // Lightbox open/close
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxCaption = document.getElementById('lightbox-caption');
   const lightboxClose = document.querySelector('.lightbox-close');
   if (lightbox && lightboxImg) {
     document.querySelectorAll('a[data-full]').forEach((link) => {
@@ -38,6 +39,16 @@
         const href = link.getAttribute('href');
         if (!href) return;
         lightboxImg.src = href;
+        // Create caption from filename heuristics
+        const urlParts = href.split('/');
+        const filename = urlParts[urlParts.length - 1];
+        let caption = '';
+        if (filename.includes('teatro')) caption = 'TEATRO NACIONAL';
+        else if (filename.includes('torre')) caption = 'TORRE DIGITAL';
+        else if (filename.includes('panteao')) caption = 'PANTEÃO DA PÁTRIA';
+        else if (filename.includes('ruinas')) caption = 'RUÍNAS DA UNB';
+        else if (filename.includes('galeria')) caption = 'GALERIA';
+        if (lightboxCaption) lightboxCaption.textContent = caption;
         lightbox.removeAttribute('hidden');
       });
     });
