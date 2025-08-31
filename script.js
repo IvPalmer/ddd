@@ -39,15 +39,21 @@
         const href = link.getAttribute('href');
         if (!href) return;
         lightboxImg.src = href;
-        // Create caption from filename heuristics
-        const urlParts = href.split('/');
-        const filename = urlParts[urlParts.length - 1];
+        // Prefer figcaption text; fallback to filename heuristics
         let caption = '';
-        if (filename.includes('teatro')) caption = 'TERRAÇO DO TEATRO NACIONAL';
-        else if (filename.includes('torre')) caption = 'CÚPULA DATORRE DIGITAL';
-        else if (filename.includes('panteao')) caption = 'PANTEÃO DA PÁTRIA';
-        else if (filename.includes('ruinas')) caption = 'RUÍNAS DA UNB';
-        else if (filename.includes('galeria')) caption = 'GALERIA INDEX';
+        const figure = link.closest('figure');
+        const fc = figure ? figure.querySelector('figcaption') : null;
+        if (fc && fc.textContent) caption = fc.textContent.trim().toUpperCase();
+        if (!caption) {
+          const urlParts = href.split('/');
+          const filename = urlParts[urlParts.length - 1].toLowerCase();
+          if (filename.includes('teatro')) caption = 'TERRAÇO DO TEATRO NACIONAL';
+          else if (filename.includes('torre')) caption = 'CÚPULA DA TORRE DIGITAL';
+          else if (filename.includes('panteao')) caption = 'PANTEÃO DA PÁTRIA';
+          else if (filename.includes('ruinas')) caption = 'RUÍNAS DA UNB';
+          else if (filename.includes('galeria')) caption = 'GALERIA INDEX';
+        }
+        if (caption.includes('GALERIA')) caption = 'GALERIA INDEX';
         if (lightboxCaption) lightboxCaption.textContent = caption;
         lightbox.removeAttribute('hidden');
       });
