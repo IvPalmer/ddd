@@ -33,7 +33,9 @@
     const typedTextElement = document.getElementById('typed-text');
     const cursor = document.getElementById('cursor');
     
-    const fullText = 'DDD:+5561.22.11.25.';
+    // Check if we're on a small screen and adjust text accordingly
+    const isSmallScreen = window.innerWidth <= 480;
+    const fullText = isSmallScreen ? 'DDD:\n+5561.22.11.25.' : 'DDD:+5561.22.11.25.';
     let index = 0;
     let phase = 1; // 1 = typing, 2 = pause after DDD, 3 = continue typing, 4 = final pause
 
@@ -92,6 +94,16 @@
 
   // Initialize terminal animation
   terminalTyping();
+
+  // Handle window resize to restart animation with appropriate text
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      // Restart the animation with the appropriate text for the new screen size
+      terminalTyping();
+    }, 500);
+  });
 
   // Scroll-triggered animations
   const observerOptions = {
