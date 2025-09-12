@@ -28,7 +28,13 @@
   if (y) y.textContent = String(new Date().getFullYear());
 
   // Terminal typing animation with loop
+  let animationRunning = false;
+  let currentTimeout;
+  
   const terminalTyping = () => {
+    // Prevent multiple instances
+    if (animationRunning) return;
+    
     const terminalTitle = document.getElementById('terminal-title');
     const typedTextElement = document.getElementById('typed-text');
     const cursor = document.getElementById('cursor');
@@ -40,6 +46,12 @@
     let phase = 1; // 1 = typing, 2 = pause after DDD, 3 = continue typing, 4 = final pause
 
     const clearText = () => {
+      // Clear any existing timeout
+      if (currentTimeout) {
+        clearTimeout(currentTimeout);
+        currentTimeout = null;
+      }
+      
       typedTextElement.textContent = '';
       terminalTitle.classList.remove('typing', 'paused');
       index = 0;
@@ -53,57 +65,53 @@
           terminalTitle.classList.add('typing');
           typedTextElement.textContent += fullText[index];
           index++;
-          setTimeout(typeChar, 180 + Math.random() * 100);
+          currentTimeout = setTimeout(typeChar, 180 + Math.random() * 100);
         } else {
           // DDD complete - pause with prominent cursor
           terminalTitle.classList.remove('typing');
           terminalTitle.classList.add('paused');
           phase = 2;
-          setTimeout(typeChar, 2000); // 2 second pause
+          currentTimeout = setTimeout(typeChar, 2000); // 2 second pause
         }
       } else if (phase === 2) {
         // Resume typing the rest
         terminalTitle.classList.remove('paused');
         terminalTitle.classList.add('typing');
         phase = 3;
-        setTimeout(typeChar, 100);
+        currentTimeout = setTimeout(typeChar, 100);
       } else if (phase === 3) {
         // Continue typing the phone number
         if (index < fullText.length) {
           typedTextElement.textContent += fullText[index];
           index++;
-          setTimeout(typeChar, 120 + Math.random() * 60);
+          currentTimeout = setTimeout(typeChar, 120 + Math.random() * 60);
         } else {
           // Complete - final pause
           terminalTitle.classList.remove('typing');
           terminalTitle.classList.add('paused');
           phase = 4;
-          setTimeout(typeChar, 3000); // 3 second pause
+          currentTimeout = setTimeout(typeChar, 3000); // 3 second pause
         }
       } else if (phase === 4) {
         // Clear and restart
         clearText();
-        setTimeout(typeChar, 1000); // 1 second pause before restart
+        currentTimeout = setTimeout(() => {
+          animationRunning = false; // Allow restart
+          terminalTyping(); // Restart
+        }, 1000); // 1 second pause before restart
       }
     };
 
+    // Mark animation as running
+    animationRunning = true;
+    
     // Start immediately with cursor blinking, begin typing after 1 second
     clearText();
-    setTimeout(typeChar, 1000);
+    currentTimeout = setTimeout(typeChar, 1000);
   };
 
   // Initialize terminal animation
   terminalTyping();
-
-  // Handle window resize to restart animation with appropriate text
-  let resizeTimeout;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      // Restart the animation with the appropriate text for the new screen size
-      terminalTyping();
-    }, 500);
-  });
 
   // Scroll-triggered animations
   const observerOptions = {
