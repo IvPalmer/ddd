@@ -40,7 +40,7 @@
     const cursor = document.getElementById('cursor');
     
     // Check if we're on a small screen and adjust text accordingly
-    const isSmallScreen = window.innerWidth <= 480;
+    const isSmallScreen = window.innerWidth <= 640;
     const fullText = isSmallScreen ? 'DDD:\n+5561.22.11.25.' : 'DDD:+5561.22.11.25.';
     let index = 0;
     let phase = 1; // 1 = typing, 2 = pause after DDD, 3 = continue typing, 4 = final pause
