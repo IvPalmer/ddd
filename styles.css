@@ -193,7 +193,7 @@ img:not([src]) {
   font-size: 120px; /* Large desktop size */
   line-height: 1.2; 
   margin: 0 0 16px; 
-  letter-spacing: 0.06em;
+  letter-spacing: 0.02em;
   font-weight: 400;
   display: block;
   text-align: center;
@@ -252,7 +252,6 @@ img:not([src]) {
   animation: blink 1s infinite;
   font-weight: 300;
   display: inline;
-  margin-left: 2px;
 }
 
 /* Typing indicator - faster cursor blink while typing */
