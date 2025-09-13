@@ -190,7 +190,7 @@ img:not([src]) {
 /* Terminal-style title */
 #terminal-title {
   font-family: 'Courier New', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 120px; /* Large desktop size */
+  font-size: 100px; /* Reduced desktop size to fit more screens */
   line-height: 1.2; 
   margin: 0 0 16px; 
   letter-spacing: 0.02em;
