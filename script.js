@@ -60,13 +60,8 @@
     const availableWidth = window.innerWidth - 10; // Minimal padding - maximize available width
     document.body.removeChild(tempSpan);
     
-    // Temporary debug logging
-    console.log('85px font - Text width:', textWidth, 'Available width:', availableWidth, 'Window width:', window.innerWidth);
-    
     const needsLineBreak = textWidth > availableWidth;
     const fullText = needsLineBreak ? 'DDD:\n+5561.22.11.25.' : 'DDD:+5561.22.11.25.';
-    
-    console.log('Needs line break:', needsLineBreak, 'Text will be:', fullText.replace('\n', '\\n'));
     let index = 0;
     let phase = 1; // 1 = typing, 2 = pause after DDD, 3 = continue typing, 4 = final pause
 
