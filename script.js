@@ -57,7 +57,7 @@
     document.body.appendChild(tempSpan);
     
     const textWidth = tempSpan.offsetWidth;
-    const availableWidth = window.innerWidth - 100; // More conservative padding
+    const availableWidth = window.innerWidth - 20; // Very minimal padding - allow text to get close to edges
     document.body.removeChild(tempSpan);
     
     // Debug logging
