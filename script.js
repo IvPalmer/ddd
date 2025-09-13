@@ -44,18 +44,29 @@
     const tempSpan = document.createElement('span');
     tempSpan.style.visibility = 'hidden';
     tempSpan.style.position = 'absolute';
-    tempSpan.style.fontSize = getComputedStyle(terminalTitle).fontSize;
-    tempSpan.style.fontFamily = getComputedStyle(terminalTitle).fontFamily;
-    tempSpan.style.letterSpacing = getComputedStyle(terminalTitle).letterSpacing;
+    tempSpan.style.whiteSpace = 'nowrap';
+    
+    // Copy all relevant styles from the terminal title
+    const computedStyle = getComputedStyle(terminalTitle);
+    tempSpan.style.fontSize = computedStyle.fontSize;
+    tempSpan.style.fontFamily = computedStyle.fontFamily;
+    tempSpan.style.fontWeight = computedStyle.fontWeight;
+    tempSpan.style.letterSpacing = computedStyle.letterSpacing;
+    
     tempSpan.textContent = testText;
     document.body.appendChild(tempSpan);
     
     const textWidth = tempSpan.offsetWidth;
-    const availableWidth = window.innerWidth - 40; // Account for padding
+    const availableWidth = window.innerWidth - 100; // More conservative padding
     document.body.removeChild(tempSpan);
+    
+    // Debug logging
+    console.log('Text width:', textWidth, 'Available width:', availableWidth, 'Window width:', window.innerWidth);
     
     const needsLineBreak = textWidth > availableWidth;
     const fullText = needsLineBreak ? 'DDD:\n+5561.22.11.25.' : 'DDD:+5561.22.11.25.';
+    
+    console.log('Needs line break:', needsLineBreak, 'Text:', fullText.replace('\n', '\\n'));
     let index = 0;
     let phase = 1; // 1 = typing, 2 = pause after DDD, 3 = continue typing, 4 = final pause
 
