@@ -39,9 +39,23 @@
     const typedTextElement = document.getElementById('typed-text');
     const cursor = document.getElementById('cursor');
     
-    // Check if we're on a small screen and adjust text accordingly - use line break more often to keep font large
-    const isSmallScreen = window.innerWidth <= 768;
-    const fullText = isSmallScreen ? 'DDD:\n+5561.22.11.25.' : 'DDD:+5561.22.11.25.';
+    // Check if text would overflow and needs line break based on actual space
+    const testText = 'DDD:+5561.22.11.25.';
+    const tempSpan = document.createElement('span');
+    tempSpan.style.visibility = 'hidden';
+    tempSpan.style.position = 'absolute';
+    tempSpan.style.fontSize = getComputedStyle(terminalTitle).fontSize;
+    tempSpan.style.fontFamily = getComputedStyle(terminalTitle).fontFamily;
+    tempSpan.style.letterSpacing = getComputedStyle(terminalTitle).letterSpacing;
+    tempSpan.textContent = testText;
+    document.body.appendChild(tempSpan);
+    
+    const textWidth = tempSpan.offsetWidth;
+    const availableWidth = window.innerWidth - 40; // Account for padding
+    document.body.removeChild(tempSpan);
+    
+    const needsLineBreak = textWidth > availableWidth;
+    const fullText = needsLineBreak ? 'DDD:\n+5561.22.11.25.' : 'DDD:+5561.22.11.25.';
     let index = 0;
     let phase = 1; // 1 = typing, 2 = pause after DDD, 3 = continue typing, 4 = final pause
 
@@ -112,6 +126,23 @@
 
   // Initialize terminal animation
   terminalTyping();
+  
+  // Handle window resize to recalculate line break needs
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      // Stop current animation
+      if (currentTimeout) {
+        clearTimeout(currentTimeout);
+        currentTimeout = null;
+      }
+      animationRunning = false;
+      
+      // Restart with new calculations
+      setTimeout(terminalTyping, 100);
+    }, 300);
+  });
 
   // Scroll-triggered animations
   const observerOptions = {
