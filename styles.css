@@ -195,11 +195,8 @@ img:not([src]) {
   margin: 0 0 16px; 
   letter-spacing: 0.06em;
   font-weight: 400;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.02em;
+  display: block;
+  text-align: center;
   min-height: 1.2em;
   text-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
   max-width: 100%;
@@ -247,15 +244,15 @@ img:not([src]) {
   color: #fff;
   font-weight: 500;
   white-space: pre-wrap; /* Preserve line breaks */
+  display: inline;
 }
 
 #cursor {
   color: #fff;
   animation: blink 1s infinite;
   font-weight: 300;
-  display: inline-block;
-  width: 0.5em;
-  text-align: center;
+  display: inline;
+  margin-left: 2px;
 }
 
 /* Typing indicator - faster cursor blink while typing */
