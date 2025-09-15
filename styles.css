@@ -10,7 +10,7 @@ html { scroll-behavior: smooth; }
 body {
   margin: 0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: var(--bg) url('./assets/images/Ilustração_Sem_Título.png') center/cover fixed;
+  background: var(--bg) url('./assets/images/background-illustration.png') center/cover fixed;
   color: #fff;
   text-transform: uppercase;
 }
