@@ -1,6 +1,8 @@
 * { box-sizing: border-box; }
 :root { 
-  --bg: #0047AB; 
+  --bg: #1a237e; 
+  --bg-light: #3949ab;
+  --bg-dark: #000051;
   --transition-fast: 0.15s ease;
   --transition-medium: 0.25s ease;
   --transition-slow: 0.4s ease;
