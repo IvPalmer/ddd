@@ -32,26 +32,55 @@ body {
   }
 }
 
-/* Mobile background fixes - crop instead of zoom */
+/* Mobile background fixes - different approach for Safari iOS */
 @media screen and (max-width: 768px) {
   body {
-    background-size: auto 100vh !important;
+    background-size: cover !important;
     background-position: center center !important;
     background-attachment: scroll !important;
-    -webkit-background-size: auto 100vh !important;
+    -webkit-background-size: cover !important;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
   }
 }
 
-/* Phone specific - ensure proper cropping */
+/* Safari iOS specific fixes */
+@supports (-webkit-overflow-scrolling: touch) {
+  @media screen and (max-width: 768px) {
+    body {
+      background-size: cover !important;
+      background-position: center center !important;
+      background-attachment: scroll !important;
+      background-repeat: no-repeat !important;
+      -webkit-background-size: cover !important;
+      -webkit-transform: translate3d(0,0,0);
+      transform: translate3d(0,0,0);
+    }
+  }
+}
+
+/* Phone specific - ensure proper display */
 @media screen and (max-width: 480px) {
   body {
-    background-size: auto 100vh !important;
+    background-size: cover !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
     min-height: 100vh;
     overflow-x: hidden;
+  }
+  
+  /* Safari iOS specific phone fixes */
+  @supports (-webkit-overflow-scrolling: touch) {
+    body {
+      background-size: cover !important;
+      background-position: center center !important;
+      background-attachment: scroll !important;
+      -webkit-background-size: cover !important;
+      -webkit-transform: translate3d(0,0,0);
+      transform: translate3d(0,0,0);
+      min-height: 100vh;
+      height: 100%;
+    }
   }
   
   /* Ensure container doesn't cause horizontal scroll */
