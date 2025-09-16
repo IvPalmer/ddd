@@ -13,29 +13,42 @@ html { scroll-behavior: smooth; }
 body {
   margin: 0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: var(--bg) url('./assets/images/background-illustration.png') center/cover;
+  background: var(--bg) url('./assets/images/background-illustration.png') center/cover no-repeat;
+  background-attachment: scroll;
   color: #fff;
   text-transform: uppercase;
+  min-height: 100vh;
 }
 
-/* Fix for iOS Safari background issues */
+/* Fix for iOS Safari background zoom issues */
 @supports (-webkit-overflow-scrolling: touch) {
   body {
-    background-attachment: scroll;
     background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
     -webkit-background-size: cover;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
   }
 }
 
-/* Additional iOS Safari fixes */
-@media screen and (-webkit-min-device-pixel-ratio: 1) {
+/* Additional iOS Safari fixes for background zoom */
+@media screen and (max-width: 768px) {
   body {
+    background-size: cover !important;
+    background-position: center center !important;
+    -webkit-background-size: cover !important;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    -webkit-perspective: 1000px;
-    perspective: 1000px;
+  }
+}
+
+/* Specific fix for iPhone viewport issues */
+@media screen and (max-width: 480px) {
+  body {
+    background-size: 100% auto !important;
+    background-position: center top !important;
+    min-height: 100vh;
   }
 }
 
