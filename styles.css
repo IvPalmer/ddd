@@ -152,7 +152,7 @@ img:not([src]) {
   position: sticky; 
   top: 0; 
   z-index: 10; 
-  background: var(--bg); 
+  background: #1a1a1a !important; 
   border-bottom: 1px solid #1a1a1a;
   backdrop-filter: blur(10px);
   transition: var(--transition-medium);
@@ -239,7 +239,7 @@ img:not([src]) {
     gap: 12px; 
     padding: 16px; 
     border: 1px solid #1a1a1a; 
-    background: var(--bg);
+    background: #1a1a1a !important;
     opacity: 0;
     transform: translateY(-10px);
     transition: var(--transition-medium);
