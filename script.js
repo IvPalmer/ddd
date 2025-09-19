@@ -45,6 +45,7 @@
     tempSpan.style.visibility = 'hidden';
     tempSpan.style.position = 'absolute';
     tempSpan.style.whiteSpace = 'nowrap';
+    tempSpan.style.fontWeight = 'bold';
     
     // Copy all relevant styles from the terminal title
     const computedStyle = getComputedStyle(terminalTitle);
@@ -72,7 +73,7 @@
         currentTimeout = null;
       }
       
-      typedTextElement.textContent = '';
+      typedTextElement.innerHTML = '';
       terminalTitle.classList.remove('typing', 'paused');
       index = 0;
       phase = 1;
@@ -83,7 +84,8 @@
         // Typing until we reach "DDD"
         if (index < 3) { // DDD is 3 characters
           terminalTitle.classList.add('typing');
-          typedTextElement.textContent += fullText[index];
+          const currentText = '<span style="font-weight: 700; color: #cce088; -webkit-text-stroke: 4px #1a1a1a; text-stroke: 4px #1a1a1a;">' + fullText.substring(0, index + 1) + '</span>';
+          typedTextElement.innerHTML = currentText;
           index++;
           currentTimeout = setTimeout(typeChar, 180 + Math.random() * 100);
         } else {
@@ -102,7 +104,8 @@
       } else if (phase === 3) {
         // Continue typing the phone number
         if (index < fullText.length) {
-          typedTextElement.textContent += fullText[index];
+          const currentText = '<span style="font-weight: 700; color: #cce088; -webkit-text-stroke: 4px #1a1a1a; text-stroke: 4px #1a1a1a;">' + fullText.substring(0, index + 1) + '</span>';
+          typedTextElement.innerHTML = currentText;
           index++;
           currentTimeout = setTimeout(typeChar, 120 + Math.random() * 60);
         } else {
