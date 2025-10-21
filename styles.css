@@ -286,25 +286,6 @@ body::before {
   }
 }
 
-@keyframes ticker {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-}
-
 /* Scroll-triggered animations */
 .animate-item {
   opacity: 0;
@@ -494,24 +475,25 @@ img:not([src]) {
 /* Hero */
 .hero {
   position: relative;
-  display: grid;
-  place-items: center;
   min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(120px, 16vh, 180px) 0;
   text-align: center;
-  padding: 140px 0 120px;
   overflow: hidden;
   background:
-    radial-gradient(circle at 52% 28%, rgba(106, 184, 152, 0.08), transparent 72%),
-    linear-gradient(115deg, rgba(9, 14, 12, 0.94) 0%, rgba(9, 12, 11, 0.82) 42%, rgba(6, 9, 8, 0.96) 100%);
+    radial-gradient(circle at 50% 30%, rgba(109, 183, 154, 0.12), transparent 70%),
+    linear-gradient(118deg, rgba(9, 13, 12, 0.94) 0%, rgba(8, 11, 10, 0.86) 45%, rgba(5, 8, 7, 0.96) 100%);
 }
 .hero::before {
   content: "";
   position: absolute;
-  inset: -28% -22%;
-  background: radial-gradient(circle at center, rgba(133, 216, 188, 0.16), transparent 74%);
-  mix-blend-mode: screen;
-  filter: blur(150px);
+  inset: -32% -28%;
+  background: radial-gradient(circle at center, rgba(157, 240, 192, 0.24), transparent 78%);
+  filter: blur(140px);
   animation: pulseAura 18s ease-in-out infinite;
+  pointer-events: none;
 }
 .hero::after {
   content: "";
@@ -523,10 +505,25 @@ img:not([src]) {
   animation: maskDrift 28s ease-in-out infinite;
   pointer-events: none;
 }
-.hero::before,
-.hero::after,
-.hero-texture {
+.hero-texture,
+.hero-shell,
+.hero::before {
   pointer-events: none;
+}
+.hero-texture {
+  position: absolute;
+  inset: 0;
+  background: url("./assets/textures/noise.webp") center/220px repeat;
+  opacity: 0.12;
+  mix-blend-mode: soft-light;
+  animation: noiseShift 36s linear infinite;
+}
+.hero-shell {
+  position: absolute;
+  inset: 0;
+  background: url("./assets/design/PNG/SYMBOL/DDD_SYMBOL-2.png") center/62% no-repeat;
+  opacity: 0.16;
+  mix-blend-mode: soft-light;
 }
 .hero-ascii {
   position: absolute;
@@ -550,8 +547,80 @@ img:not([src]) {
 }
 .hero-inner {
   position: relative;
-  width: min(1100px, 100%);
+  z-index: 1;
+  width: min(720px, 100%);
   padding: 0 28px;
+  display: grid;
+  gap: clamp(18px, 4vh, 28px);
+  justify-items: center;
+}
+.hero-preamble {
+  margin: 0;
+  font-family: var(--font-mono);
+  letter-spacing: 0.34em;
+  font-size: 12px;
+  color: rgba(157, 240, 192, 0.72);
+}
+.hero-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(32px, 6vw, 72px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+.hero-subtitle {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(13px, 2.2vw, 16px);
+  letter-spacing: 0.28em;
+  color: var(--color-text-muted);
+}
+.hero-meta {
+  display: flex;
+  gap: clamp(16px, 4vw, 28px);
+  flex-wrap: wrap;
+  justify-content: center;
+  font-family: var(--font-mono);
+  letter-spacing: 0.22em;
+  font-size: 12px;
+  color: var(--color-text);
+}
+.hero-meta span {
+  position: relative;
+  padding: 6px 0;
+}
+.hero-meta span:not(:last-child)::after {
+  content: "•";
+  position: absolute;
+  right: -14px;
+  color: rgba(157, 240, 192, 0.55);
+}
+.hero-lineup {
+  margin: 0;
+  font-family: var(--font-mono);
+  letter-spacing: 0.3em;
+  font-size: clamp(13px, 2vw, 15px);
+  color: rgba(157, 240, 192, 0.85);
+}
+@media (max-width: 768px) {
+  .hero {
+    padding: 120px 0;
+  }
+
+  .hero-meta span:not(:last-child)::after {
+    display: none;
+  }
+}
+@media (max-width: 520px) {
+  .hero-inner {
+    gap: 16px;
+  }
+
+  .hero-meta {
+    flex-direction: column;
+    gap: 6px;
+  }
 }
 .hero-grid {
   display: grid;
@@ -728,7 +797,7 @@ img:not([src]) {
   }
 
   .hero {
-    padding: 60px 20px; /* Add container padding */
+    padding: 120px 0;
   }
 }
 
