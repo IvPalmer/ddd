@@ -29,6 +29,138 @@
   const y = document.getElementById("year");
   if (y) y.textContent = String(new Date().getFullYear());
 
+  // Shader-driven ASCII hero background
+  const heroCanvas = document.getElementById("hero-canvas");
+  if (heroCanvas) {
+    const gl = heroCanvas.getContext("webgl");
+    if (gl) {
+      const resize = () => {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = heroCanvas.getBoundingClientRect();
+        heroCanvas.width = rect.width * dpr;
+        heroCanvas.height = rect.height * dpr;
+        gl.viewport(0, 0, heroCanvas.width, heroCanvas.height);
+      };
+      resize();
+
+      const vertexSrc = `
+        attribute vec2 position;
+        void main() {
+          gl_Position = vec4(position, 0.0, 1.0);
+        }
+      `;
+
+      const fragmentSrc = `
+        precision highp float;
+        uniform vec2 u_resolution;
+        uniform float u_time;
+        
+        int charMask(int n, vec2 p) {
+          p = floor(p * vec2(-4.0, 4.0) + 2.5);
+          if (p.x < 0.0 || p.x > 4.0 || p.y < 0.0 || p.y > 4.0) return 0;
+          int a = int(round(p.x) + 5.0 * round(p.y));
+          return (n >> a) & 1;
+        }
+
+        float character(int n, vec2 p) {
+          return float(charMask(n, p));
+        }
+
+        float hash(vec2 p) {
+          return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+        }
+
+        vec3 palette(float g) {
+          vec3 dark = vec3(0.015, 0.075, 0.06);
+          vec3 mid = vec3(0.05, 0.18, 0.14);
+          vec3 light = vec3(0.58, 0.94, 0.78);
+          return mix(dark, mix(mid, light, smoothstep(0.3, 0.95, g)), g);
+        }
+
+        void main() {
+          vec2 uv = gl_FragCoord.xy;
+          vec2 grid = floor(uv / 9.0) * 9.0;
+          vec2 glyphUV = fract(uv / 9.0) * 2.0 - 1.0;
+
+          float noise = hash(grid / 64.0 + u_time * 0.03);
+          float gradient = 0.42 + 0.3 * sin((grid.x + grid.y) * 0.004 + u_time * 0.2);
+          float gray = mix(gradient, noise, 0.45);
+
+          int n = 4096; // baseline :
+          if (gray > 0.2) n = 65600;    // :
+          if (gray > 0.3) n = 163153;   // *
+          if (gray > 0.4) n = 15255086; // o
+          if (gray > 0.5) n = 13121101; // &
+          if (gray > 0.6) n = 15252014; // 8
+          if (gray > 0.7) n = 13195790; // @
+          if (gray > 0.8) n = 11512810; // #
+
+          float glyph = character(n, glyphUV);
+          float fade = smoothstep(0.0, 120.0, grid.y) * smoothstep(u_resolution.y, u_resolution.y - 160.0, grid.y);
+          vec3 col = palette(gray) * glyph * (0.6 + 0.4 * fade);
+          gl_FragColor = vec4(col, glyph);
+        }
+      `;
+
+      const compile = (type, source) => {
+        const shader = gl.createShader(type);
+        if (!shader) return null;
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          console.warn(gl.getShaderInfoLog(shader));
+          gl.deleteShader(shader);
+          return null;
+        }
+        return shader;
+      };
+
+      const vertexShader = compile(gl.VERTEX_SHADER, vertexSrc);
+      const fragmentShader = compile(gl.FRAGMENT_SHADER, fragmentSrc);
+      if (vertexShader && fragmentShader) {
+        const program = gl.createProgram();
+        if (program) {
+          gl.attachShader(program, vertexShader);
+          gl.attachShader(program, fragmentShader);
+          gl.bindAttribLocation(program, 0, "position");
+          gl.linkProgram(program);
+          if (gl.getProgramParameter(program, gl.LINK_STATUS)) {
+            gl.useProgram(program);
+            const buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.bufferData(
+              gl.ARRAY_BUFFER,
+              new Float32Array([
+                -1, -1,
+                1, -1,
+                -1, 1,
+                -1, 1,
+                1, -1,
+                1, 1,
+              ]),
+              gl.STATIC_DRAW,
+            );
+            gl.enableVertexAttribArray(0);
+            gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+            const uResolution = gl.getUniformLocation(program, "u_resolution");
+            const uTime = gl.getUniformLocation(program, "u_time");
+
+            const render = (time) => {
+              resize();
+              gl.uniform2f(uResolution, heroCanvas.width, heroCanvas.height);
+              gl.uniform1f(uTime, time * 0.001);
+              gl.drawArrays(gl.TRIANGLES, 0, 6);
+              requestAnimationFrame(render);
+            };
+            requestAnimationFrame(render);
+            window.addEventListener("resize", () => requestAnimationFrame(render));
+          }
+        }
+      }
+    }
+  }
+
   // Terminal typing animation with loop
   let animationRunning = false;
   let currentTimeout;
