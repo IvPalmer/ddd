@@ -29,11 +29,145 @@
   const y = document.getElementById("year");
   if (y) y.textContent = String(new Date().getFullYear());
 
-  // Hero headline is static now; typing animation removed
-  const terminalTitle = document.getElementById("terminal-title");
-  if (terminalTitle) {
-    terminalTitle.textContent = "DISCAGEM DIRETA A DISTÂNCIA";
-  }
+  // Terminal typing animation with loop
+  let animationRunning = false;
+  let currentTimeout;
+
+  const terminalTyping = () => {
+    // Prevent multiple instances
+    if (animationRunning) return;
+
+    const terminalTitle = document.getElementById("terminal-title");
+    const typedTextElement = document.getElementById("typed-text");
+    const cursor = document.getElementById("cursor");
+
+    // Check if text would overflow and needs line break based on actual space
+    const testText = "DDD:+5561.22.11.25.";
+    const tempSpan = document.createElement("span");
+    tempSpan.style.visibility = "hidden";
+    tempSpan.style.position = "absolute";
+    tempSpan.style.whiteSpace = "nowrap";
+    tempSpan.style.fontWeight = "bold";
+
+    // Copy all relevant styles from the terminal title
+    const computedStyle = getComputedStyle(terminalTitle);
+    tempSpan.style.fontSize = computedStyle.fontSize;
+    tempSpan.style.fontFamily = computedStyle.fontFamily;
+    tempSpan.style.fontWeight = computedStyle.fontWeight;
+    tempSpan.style.letterSpacing = computedStyle.letterSpacing;
+
+    tempSpan.textContent = testText;
+    document.body.appendChild(tempSpan);
+
+    const textWidth = tempSpan.offsetWidth;
+    const availableWidth = window.innerWidth - 10; // Minimal padding - maximize available width
+    document.body.removeChild(tempSpan);
+
+    const needsLineBreak = textWidth > availableWidth;
+    const fullText = needsLineBreak
+      ? "DDD:\n+5561.22.11.25."
+      : "DDD:+5561.22.11.25.";
+    let index = 0;
+    let phase = 1; // 1 = typing, 2 = pause after DDD, 3 = continue typing, 4 = final pause
+
+    const clearText = () => {
+      // Clear any existing timeout
+      if (currentTimeout) {
+        clearTimeout(currentTimeout);
+        currentTimeout = null;
+      }
+
+      typedTextElement.innerHTML = "";
+      terminalTitle.dataset.text = "";
+      terminalTitle.classList.remove("typing", "paused");
+      index = 0;
+      phase = 1;
+    };
+
+    const typeChar = () => {
+      if (phase === 1) {
+        // Typing until we reach "DDD"
+        if (index < 3) {
+          // DDD is 3 characters
+          terminalTitle.classList.add("typing");
+          const nextIndex = index + 1;
+          const currentText =
+            '<span style="font-weight: 700; color: #9df0c0;">' +
+            fullText.substring(0, nextIndex) +
+            "</span>";
+          typedTextElement.innerHTML = currentText;
+          terminalTitle.dataset.text = fullText.substring(0, nextIndex);
+          index = nextIndex;
+          currentTimeout = setTimeout(typeChar, 180 + Math.random() * 100);
+        } else {
+          // DDD complete - pause with prominent cursor
+          terminalTitle.classList.remove("typing");
+          terminalTitle.classList.add("paused");
+          phase = 2;
+          currentTimeout = setTimeout(typeChar, 2000); // 2 second pause
+        }
+      } else if (phase === 2) {
+        // Resume typing the rest
+        terminalTitle.classList.remove("paused");
+        terminalTitle.classList.add("typing");
+        phase = 3;
+        currentTimeout = setTimeout(typeChar, 100);
+      } else if (phase === 3) {
+        // Continue typing the phone number
+        if (index < fullText.length) {
+          const nextIndex = index + 1;
+          const currentText =
+            '<span style="font-weight: 700; color: #9df0c0;">' +
+            fullText.substring(0, nextIndex) +
+            "</span>";
+          typedTextElement.innerHTML = currentText;
+          terminalTitle.dataset.text = fullText.substring(0, nextIndex);
+          index = nextIndex;
+          currentTimeout = setTimeout(typeChar, 120 + Math.random() * 60);
+        } else {
+          // Complete - final pause
+          terminalTitle.classList.remove("typing");
+          terminalTitle.classList.add("paused");
+          phase = 4;
+          currentTimeout = setTimeout(typeChar, 3000); // 3 second pause
+        }
+      } else if (phase === 4) {
+        // Clear and restart
+        clearText();
+        currentTimeout = setTimeout(() => {
+          animationRunning = false; // Allow restart
+          terminalTyping(); // Restart
+        }, 1000); // 1 second pause before restart
+      }
+    };
+
+    // Mark animation as running
+    animationRunning = true;
+
+    // Start immediately with cursor blinking, begin typing after 1 second
+    clearText();
+    currentTimeout = setTimeout(typeChar, 1000);
+  };
+
+  // Initialize terminal animation
+  terminalTyping();
+
+  // Handle window resize to recalculate line break needs
+  let resizeTimeout;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      // Stop current animation
+      if (currentTimeout) {
+        clearTimeout(currentTimeout);
+        currentTimeout = null;
+      }
+      animationRunning = false;
+
+      // Restart with new calculations
+      setTimeout(terminalTyping, 100);
+    }, 300);
+  });
 
   // Scroll-triggered animations
   const observerOptions = {
