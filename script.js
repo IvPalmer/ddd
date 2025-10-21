@@ -48,7 +48,8 @@
         attribute vec2 position;
         varying vec2 v_uv;
         void main() {
-          v_uv = (position + 1.0) * 0.5;
+          vec2 uv = (position + 1.0) * 0.5;
+          v_uv = vec2(uv.x, 1.0 - uv.y);
           gl_Position = vec4(position, 0.0, 1.0);
         }
       `;
@@ -77,10 +78,10 @@
         }
 
         vec3 palette(float g) {
-          vec3 dark = vec3(0.015, 0.075, 0.06);
-          vec3 mid = vec3(0.05, 0.18, 0.14);
-          vec3 light = vec3(0.58, 0.94, 0.78);
-          return mix(dark, mix(mid, light, smoothstep(0.3, 0.95, g)), g);
+          float shadows = smoothstep(0.15, 0.4, g);
+          float highlights = smoothstep(0.55, 0.95, g);
+          float tone = mix(0.05, 0.85, max(shadows, highlights));
+          return vec3(tone);
         }
 
         void main() {
