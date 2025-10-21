@@ -10,11 +10,19 @@
 .hero-texture {
   position: absolute;
   inset: 0;
-  background: url("./assets/textures/noise.webp") center/200px repeat;
-  opacity: 0.12;
+  background: url("./assets/textures/noise.webp") center/220px repeat;
+  opacity: 0.1;
+  mix-blend-mode: soft-light;
+  animation: noiseShift 36s linear infinite;
+  pointer-events: none;
+}
+.hero-shell {
+  position: absolute;
+  inset: 0;
+  background: url("./assets/design/PNG/SYMBOL/DDD_SYMBOL-2.png") center/60% no-repeat;
+  opacity: 0.14;
   mix-blend-mode: soft-light;
   pointer-events: none;
-  animation: noiseShift 30s linear infinite;
 }
 .hero::before,
 .hero::after,
@@ -494,188 +502,34 @@ img:not([src]) {
 /* Hero */
 .hero {
   position: relative;
-  display: grid;
-  place-items: center;
   min-height: 100vh;
-  text-align: center;
-  padding: 140px 0 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(120px, 16vh, 160px) 0;
   overflow: hidden;
+  text-align: center;
   background:
-    radial-gradient(circle at 52% 28%, rgba(106, 184, 152, 0.08), transparent 72%),
-    linear-gradient(115deg, rgba(9, 14, 12, 0.94) 0%, rgba(9, 12, 11, 0.82) 42%, rgba(6, 9, 8, 0.96) 100%);
+    radial-gradient(circle at 50% 30%, rgba(106, 184, 152, 0.14), transparent 70%),
+    linear-gradient(115deg, #0c110f 0%, #070b0a 60%, #050807 100%);
 }
 .hero::before {
   content: "";
   position: absolute;
-  inset: -28% -22%;
-  background: radial-gradient(circle at center, rgba(133, 216, 188, 0.16), transparent 74%);
-  mix-blend-mode: screen;
-  filter: blur(150px);
-  animation: pulseAura 18s ease-in-out infinite;
-}
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url("./assets/design/PNG/SYMBOL/DDD_SYMBOL-2.png") center/70% no-repeat;
-  opacity: 0.18;
-  mix-blend-mode: soft-light;
-  animation: maskDrift 28s ease-in-out infinite;
+  inset: -40% -30%;
+  background: radial-gradient(circle, rgba(157, 240, 192, 0.2), transparent 80%);
+  filter: blur(160px);
+  opacity: 0.65;
   pointer-events: none;
-}
-.hero::before,
-.hero::after,
-.hero-texture {
-  pointer-events: none;
-}
-.hero-ascii {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: clamp(240px, 22vw, 340px);
-  background: url("./assets/design/PNG/ASCII/DDD_ASCII-SYMBOL_1.png") repeat-y;
-  background-size: contain;
-  opacity: 0.06;
-  filter: contrast(160%);
-  mix-blend-mode: plus-lighter;
-  animation: asciiSweep 28s linear infinite;
-  pointer-events: none;
-}
-.hero-ascii--left {
-  left: clamp(-40px, -3vw, -16px);
-  transform: scaleX(-1);
-}
-.hero-ascii--right {
-  right: clamp(-40px, -3vw, -16px);
 }
 .hero-inner {
   position: relative;
-  width: min(1100px, 100%);
-  padding: 0 28px;
-}
-.hero-grid {
+  z-index: 1;
+  width: min(620px, 100%);
+  padding: 0 24px;
   display: grid;
-  gap: clamp(28px, 5vw, 44px);
-  grid-template-columns: clamp(160px, 18vw, 220px) minmax(0, 1fr) clamp(180px, 19vw, 230px);
-  align-items: start;
-  pointer-events: none;
-}
-.hero-grid > * {
-  pointer-events: auto;
-}
-.hero-col {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-.hero-col--meta {
-  gap: 16px;
-}
-.hero-channel {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.22em;
-  color: var(--color-text-muted);
-  opacity: 0.85;
-}
-.channel-index {
-  color: var(--color-text);
-}
-.channel-label {
-  position: relative;
-  padding-left: 4px;
-}
-.hero-col--main {
-  align-items: center;
-  text-align: center;
-  gap: 24px;
-}
-.hero-col--schedule {
-  align-items: flex-end;
-  gap: 16px;
-}
-.hero-schedule {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 10px;
-  font-family: var(--font-mono);
-  letter-spacing: 0.12em;
-}
-.hero-schedule li {
-  display: flex;
-  justify-content: flex-end;
-  gap: 16px;
-  color: var(--color-text-muted);
-}
-.hero-schedule .slot {
-  min-width: 65px;
-  color: var(--color-accent);
-}
-.hero-schedule .artist {
-  color: var(--color-text);
-}
-.hero-spec {
-  display: grid;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  font-family: var(--font-mono);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-.hero-spec div {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 20px;
-  align-items: center;
-  color: var(--color-text);
-}
-.hero-spec dt {
-  position: relative;
-  font-size: 11px;
-  color: var(--color-text-muted);
-}
-.hero-spec dt::after {
-  content: "................................";
-  position: absolute;
-  left: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  letter-spacing: 0.15em;
-  opacity: 0.4;
-}
-.hero-spec dd {
-  margin: 0;
-  font-size: 12px;
-}
-.hero-ticker {
-  position: absolute;
-  bottom: clamp(32px, 7vh, 56px);
-  left: 0;
-  right: 0;
-  overflow: hidden;
-  border-top: 1px solid rgba(157, 240, 192, 0.18);
-  border-bottom: 1px solid rgba(157, 240, 192, 0.18);
-  background: rgba(9, 14, 12, 0.65);
-  backdrop-filter: blur(14px);
-}
-.hero-ticker__track {
-  display: inline-flex;
-  white-space: nowrap;
-  animation: ticker 26s linear infinite;
-  font-family: var(--font-mono);
-  letter-spacing: 0.18em;
-  font-size: 12px;
-  color: rgba(157, 240, 192, 0.82);
-  padding: 11px 0;
-}
-.hero-ticker__track span {
-  padding-right: 68px;
+  gap: clamp(18px, 4vh, 26px);
+  justify-items: center;
 }
 /* Terminal-style title */
 .hero-inner {
