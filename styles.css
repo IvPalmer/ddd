@@ -533,6 +533,13 @@ img:not([src]) {
   mix-blend-mode: screen;
   filter: contrast(120%);
 }
+.hero-video {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
 .hero-inner {
   position: relative;
   z-index: 1;

@@ -32,10 +32,11 @@
   // Shader-driven ASCII hero background
   const heroCanvas = document.getElementById("hero-canvas");
   if (heroCanvas) {
+    const heroVideo = document.getElementById("hero-video");
     const gl = heroCanvas.getContext("webgl") || heroCanvas.getContext("experimental-webgl");
     if (gl) {
       const resize = () => {
-        const dpr = window.devicePixelRatio || 1;
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
         const rect = heroCanvas.getBoundingClientRect();
         heroCanvas.width = rect.width * dpr;
         heroCanvas.height = rect.height * dpr;
@@ -45,15 +46,20 @@
 
       const vertexSrc = `
         attribute vec2 position;
+        varying vec2 v_uv;
         void main() {
+          v_uv = (position + 1.0) * 0.5;
           gl_Position = vec4(position, 0.0, 1.0);
         }
       `;
 
       const fragmentSrc = `
         precision mediump float;
+        varying vec2 v_uv;
         uniform vec2 u_resolution;
         uniform float u_time;
+        uniform sampler2D u_video;
+        uniform bool u_useVideo;
 
         float character(float n, vec2 p) {
           p = floor(p * vec2(-4.0, 4.0) + 2.5);
@@ -82,9 +88,15 @@
           vec2 grid = floor(uv / 9.0) * 9.0;
           vec2 glyphUV = fract(uv / 9.0) * 2.0 - 1.0;
 
-          float noise = hash(grid / 64.0 + u_time * 0.03);
-          float gradient = 0.42 + 0.3 * sin((grid.x + grid.y) * 0.004 + u_time * 0.2);
-          float gray = mix(gradient, noise, 0.45);
+          float gray;
+          if (u_useVideo) {
+            vec3 videoCol = texture2D(u_video, v_uv).rgb;
+            gray = 0.3 * videoCol.r + 0.59 * videoCol.g + 0.11 * videoCol.b;
+          } else {
+            float noise = hash(grid / 64.0 + u_time * 0.03);
+            float gradient = 0.42 + 0.3 * sin((grid.x + grid.y) * 0.004 + u_time * 0.2);
+            gray = mix(gradient, noise, 0.45);
+          }
 
           float n = 4096.0; // baseline :
           if (gray > 0.2) n = 65600.0;    // :
@@ -145,11 +157,63 @@
 
             const uResolution = gl.getUniformLocation(program, "u_resolution");
             const uTime = gl.getUniformLocation(program, "u_time");
+            const uVideo = gl.getUniformLocation(program, "u_video");
+            const uUseVideo = gl.getUniformLocation(program, "u_useVideo");
+
+            let videoReady = false;
+            let videoTexture = null;
+
+            if (heroVideo) {
+              const ensurePlay = () => {
+                const playPromise = heroVideo.play();
+                if (playPromise) {
+                  playPromise.catch(() => heroVideo.play().catch(() => {}));
+                }
+              };
+              heroVideo.muted = true;
+              heroVideo.loop = true;
+              ensurePlay();
+              heroVideo.addEventListener("canplay", () => {
+                videoReady = true;
+              });
+              heroVideo.addEventListener("error", () => {
+                videoReady = false;
+              });
+
+              videoTexture = gl.createTexture();
+              gl.bindTexture(gl.TEXTURE_2D, videoTexture);
+              gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+              gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+              gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+              gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            }
 
             const render = (time) => {
               resize();
               gl.uniform2f(uResolution, heroCanvas.width, heroCanvas.height);
               gl.uniform1f(uTime, time * 0.001);
+
+              const useVideo = videoReady && heroVideo && heroVideo.readyState >= 2;
+              gl.uniform1i(uUseVideo, useVideo ? 1 : 0);
+
+              if (useVideo && videoTexture) {
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, videoTexture);
+                try {
+                  gl.texImage2D(
+                    gl.TEXTURE_2D,
+                    0,
+                    gl.RGBA,
+                    gl.RGBA,
+                    gl.UNSIGNED_BYTE,
+                    heroVideo,
+                  );
+                } catch (err) {
+                  console.warn("Video texImage2D failed", err);
+                }
+                gl.uniform1i(uVideo, 0);
+              }
+
               gl.drawArrays(gl.TRIANGLES, 0, 6);
               requestAnimationFrame(render);
             };
