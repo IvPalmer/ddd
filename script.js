@@ -32,7 +32,7 @@
   // Shader-driven ASCII hero background
   const heroCanvas = document.getElementById("hero-canvas");
   if (heroCanvas) {
-    const gl = heroCanvas.getContext("webgl");
+    const gl = heroCanvas.getContext("webgl") || heroCanvas.getContext("experimental-webgl");
     if (gl) {
       const resize = () => {
         const dpr = window.devicePixelRatio || 1;
@@ -51,19 +51,19 @@
       `;
 
       const fragmentSrc = `
-        precision highp float;
+        precision mediump float;
         uniform vec2 u_resolution;
         uniform float u_time;
-        
-        int charMask(int n, vec2 p) {
-          p = floor(p * vec2(-4.0, 4.0) + 2.5);
-          if (p.x < 0.0 || p.x > 4.0 || p.y < 0.0 || p.y > 4.0) return 0;
-          int a = int(round(p.x) + 5.0 * round(p.y));
-          return (n >> a) & 1;
-        }
 
-        float character(int n, vec2 p) {
-          return float(charMask(n, p));
+        float character(float n, vec2 p) {
+          p = floor(p * vec2(-4.0, 4.0) + 2.5);
+          if (p.x < 0.0 || p.x > 4.0 || p.y < 0.0 || p.y > 4.0) {
+            return 0.0;
+          }
+          float index = p.x + 5.0 * p.y;
+          float power = pow(2.0, index);
+          float bit = mod(floor(n / power), 2.0);
+          return bit;
         }
 
         float hash(vec2 p) {
@@ -86,14 +86,14 @@
           float gradient = 0.42 + 0.3 * sin((grid.x + grid.y) * 0.004 + u_time * 0.2);
           float gray = mix(gradient, noise, 0.45);
 
-          int n = 4096; // baseline :
-          if (gray > 0.2) n = 65600;    // :
-          if (gray > 0.3) n = 163153;   // *
-          if (gray > 0.4) n = 15255086; // o
-          if (gray > 0.5) n = 13121101; // &
-          if (gray > 0.6) n = 15252014; // 8
-          if (gray > 0.7) n = 13195790; // @
-          if (gray > 0.8) n = 11512810; // #
+          float n = 4096.0; // baseline :
+          if (gray > 0.2) n = 65600.0;    // :
+          if (gray > 0.3) n = 163153.0;   // *
+          if (gray > 0.4) n = 15255086.0; // o
+          if (gray > 0.5) n = 13121101.0; // &
+          if (gray > 0.6) n = 15252014.0; // 8
+          if (gray > 0.7) n = 13195790.0; // @
+          if (gray > 0.8) n = 11512810.0; // #
 
           float glyph = character(n, glyphUV);
           float fade = smoothstep(0.0, 120.0, grid.y) * smoothstep(u_resolution.y, u_resolution.y - 160.0, grid.y);
@@ -157,6 +157,30 @@
             window.addEventListener("resize", () => requestAnimationFrame(render));
           }
         }
+      }
+    } else {
+      // Fallback: simple static ASCII texture using 2D context if WebGL unsupported
+      const ctx = heroCanvas.getContext("2d");
+      if (ctx) {
+        const chars = " .:-=+*#%@";
+        const drawFallback = () => {
+          const dpr = window.devicePixelRatio || 1;
+          heroCanvas.width = heroCanvas.clientWidth * dpr;
+          heroCanvas.height = heroCanvas.clientHeight * dpr;
+          ctx.scale(dpr, dpr);
+          ctx.fillStyle = "#0b0f0e";
+          ctx.fillRect(0, 0, heroCanvas.clientWidth, heroCanvas.clientHeight);
+          ctx.fillStyle = "rgba(157, 240, 192, 0.35)";
+          ctx.font = "12px var(--font-mono, monospace)";
+          for (let y = 12; y < heroCanvas.clientHeight; y += 16) {
+            for (let x = 8; x < heroCanvas.clientWidth; x += 12) {
+              const char = chars[Math.floor(Math.random() * chars.length)];
+              ctx.fillText(char, x, y);
+            }
+          }
+          requestAnimationFrame(drawFallback);
+        };
+        drawFallback();
       }
     }
   }
