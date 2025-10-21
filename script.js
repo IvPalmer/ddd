@@ -173,6 +173,10 @@
     const typedTextElement = document.getElementById("typed-text");
     const cursor = document.getElementById("cursor");
 
+    if (!terminalTitle || !typedTextElement || !cursor) {
+      return;
+    }
+
     // Check if text would overflow and needs line break based on actual space
     const testText = "DDD:+5561.22.11.25.";
     const tempSpan = document.createElement("span");
