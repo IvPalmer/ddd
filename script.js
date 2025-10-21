@@ -78,6 +78,7 @@
       }
 
       typedTextElement.innerHTML = "";
+      terminalTitle.dataset.text = "";
       terminalTitle.classList.remove("typing", "paused");
       index = 0;
       phase = 1;
@@ -89,12 +90,14 @@
         if (index < 3) {
           // DDD is 3 characters
           terminalTitle.classList.add("typing");
+          const nextIndex = index + 1;
           const currentText =
             '<span style="font-weight: 700; color: #9df0c0;">' +
-            fullText.substring(0, index + 1) +
+            fullText.substring(0, nextIndex) +
             "</span>";
           typedTextElement.innerHTML = currentText;
-          index++;
+          terminalTitle.dataset.text = fullText.substring(0, nextIndex);
+          index = nextIndex;
           currentTimeout = setTimeout(typeChar, 180 + Math.random() * 100);
         } else {
           // DDD complete - pause with prominent cursor
@@ -112,12 +115,14 @@
       } else if (phase === 3) {
         // Continue typing the phone number
         if (index < fullText.length) {
+          const nextIndex = index + 1;
           const currentText =
             '<span style="font-weight: 700; color: #9df0c0;">' +
-            fullText.substring(0, index + 1) +
+            fullText.substring(0, nextIndex) +
             "</span>";
           typedTextElement.innerHTML = currentText;
-          index++;
+          terminalTitle.dataset.text = fullText.substring(0, nextIndex);
+          index = nextIndex;
           currentTimeout = setTimeout(typeChar, 120 + Math.random() * 60);
         } else {
           // Complete - final pause
