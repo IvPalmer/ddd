@@ -51,8 +51,12 @@
     <script defer src="./script.js"></script>
   </head>
   <body>
+    <div class="glitch-tracks" aria-hidden="true">
+      <div class="glitch-track glitch-track--left"></div>
+      <div class="glitch-track glitch-track--right"></div>
+    </div>
     <header class="site-header" role="banner">
-      <div class="container header-inner">
+      <div class="header-inner">
         <a class="brand" href="#home" aria-label="DDD home">
           <img
             class="brand-mark"
@@ -61,7 +65,6 @@
             width="40"
             height="40"
           />
-          <span class="brand-text">DISCAGEM DIRETA A DISTANCIA</span>
         </a>
         <button
           class="nav-toggle"
@@ -98,7 +101,30 @@
       </section>
 
       <section id="idea" class="section alt">
+        <div class="section-aside" aria-hidden="true">
+          <div class="section-aside__block">
+            <span class="section-aside__label">DOCUMENTO</span>
+            <span class="section-aside__value">DDD://ARQUIVO</span>
+          </div>
+          <div class="section-aside__divider"></div>
+          <div class="section-aside__block">
+            <span class="section-aside__label">LOCALIZAÇÃO</span>
+            <span class="section-aside__value">BRASÍLIA · DF</span>
+          </div>
+          <div class="section-aside__divider"></div>
+          <div class="section-aside__block">
+            <span class="section-aside__label">FASE</span>
+            <span class="section-aside__value">PRÉ-PRODUÇÃO</span>
+          </div>
+          <div class="section-aside__divider"></div>
+          <div class="section-aside__block">
+            <span class="section-aside__label">CONTATO</span>
+            <span class="section-aside__value">DDD@IN.NET</span>
+          </div>
+        </div>
         <div class="container prose">
+          <div class="ascii-overlay ascii-overlay--left" aria-hidden="true"></div>
+          <div class="ascii-overlay ascii-overlay--right" aria-hidden="true"></div>
           <h2>PROJETO</h2>
           <p>
             DDD é uma série documental dedicada a registrar atos musicais ao
