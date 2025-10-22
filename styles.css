@@ -1,3 +1,11 @@
+.team-wrapper {
+  display: grid;
+  justify-items: center;
+  gap: clamp(24px, 4vw, 48px);
+}
+.team-wrapper h2 {
+  justify-self: start;
+}
 .grid-field {
   position: relative;
   overflow: hidden;
@@ -127,18 +135,18 @@
   box-sizing: border-box;
 }
 :root { 
-  --color-bg: #191919;
-  --color-bg-elevated: #222222;
-  --color-surface: #2b2b2b;
-  --color-surface-inverse: #d7f9e6;
-  --color-surface-muted: #333333;
+  --color-bg: #171819;
+  --color-bg-elevated: #1f2021;
+  --color-surface: #7f7f7f;
+  --color-surface-inverse: #e1ffed;
+  --color-surface-muted: #696969;
   --color-text: #f5f7f5;
-  --color-text-muted: #a3a3a3;
-  --color-text-inverse: #121212;
-  --color-accent: #d7f9e6;
-  --color-accent-strong: #b0d0c0;
-  --color-border: #3a3a3a;
-  --color-border-strong: #505050;
+  --color-text-muted: #d6e2db;
+  --color-text-inverse: #171819;
+  --color-accent: #e1ffed;
+  --color-accent-strong: #bde7d3;
+  --color-border: #5e5e5e;
+  --color-border-strong: #4a4a4a;
   --glow: rgba(157, 240, 192, 0.6);
   --radius-xs: 6px;
   --radius-sm: 10px;
@@ -1031,7 +1039,7 @@ img:not([src]) {
 }
 .section.alt {
   position: relative;
-  background: linear-gradient(135deg, rgba(23, 24, 25, 0.92), rgba(12, 14, 13, 0.92));
+  background: var(--color-surface);
   color: var(--color-text);
   display: grid;
   grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1fr);
@@ -1148,7 +1156,8 @@ img:not([src]) {
 .section[id="locations"] > .container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 clamp(32px, 8vw, 120px);
+  padding: 0 clamp(24px, 6vw, 80px);
+  text-align: center;
 }
 /* Photo grid layout - animations handled by JS */
 @media (max-width: 768px) {
@@ -1296,12 +1305,13 @@ img:not([src]) {
 
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: clamp(18px, 2.4vw, 32px);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(22px, 3vw, 36px);
   justify-items: center;
 }
 .team-grid .member {
   width: 100%;
+  max-width: 320px;
 }
 @media (max-width: 860px) {
   .team-grid {
