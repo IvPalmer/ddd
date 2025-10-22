@@ -28,11 +28,25 @@
     },
   };
 
+  const setThemeColorMeta = (color) => {
+    if (!color) return;
+    const metaTheme = document.querySelector('meta[name="theme-color"]') || (() => {
+      const meta = document.createElement("meta");
+      meta.name = "theme-color";
+      document.head.appendChild(meta);
+      return meta;
+    })();
+    metaTheme.setAttribute("content", color);
+  };
+
   const applyTheme = (themeName) => {
     rootElement.setAttribute("data-theme", themeName);
     const computed = getComputedStyle(rootElement);
-    document.documentElement.style.background = computed.getPropertyValue("--color-bg");
-    document.documentElement.style.setProperty("--brand-filter", computed.getPropertyValue("--brand-filter"));
+    const colorBg = computed.getPropertyValue("--color-bg").trim();
+    const brandFilter = computed.getPropertyValue("--brand-filter").trim();
+    document.documentElement.style.background = colorBg;
+    document.documentElement.style.setProperty("--brand-filter", brandFilter);
+    setThemeColorMeta(colorBg);
     themeButtons.forEach((btn) => {
       btn.setAttribute("aria-pressed", String(btn.dataset.theme === themeName));
     });
