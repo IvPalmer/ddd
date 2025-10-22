@@ -288,6 +288,7 @@ body {
 }
 html {
   scroll-behavior: smooth;
+  background: var(--color-bg);
 }
 body {
   margin: 0;
@@ -640,6 +641,7 @@ img:not([src]) {
   width: 40px;
   height: 40px;
   display: inline-block;
+  filter: var(--brand-filter, none);
 }
 .brand { 
   display: inline-flex;
@@ -1682,4 +1684,16 @@ html[data-theme="oxide"] {
     margin: 0;
     max-width: 100%;
   }
+}
+
+html[data-theme="legacy"] {
+  --brand-filter: none;
+}
+
+html[data-theme="mint"] {
+  --brand-filter: brightness(0) invert(0.02) sepia(5%) saturate(290%) hue-rotate(120deg) brightness(1.4);
+}
+
+html[data-theme="oxide"] {
+  --brand-filter: brightness(0.1) invert(0);
 }
