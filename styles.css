@@ -1,3 +1,27 @@
+[data-theme="oxide"] {
+  --color-bg: #101521;
+  --color-bg-elevated: #141a2a;
+  --color-surface: #d5c186;
+  --color-surface-inverse: #0f1116;
+  --color-surface-muted: #c0ab72;
+  --color-text: #f4ecd4;
+  --color-text-muted: rgba(244, 236, 212, 0.7);
+  --color-text-inverse: #0f1116;
+  --color-accent: #f0d590;
+  --color-accent-strong: #ffd57a;
+  --color-border: rgba(240, 213, 144, 0.35);
+  --color-border-strong: rgba(240, 213, 144, 0.55);
+  --glow: rgba(240, 213, 144, 0.32);
+  --header-bg: rgba(16, 21, 33, 0.88);
+  --header-border: rgba(240, 213, 144, 0.35);
+  --header-text: #f4ecd4;
+  --shader-dark: 0.08 0.1 0.16;
+  --shader-light: 0.93 0.83 0.57;
+  --bg: var(--color-bg);
+  --bg-light: var(--color-surface);
+  --bg-dark: #0c111c;
+  --highlight: var(--color-accent);
+}
 .theme-toggle[aria-pressed="true"]::after {
   content: "";
   position: absolute;
@@ -153,6 +177,11 @@
   --color-border: rgba(23, 24, 25, 0.2);
   --color-border-strong: rgba(23, 24, 25, 0.35);
   --glow: rgba(157, 240, 192, 0.6);
+  --header-bg: rgba(23, 24, 25, 0.88);
+  --header-border: rgba(23, 24, 25, 0.4);
+  --header-text: #f5f7f5;
+  --shader-dark: 0.10 0.12 0.11;
+  --shader-light: 0.62 0.82 0.74;
   --radius-xs: 6px;
   --radius-sm: 10px;
   --radius-md: 18px;
@@ -183,6 +212,11 @@
   --color-border: rgba(157, 240, 192, 0.25);
   --color-border-strong: rgba(157, 240, 192, 0.5);
   --glow: rgba(157, 240, 192, 0.45);
+  --header-bg: rgba(13, 17, 16, 0.88);
+  --header-border: rgba(157, 240, 192, 0.35);
+  --header-text: #f5f7f5;
+  --shader-dark: 0.07 0.09 0.09;
+  --shader-light: 0.60 0.85 0.74;
   --bg: var(--color-bg);
   --bg-light: var(--color-surface-inverse);
   --bg-dark: var(--color-bg-elevated);
@@ -203,6 +237,11 @@
   --color-border: rgba(23, 24, 25, 0.3);
   --color-border-strong: rgba(23, 24, 25, 0.45);
   --glow: rgba(23, 24, 25, 0.14);
+  --header-bg: rgba(225, 255, 237, 0.92);
+  --header-border: rgba(23, 24, 25, 0.15);
+  --header-text: #171819;
+  --shader-dark: 0.15 0.18 0.16;
+  --shader-light: 0.90 1.0 0.94;
   --bg: var(--color-bg);
   --bg-light: #ffffff;
   --bg-dark: #cdeedb;
@@ -536,10 +575,11 @@ img:not([src]) {
   position: sticky; 
   top: 0; 
   z-index: 12;
-  background: color-mix(in srgb, var(--color-bg) 88%, transparent);
-  border-bottom: 1px solid var(--color-border);
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
   backdrop-filter: blur(12px);
   transition: var(--transition-medium);
+  color: var(--header-text);
 }
 .header-inner {
   width: 100%;
@@ -585,7 +625,7 @@ img:not([src]) {
   align-items: center;
 }
 .site-nav a { 
-  color: var(--color-text-muted);
+  color: var(--header-text);
   text-decoration: none; 
   transition: var(--transition-fast); 
   font-weight: 500;
@@ -601,7 +641,7 @@ img:not([src]) {
   left: 0;
   width: 0;
   height: 1px;
-  background: var(--color-accent);
+  background: currentColor;
   transition: var(--transition-medium);
 }
 .site-nav a:hover,
@@ -624,17 +664,18 @@ img:not([src]) {
   display: inline-flex;
   gap: 8px;
   padding: 6px 10px;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--header-border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--header-bg) 70%, transparent);
   backdrop-filter: blur(8px);
 }
 
 .theme-toggle {
+  position: relative;
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 1px solid var(--color-border-strong);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   background: var(--swatch, var(--color-accent));
   cursor: pointer;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
