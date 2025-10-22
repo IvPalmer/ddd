@@ -199,7 +199,9 @@
   --bg-light: var(--color-surface-inverse);
   --bg-dark: var(--color-bg-elevated);
   --highlight: var(--color-accent);
-  --brand-image: url("./assets/logo-symbol-green.png");
+  --brand-filter: none;
+  --brand-image: url("./assets/design/PNG/SYMBOL/DDD_SYMBOL-4.png");
+  --brand-src: "./assets/design/PNG/SYMBOL/DDD_SYMBOL-4.png";
 }
 
 html[data-theme="legacy"] {
@@ -227,7 +229,8 @@ html[data-theme="legacy"] {
   --bg-light: var(--color-surface-inverse);
   --bg-dark: var(--color-bg-elevated);
   --highlight: var(--color-accent);
-  --brand-image: url("./assets/logo-symbol-green.png");
+  --brand-image: url("./assets/design/PNG/SYMBOL/DDD_SYMBOL-1.png");
+  --brand-src: "./assets/design/PNG/SYMBOL/DDD_SYMBOL-1.png";
 }
 
 html[data-theme="mint"] {
@@ -255,7 +258,9 @@ html[data-theme="mint"] {
   --bg-light: #ffffff;
   --bg-dark: #cdeedb;
   --highlight: var(--color-accent);
-  --brand-image: url("./assets/design/PNG/SYMBOL/DDD SYMBOL GRAY.png");
+  --brand-image: url("./assets/design/PNG/SYMBOL/DDD_SYMBOL-4.png");
+  --brand-src: "./assets/design/PNG/SYMBOL/DDD_SYMBOL-4.png";
+  --brand-filter: none;
 }
 
 html[data-theme="oxide"] {
@@ -283,7 +288,8 @@ html[data-theme="oxide"] {
   --bg-light: var(--color-surface);
   --bg-dark: #0c111c;
   --highlight: var(--color-accent);
-  --brand-image: url("./assets/logo-symbol-green.png");
+  --brand-image: url("./assets/design/PNG/SYMBOL/DDD_SYMBOL-3.png");
+  --brand-src: "./assets/design/PNG/SYMBOL/DDD_SYMBOL-3.png";
 }
 
 html,
@@ -645,7 +651,6 @@ img:not([src]) {
   width: 40px;
   height: 40px;
   display: inline-block;
-  background: var(--brand-image) no-repeat center/contain;
   filter: var(--brand-filter, none);
 }
 .brand { 
@@ -1258,6 +1263,8 @@ html[data-theme="oxide"] {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-self: center;
+  min-height: 100%;
 }
 .section.alt.with-aside > .container.prose h2,
 .section.alt.with-aside > .container.prose p {
@@ -1478,7 +1485,7 @@ html[data-theme="oxide"] {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(157, 240, 192, 0.18);
   opacity: 0;
   transition: var(--transition-medium);
 }

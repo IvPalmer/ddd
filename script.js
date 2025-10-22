@@ -50,11 +50,9 @@
     const brandMark = document.querySelector(".brand-mark");
     if (!brandMark) return;
     const computed = getComputedStyle(rootElement);
-    const brandImage = computed.getPropertyValue("--brand-image").trim();
-    const urlMatch = brandImage.match(/url\((['"]?)(.*?)\1\)/);
-    const url = urlMatch ? urlMatch[2] : brandImage;
-    if (brandMark.src !== url) {
-      brandMark.src = url;
+    const brandSrc = computed.getPropertyValue("--brand-src").replace(/['"]/g,"").trim();
+    if (brandSrc && brandMark.getAttribute("src") !== brandSrc) {
+      brandMark.setAttribute("src", brandSrc);
     }
   };
 
