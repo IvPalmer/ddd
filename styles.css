@@ -200,8 +200,8 @@
   --bg-dark: var(--color-bg-elevated);
   --highlight: var(--color-accent);
   --brand-filter: none;
-  --brand-image: url("./assets/design/PNG/SYMBOL/DDD_SYMBOL-4.png");
-  --brand-src: "./assets/design/PNG/SYMBOL/DDD_SYMBOL-4.png";
+  --brand-image: url("./assets/design/PNG/SYMBOL/DDD SYMBOL GRAY.png");
+  --brand-src: "./assets/design/PNG/SYMBOL/DDD SYMBOL GRAY.png";
 }
 
 html[data-theme="legacy"] {
@@ -229,8 +229,8 @@ html[data-theme="legacy"] {
   --bg-light: var(--color-surface-inverse);
   --bg-dark: var(--color-bg-elevated);
   --highlight: var(--color-accent);
-  --brand-image: url("./assets/design/PNG/SYMBOL/DDD_SYMBOL-1.png");
-  --brand-src: "./assets/design/PNG/SYMBOL/DDD_SYMBOL-1.png";
+  --brand-image: url("./assets/design/PNG/SYMBOL/DDD SYMBOL GREEN.png");
+  --brand-src: "./assets/design/PNG/SYMBOL/DDD SYMBOL GREEN.png";
 }
 
 html[data-theme="mint"] {
@@ -258,8 +258,8 @@ html[data-theme="mint"] {
   --bg-light: #ffffff;
   --bg-dark: #cdeedb;
   --highlight: var(--color-accent);
-  --brand-image: url("./assets/design/PNG/SYMBOL/DDD_SYMBOL-4.png");
-  --brand-src: "./assets/design/PNG/SYMBOL/DDD_SYMBOL-4.png";
+  --brand-image: url("./assets/design/PNG/SYMBOL/DDD SYMBOL GRAY.png");
+  --brand-src: "./assets/design/PNG/SYMBOL/DDD SYMBOL GRAY.png";
   --brand-filter: none;
 }
 
@@ -288,8 +288,8 @@ html[data-theme="oxide"] {
   --bg-light: var(--color-surface);
   --bg-dark: #0c111c;
   --highlight: var(--color-accent);
-  --brand-image: url("./assets/design/PNG/SYMBOL/DDD_SYMBOL-3.png");
-  --brand-src: "./assets/design/PNG/SYMBOL/DDD_SYMBOL-3.png";
+  --brand-image: url("./assets/design/PNG/SYMBOL/DDD SYMBOL GREEN.png");
+  --brand-src: "./assets/design/PNG/SYMBOL/DDD SYMBOL GREEN.png";
 }
 
 html,
