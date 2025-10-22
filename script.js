@@ -37,7 +37,10 @@
       return meta;
     })();
     metaTheme.setAttribute("content", color);
-    metaTheme.setAttribute("data-updated", Date.now().toString());
+    const clone = metaTheme.cloneNode();
+    clone.setAttribute("content", color);
+    document.head.appendChild(clone);
+    setTimeout(() => document.head.removeChild(clone), 50);
   };
 
   const applyTheme = (themeName) => {
