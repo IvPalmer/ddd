@@ -11,6 +11,9 @@
   // Theme toggles
   const themeButtons = document.querySelectorAll(".theme-toggle");
   const rootElement = document.documentElement;
+  if (!rootElement.hasAttribute("data-theme")) {
+    rootElement.setAttribute("data-theme", "mint");
+  }
   const THEME_STORAGE_KEY = "ddd-theme";
 
   const themes = {
@@ -43,6 +46,18 @@
     setTimeout(() => document.head.removeChild(clone), 50);
   };
 
+  const updateBrand = () => {
+    const brandMark = document.querySelector(".brand-mark");
+    if (!brandMark) return;
+    const computed = getComputedStyle(rootElement);
+    const brandImage = computed.getPropertyValue("--brand-image").trim();
+    const urlMatch = brandImage.match(/url\((['"]?)(.*?)\1\)/);
+    const url = urlMatch ? urlMatch[2] : brandImage;
+    if (brandMark.src !== url) {
+      brandMark.src = url;
+    }
+  };
+
   const applyTheme = (themeName) => {
     rootElement.setAttribute("data-theme", themeName);
     const computed = getComputedStyle(rootElement);
@@ -56,6 +71,7 @@
     void document.documentElement.offsetWidth;
     document.documentElement.classList.add("theme-transition");
     setThemeColorMeta(statusBg);
+    updateBrand();
     themeButtons.forEach((btn) => {
       btn.setAttribute("aria-pressed", String(btn.dataset.theme === themeName));
     });
@@ -64,10 +80,10 @@
   };
 
   const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-  if (storedTheme) {
+  if (storedTheme && themes[storedTheme]) {
     applyTheme(storedTheme);
   } else {
-    const defaultTheme = rootElement.dataset.theme || "legacy";
+    const defaultTheme = rootElement.dataset.theme || "mint";
     applyTheme(defaultTheme);
   }
 
