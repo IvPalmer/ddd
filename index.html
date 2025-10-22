@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="mint">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -70,12 +70,37 @@
         >
           <span></span><span></span>
         </button>
-        <nav id="primary-nav" class="site-nav" aria-label="Primary">
-          <a href="#idea">Ideia</a>
-          <a href="#locations">Locações</a>
-          <a href="#team">Equipe</a>
-          <a href="#contact">Contato</a>
-        </nav>
+        <div class="header-actions">
+          <nav id="primary-nav" class="site-nav" aria-label="Primary">
+            <a href="#idea">Ideia</a>
+            <a href="#locations">Locações</a>
+            <a href="#team">Equipe</a>
+            <a href="#contact">Contato</a>
+          </nav>
+          <div class="theme-switcher" role="group" aria-label="Alternar tema">
+            <button
+              type="button"
+              class="theme-toggle"
+              data-theme="legacy"
+              style="--swatch: linear-gradient(135deg, #0d1110 0%, #171819 55%, #9df0c0 100%);"
+              aria-label="Tema original"
+            ></button>
+            <button
+              type="button"
+              class="theme-toggle"
+              data-theme="mint"
+              style="--swatch: linear-gradient(135deg, #e1ffed 0%, #7f7f7f 100%);"
+              aria-label="Tema menta"
+            ></button>
+            <button
+              type="button"
+              class="theme-toggle"
+              data-theme="oxide"
+              style="--swatch: linear-gradient(135deg, #101521 0%, #f2d98d 100%);"
+              aria-label="Tema oxide"
+            ></button>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -96,7 +121,7 @@
         ></video>
       </section>
 
-      <section id="idea" class="section alt grid-layer">
+      <section id="idea" class="section alt with-aside grid-layer">
         <div class="section-aside" aria-hidden="true">
           <div class="section-aside__block">
             <span class="section-aside__label">DOCUMENTO</span>

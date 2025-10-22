@@ -8,6 +8,51 @@
     });
   }
 
+  // Theme toggles
+  const themeButtons = document.querySelectorAll(".theme-toggle");
+  const rootElement = document.documentElement;
+  const THEME_STORAGE_KEY = "ddd-theme";
+
+  const themes = {
+    legacy: {
+      accent: "#9df0c0",
+    },
+    mint: {
+      accent: "#171819",
+    },
+    oxide: {
+      accent: "#e0ba57",
+      bg: "#101521",
+      surface: "#f2d98d",
+      text: "#f7f1e1",
+    },
+  };
+
+  const applyTheme = (themeName) => {
+    rootElement.setAttribute("data-theme", themeName);
+    themeButtons.forEach((btn) => {
+      btn.setAttribute("aria-pressed", String(btn.dataset.theme === themeName));
+    });
+    const shaderAccent = themes[themeName]?.accent || "#ffffff";
+    rootElement.style.setProperty("--shader-accent", shaderAccent);
+  };
+
+  const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+  if (storedTheme) {
+    applyTheme(storedTheme);
+  } else {
+    const defaultTheme = rootElement.dataset.theme || "legacy";
+    applyTheme(defaultTheme);
+  }
+
+  themeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const theme = button.dataset.theme;
+      applyTheme(theme);
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
+    });
+  });
+
   // Smooth scroll (respects reduced motion)
   const prefersReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
@@ -61,6 +106,8 @@
         uniform float u_time;
         uniform sampler2D u_video;
         uniform bool u_useVideo;
+        uniform vec3 u_tintDark;
+        uniform vec3 u_tintLight;
 
         float character(float n, vec2 p) {
           p = floor(p * vec2(-4.0, 4.0) + 2.5);
@@ -90,8 +137,9 @@
           vec2 glyphUV = fract(uv / 9.0) * 2.0 - 1.0;
 
           float gray;
+          vec3 videoCol = vec3(0.0);
           if (u_useVideo) {
-            vec3 videoCol = texture2D(u_video, v_uv).rgb;
+            videoCol = texture2D(u_video, v_uv).rgb;
             gray = 0.3 * videoCol.r + 0.59 * videoCol.g + 0.11 * videoCol.b;
           } else {
             float noise = hash(grid / 64.0 + u_time * 0.03);
@@ -110,7 +158,11 @@
 
           float glyph = character(n, glyphUV);
           float fade = smoothstep(0.0, 120.0, grid.y) * smoothstep(u_resolution.y, u_resolution.y - 160.0, grid.y);
-          vec3 col = palette(gray) * glyph * (0.6 + 0.4 * fade);
+          vec3 base = mix(u_tintDark, u_tintLight, gray);
+          if (!u_useVideo) {
+            base = palette(gray);
+          }
+          vec3 col = base * glyph * (0.6 + 0.4 * fade);
           gl_FragColor = vec4(col, glyph);
         }
       `;
@@ -160,6 +212,8 @@
             const uTime = gl.getUniformLocation(program, "u_time");
             const uVideo = gl.getUniformLocation(program, "u_video");
             const uUseVideo = gl.getUniformLocation(program, "u_useVideo");
+            const uTintDark = gl.getUniformLocation(program, "u_tintDark");
+            const uTintLight = gl.getUniformLocation(program, "u_tintLight");
 
             let videoReady = false;
             let videoTexture = null;
@@ -196,6 +250,18 @@
 
               const useVideo = videoReady && heroVideo && heroVideo.readyState >= 2;
               gl.uniform1i(uUseVideo, useVideo ? 1 : 0);
+              const theme = rootElement.getAttribute("data-theme") || "legacy";
+              let dark = [0.05, 0.07, 0.07];
+              let light = [0.35, 0.62, 0.52];
+              if (theme === "mint") {
+                dark = [0.11, 0.12, 0.11];
+                light = [0.88, 1.0, 0.93];
+              } else if (theme === "oxide") {
+                dark = [0.06, 0.08, 0.13];
+                light = [0.95, 0.85, 0.58];
+              }
+              gl.uniform3fv(uTintDark, dark);
+              gl.uniform3fv(uTintLight, light);
 
               if (useVideo && videoTexture) {
                 gl.activeTexture(gl.TEXTURE0);
