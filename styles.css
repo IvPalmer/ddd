@@ -170,20 +170,21 @@
   --color-surface: #7f7f7f;
   --color-surface-inverse: #e1ffed;
   --color-surface-muted: #8c8c8c;
-  --color-text: #171819;
-  --color-text-muted: rgba(23, 24, 25, 0.65);
-  --color-text-inverse: #ffffff;
-  --color-accent: #171819;
-  --color-accent-strong: #2c2c2c;
-  --color-border: rgba(23, 24, 25, 0.2);
-  --color-border-strong: rgba(23, 24, 25, 0.35);
-  --glow: rgba(157, 240, 192, 0.6);
-  --header-bg: rgba(23, 24, 25, 0.85);
-  --header-border: rgba(23, 24, 25, 0.4);
-  --header-text: #f5f7f5;
-  --header-chip-bg: rgba(255, 255, 255, 0.08);
-  --shader-dark: 0.10 0.12 0.11;
-  --shader-light: 0.62 0.82 0.74;
+  --color-text: #e1ffed;
+  --color-text-muted: rgba(225, 255, 237, 0.65);
+  --color-text-inverse: #171819;
+  --color-accent: #e1ffed;
+  --color-accent-strong: #cdeedb;
+  --color-border: rgba(225, 255, 237, 0.2);
+  --color-border-strong: rgba(225, 255, 237, 0.35);
+  --glow: rgba(225, 255, 237, 0.3);
+  --header-bg: #171819;
+  --header-border: rgba(225, 255, 237, 0.22);
+  --header-text: #e1ffed;
+  --header-chip-bg: rgba(225, 255, 237, 0.08);
+  --hero-background: url("./assets/design/PNG/TYPE/DDD_TYPE-BG_1.png") center/cover repeat;
+  --shader-dark: 0.09 0.09 0.10;
+  --shader-light: 0.88 1 0.93;
   --radius-xs: 6px;
   --radius-sm: 10px;
   --radius-md: 18px;
@@ -201,25 +202,26 @@
 }
 
 html[data-theme="legacy"] {
-  --color-bg: #0d1110;
-  --color-bg-elevated: #171819;
-  --color-surface: rgba(18, 24, 22, 0.92);
-  --color-surface-inverse: #ececec;
-  --color-surface-muted: #1f2422;
-  --color-text: #f5f7f5;
-  --color-text-muted: #a3b3ab;
-  --color-text-inverse: #141917;
-  --color-accent: #9df0c0;
-  --color-accent-strong: #c8e2d2;
-  --color-border: rgba(157, 240, 192, 0.25);
-  --color-border-strong: rgba(157, 240, 192, 0.5);
-  --glow: rgba(157, 240, 192, 0.45);
-  --header-bg: rgba(13, 17, 16, 0.9);
-  --header-border: rgba(157, 240, 192, 0.35);
-  --header-text: #f5f7f5;
-  --header-chip-bg: rgba(157, 240, 192, 0.16);
-  --shader-dark: 0.07 0.09 0.09;
-  --shader-light: 0.60 0.85 0.74;
+  --color-bg: #171819;
+  --color-bg-elevated: #1f2021;
+  --color-surface: #7f7f7f;
+  --color-surface-inverse: #e1ffed;
+  --color-surface-muted: #8c8c8c;
+  --color-text: #e1ffed;
+  --color-text-muted: rgba(225, 255, 237, 0.65);
+  --color-text-inverse: #171819;
+  --color-accent: #e1ffed;
+  --color-accent-strong: #cdeedb;
+  --color-border: rgba(225, 255, 237, 0.2);
+  --color-border-strong: rgba(225, 255, 237, 0.35);
+  --glow: rgba(225, 255, 237, 0.3);
+  --header-bg: #171819;
+  --header-border: rgba(225, 255, 237, 0.22);
+  --header-text: #e1ffed;
+  --header-chip-bg: rgba(225, 255, 237, 0.08);
+  --hero-background: url("./assets/design/PNG/TYPE/DDD_TYPE-BG_1.png") center/cover repeat;
+  --shader-dark: 0.09 0.09 0.10;
+  --shader-light: 0.88 1 0.93;
   --bg: var(--color-bg);
   --bg-light: var(--color-surface-inverse);
   --bg-dark: var(--color-bg-elevated);
@@ -228,24 +230,25 @@ html[data-theme="legacy"] {
 
 html[data-theme="mint"] {
   --color-bg: #e1ffed;
-  --color-bg-elevated: #b7e4ce;
+  --color-bg-elevated: #d1f6e1;
   --color-surface: #7f7f7f;
   --color-surface-inverse: #171819;
   --color-surface-muted: #9aa7a0;
   --color-text: #171819;
-  --color-text-muted: rgba(23, 24, 25, 0.6);
-  --color-text-inverse: #ffffff;
+  --color-text-muted: rgba(23, 24, 25, 0.58);
+  --color-text-inverse: #171819;
   --color-accent: #171819;
-  --color-accent-strong: #2c2c2c;
-  --color-border: rgba(23, 24, 25, 0.3);
-  --color-border-strong: rgba(23, 24, 25, 0.45);
+  --color-accent-strong: #0d1110;
+  --color-border: rgba(23, 24, 25, 0.2);
+  --color-border-strong: rgba(23, 24, 25, 0.3);
   --glow: rgba(23, 24, 25, 0.14);
-  --header-bg: rgba(225, 255, 237, 0.94);
-  --header-border: rgba(23, 24, 25, 0.12);
+  --header-bg: #e1ffed;
+  --header-border: rgba(23, 24, 25, 0.22);
   --header-text: #171819;
   --header-chip-bg: rgba(23, 24, 25, 0.08);
-  --shader-dark: 0.15 0.18 0.16;
-  --shader-light: 0.90 1 0.94;
+  --hero-background: url("./assets/design/PNG/TYPE/DDD_TYPE-BG_4.png") center/cover repeat;
+  --shader-dark: 0.09 0.09 0.10;
+  --shader-light: 0.88 1 0.93;
   --bg: var(--color-bg);
   --bg-light: #ffffff;
   --bg-dark: #cdeedb;
@@ -253,25 +256,26 @@ html[data-theme="mint"] {
 }
 
 html[data-theme="oxide"] {
-  --color-bg: #101521;
-  --color-bg-elevated: #141a2a;
-  --color-surface: #d5c186;
-  --color-surface-inverse: #0f1116;
-  --color-surface-muted: #c0ab72;
-  --color-text: #f4ecd4;
-  --color-text-muted: rgba(244, 236, 212, 0.7);
-  --color-text-inverse: #0f1116;
-  --color-accent: #f0d590;
-  --color-accent-strong: #ffd57a;
-  --color-border: rgba(240, 213, 144, 0.35);
-  --color-border-strong: rgba(240, 213, 144, 0.55);
-  --glow: rgba(240, 213, 144, 0.32);
-  --header-bg: rgba(16, 21, 33, 0.9);
-  --header-border: rgba(240, 213, 144, 0.35);
-  --header-text: #f4ecd4;
-  --header-chip-bg: rgba(240, 213, 144, 0.18);
-  --shader-dark: 0.08 0.10 0.16;
-  --shader-light: 0.93 0.83 0.57;
+  --color-bg: #7f7f7f;
+  --color-bg-elevated: #8d8d8d;
+  --color-surface: #e1ffed;
+  --color-surface-inverse: #171819;
+  --color-surface-muted: #c6c6c6;
+  --color-text: #171819;
+  --color-text-muted: rgba(23, 24, 25, 0.6);
+  --color-text-inverse: #171819;
+  --color-accent: #171819;
+  --color-accent-strong: #0d1110;
+  --color-border: rgba(23, 24, 25, 0.24);
+  --color-border-strong: rgba(23, 24, 25, 0.35);
+  --glow: rgba(23, 24, 25, 0.18);
+  --header-bg: #7f7f7f;
+  --header-border: rgba(23, 24, 25, 0.28);
+  --header-text: #171819;
+  --header-chip-bg: rgba(23, 24, 25, 0.08);
+  --hero-background: url("./assets/design/PNG/TYPE/DDD_TYPE-BG_6.png") center/cover repeat;
+  --shader-dark: 0.09 0.09 0.10;
+  --shader-light: 0.88 1 0.93;
   --bg: var(--color-bg);
   --bg-light: var(--color-surface);
   --bg-dark: #0c111c;
@@ -305,7 +309,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 100vh;
-  background: url("./assets/images/identity/hero-bg.png") center/cover no-repeat;
+  background: var(--hero-background);
   z-index: -1;
 }
 
@@ -1568,19 +1572,20 @@ img:not([src]) {
   border-top: 1px solid #141414; 
   background: var(--bg);
 }
-.footer-inner { 
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between; 
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 16px;
+  text-align: center;
 }
-.footer-inner a { 
-  color: #cfcfcf; 
+.footer-inner a {
+  color: var(--color-text);
   text-decoration: none;
   transition: var(--transition-fast);
 }
-.footer-inner a:hover { 
-  color: #fff; 
+.footer-inner a:hover {
+  color: var(--color-text-inverse);
   transform: translateY(-1px);
 }
 

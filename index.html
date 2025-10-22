@@ -7,10 +7,13 @@
     <meta name="description" content="Discagem Direta a Distancia" />
 
     <!-- Security Headers -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="upgrade-insecure-requests"
-    />
+    <script>
+      if (window.location.protocol === "https:") {
+        document.write(
+          '<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />',
+        );
+      }
+    </script>
     <meta
       http-equiv="Strict-Transport-Security"
       content="max-age=31536000; includeSubDomains; preload"
@@ -111,7 +114,7 @@
         <video
           id="hero-video"
           class="hero-video"
-          src="./assets/asciivideo/resources/teste2.mp4"
+          src="./assets/asciivideo/resources/test3.mp4"
           preload="auto"
           muted
           autoplay

@@ -13,11 +13,28 @@
   const rootElement = document.documentElement;
   const THEME_STORAGE_KEY = "ddd-theme";
 
+  const themes = {
+    legacy: {
+      accent: "#9df0c0",
+    },
+    mint: {
+      accent: "#171819",
+    },
+    oxide: {
+      accent: "#e0ba57",
+      bg: "#101521",
+      surface: "#f2d98d",
+      text: "#f7f1e1",
+    },
+  };
+
   const applyTheme = (themeName) => {
     rootElement.setAttribute("data-theme", themeName);
     themeButtons.forEach((btn) => {
       btn.setAttribute("aria-pressed", String(btn.dataset.theme === themeName));
     });
+    const shaderAccent = themes[themeName]?.accent || "#ffffff";
+    rootElement.style.setProperty("--shader-accent", shaderAccent);
   };
 
   const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
@@ -233,17 +250,23 @@
 
               const useVideo = videoReady && heroVideo && heroVideo.readyState >= 2;
               gl.uniform1i(uUseVideo, useVideo ? 1 : 0);
-              const getFloat = (variable) => {
-                const value = getComputedStyle(rootElement).getPropertyValue(variable).trim();
-                if (value.includes(" ")) {
-                  return value.split(" ").map(Number);
-                }
-                const rgb = value.replace(/[rgba()]/g, "").split(",").map(Number);
-                return rgb.slice(0, 3).map((v) => v / 255);
+              const theme = rootElement.getAttribute("data-theme") || "legacy";
+              const palette = {
+                legacy: {
+                  dark: [0.09, 0.10, 0.10],
+                  light: [0.88, 1.0, 0.93],
+                },
+                mint: {
+                  dark: [0.09, 0.10, 0.10],
+                  light: [0.53, 0.64, 0.50],
+                },
+                oxide: {
+                  dark: [0.09, 0.10, 0.10],
+                  light: [0.65, 0.80, 0.72],
+                },
               };
-
-              const dark = getFloat("--shader-dark");
-              const light = getFloat("--shader-light");
+              const { dark, light } =
+                palette[theme] || palette.legacy;
               gl.uniform3fv(uTintDark, dark);
               gl.uniform3fv(uTintLight, light);
 
