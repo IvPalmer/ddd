@@ -37,6 +37,7 @@
       return meta;
     })();
     metaTheme.setAttribute("content", color);
+    metaTheme.setAttribute("data-updated", Date.now().toString());
   };
 
   const applyTheme = (themeName) => {
@@ -44,9 +45,11 @@
     const computed = getComputedStyle(rootElement);
     const colorBg = computed.getPropertyValue("--color-bg").trim();
     const brandFilter = computed.getPropertyValue("--brand-filter").trim();
-    document.documentElement.style.background = colorBg;
+    const statusBg = computed.getPropertyValue("--status-bar-bg").trim() || colorBg;
+    document.documentElement.style.backgroundColor = colorBg;
+    document.body.style.backgroundColor = colorBg;
     document.documentElement.style.setProperty("--brand-filter", brandFilter);
-    setThemeColorMeta(colorBg);
+    setThemeColorMeta(statusBg);
     themeButtons.forEach((btn) => {
       btn.setAttribute("aria-pressed", String(btn.dataset.theme === themeName));
     });
