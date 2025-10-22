@@ -30,6 +30,7 @@
 
   const applyTheme = (themeName) => {
     rootElement.setAttribute("data-theme", themeName);
+    document.documentElement.style.background = getComputedStyle(rootElement).getPropertyValue("--color-bg");
     themeButtons.forEach((btn) => {
       btn.setAttribute("aria-pressed", String(btn.dataset.theme === themeName));
     });
