@@ -199,6 +199,7 @@
   --bg-light: var(--color-surface-inverse);
   --bg-dark: var(--color-bg-elevated);
   --highlight: var(--color-accent);
+  --brand-image: url("./assets/logo-symbol-green.png");
 }
 
 html[data-theme="legacy"] {
@@ -226,6 +227,7 @@ html[data-theme="legacy"] {
   --bg-light: var(--color-surface-inverse);
   --bg-dark: var(--color-bg-elevated);
   --highlight: var(--color-accent);
+  --brand-image: url("./assets/logo-symbol-green.png");
 }
 
 html[data-theme="mint"] {
@@ -253,6 +255,7 @@ html[data-theme="mint"] {
   --bg-light: #ffffff;
   --bg-dark: #cdeedb;
   --highlight: var(--color-accent);
+  --brand-image: url("./assets/design/PNG/SYMBOL/DDD SYMBOL GRAY.png");
 }
 
 html[data-theme="oxide"] {
@@ -280,6 +283,7 @@ html[data-theme="oxide"] {
   --bg-light: var(--color-surface);
   --bg-dark: #0c111c;
   --highlight: var(--color-accent);
+  --brand-image: url("./assets/logo-symbol-green.png");
 }
 
 html,
@@ -641,6 +645,7 @@ img:not([src]) {
   width: 40px;
   height: 40px;
   display: inline-block;
+  background: var(--brand-image) no-repeat center/contain;
   filter: var(--brand-filter, none);
 }
 .brand { 
@@ -1242,7 +1247,7 @@ html[data-theme="oxide"] {
   display: grid;
   grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1fr);
   gap: clamp(36px, 6vw, 120px);
-  align-items: stretch;
+  align-items: center;
 }
 .section.alt.with-aside > .container.prose {
   max-width: 640px;
@@ -1250,6 +1255,9 @@ html[data-theme="oxide"] {
   margin-left: auto;
   margin-right: clamp(24px, 6vw, 120px);
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .section.alt.with-aside > .container.prose h2,
 .section.alt.with-aside > .container.prose p {
@@ -1317,6 +1325,12 @@ html[data-theme="oxide"] {
 }
 .prose p { 
   line-height: 1.6;
+}
+
+.project-intro {
+  font-size: clamp(16px, 2.8vw, 20px);
+  line-height: 1.8;
+  letter-spacing: 0.06em;
 }
 .prose h3 { 
   margin-top: 28px; 
@@ -1393,6 +1407,44 @@ html[data-theme="oxide"] {
   padding: 0 clamp(24px, 6vw, 80px);
   text-align: center;
 }
+.location-map {
+  margin-top: clamp(32px, 6vw, 72px);
+  display: flex;
+  justify-content: center;
+}
+.location-map figure {
+  width: min(100%, 960px);
+  margin: 0;
+}
+.asc-frame {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: rgba(15, 18, 20, 0.85);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.32);
+  filter: contrast(1.1) grayscale(28%);
+}
+.asc-frame::before,
+.asc-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.asc-frame::before {
+  background: url("./assets/textures/noise.webp") center/220px repeat;
+  mix-blend-mode: soft-light;
+  opacity: 0.18;
+}
+.asc-frame::after {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 60%);
+}
+.asc-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: saturate(0.8);
+}
 /* Photo grid layout - animations handled by JS */
 @media (max-width: 768px) {
   .loc-grid {
@@ -1442,11 +1494,11 @@ html[data-theme="oxide"] {
   height: 100%; 
   object-fit: cover; 
   display: block; 
-  filter: grayscale(100%);
-  transition: var(--transition-medium);
+  filter: grayscale(100%) contrast(1.1);
+  transition: transform var(--transition-medium), filter var(--transition-medium);
 }
 .photo:hover img {
-  filter: grayscale(0%);
+  filter: grayscale(0%) hue-rotate(110deg) saturate(145%) contrast(1.05);
   transform: scale(1.05);
 }
 .photo figcaption { 
@@ -1558,7 +1610,7 @@ html[data-theme="oxide"] {
   border: 1px solid var(--color-border);
   padding: 20px 18px;
   display: block; 
-  background: rgba(20, 25, 23, 0.75);
+  background: rgba(40, 45, 44, 0.55);
   transition: var(--transition-medium);
   position: relative;
   overflow: hidden;
@@ -1595,8 +1647,8 @@ html[data-theme="oxide"] {
   border-bottom-color: #fff;
 }
 .section.alt .member {
-  background: rgba(23, 24, 25, 0.65);
-  border-color: var(--color-border);
+  background: rgba(60, 65, 64, 0.55);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 .section.alt .member:hover {
   border-color: var(--color-accent);
@@ -1607,6 +1659,21 @@ html[data-theme="oxide"] {
 }
 .section.alt .member h3 a:hover {
   border-bottom-color: var(--color-accent);
+}
+.member h3 a {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 6px;
+}
+.member h3 a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.35;
 }
 .member p {
   margin: 8px 0 0;
