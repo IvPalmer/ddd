@@ -1697,3 +1697,7 @@ html[data-theme="mint"] {
 html[data-theme="oxide"] {
   --brand-filter: brightness(0.1) invert(0);
 }
+
+.theme-transition {
+  transition: background-color 0.001s linear;
+}

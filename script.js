@@ -49,6 +49,9 @@
     document.documentElement.style.backgroundColor = colorBg;
     document.body.style.backgroundColor = colorBg;
     document.documentElement.style.setProperty("--brand-filter", brandFilter);
+    document.documentElement.classList.remove("theme-transition");
+    void document.documentElement.offsetWidth;
+    document.documentElement.classList.add("theme-transition");
     setThemeColorMeta(statusBg);
     themeButtons.forEach((btn) => {
       btn.setAttribute("aria-pressed", String(btn.dataset.theme === themeName));
