@@ -159,10 +159,12 @@
           float glyph = character(n, glyphUV);
           float fade = smoothstep(0.0, 120.0, grid.y) * smoothstep(u_resolution.y, u_resolution.y - 160.0, grid.y);
           vec3 base = mix(u_tintDark, u_tintLight, gray);
+          base = mix(base, u_tintLight, 0.35);
+          float intensity = mix(0.75, 1.25, gray);
           if (!u_useVideo) {
             base = palette(gray);
           }
-          vec3 col = base * glyph * (0.6 + 0.4 * fade);
+          vec3 col = base * intensity * glyph * (0.7 + 0.3 * fade);
           gl_FragColor = vec4(col, glyph);
         }
       `;
