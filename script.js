@@ -254,19 +254,18 @@
               const palette = {
                 legacy: {
                   dark: [0.09, 0.10, 0.10],
-                  light: [0.88, 1.0, 0.93],
+                  light: [0.85, 0.95, 0.90],
                 },
                 mint: {
-                  dark: [0.09, 0.10, 0.10],
-                  light: [0.53, 0.64, 0.50],
+                  dark: [0.12, 0.13, 0.12],
+                  light: [0.78, 0.88, 0.80],
                 },
                 oxide: {
-                  dark: [0.09, 0.10, 0.10],
-                  light: [0.65, 0.80, 0.72],
+                  dark: [0.22, 0.22, 0.22],
+                  light: [0.86, 0.94, 0.90],
                 },
               };
-              const { dark, light } =
-                palette[theme] || palette.legacy;
+              const { dark, light } = palette[theme] || palette.legacy;
               gl.uniform3fv(uTintDark, dark);
               gl.uniform3fv(uTintLight, light);
 

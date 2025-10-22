@@ -1201,6 +1201,17 @@ img:not([src]) {
   gap: clamp(36px, 6vw, 120px);
   align-items: stretch;
 }
+.section.alt.with-aside > .container.prose {
+  max-width: 640px;
+  padding-right: clamp(20px, 6vw, 80px);
+  margin-left: auto;
+  margin-right: clamp(24px, 6vw, 120px);
+  text-align: left;
+}
+.section.alt.with-aside > .container.prose h2,
+.section.alt.with-aside > .container.prose p {
+  text-align: left;
+}
 .section.alt:not(.with-aside) {
   display: flex;
   flex-direction: column;
@@ -1617,5 +1628,17 @@ img:not([src]) {
     --transition-fast: 0.1s ease;
     --transition-medium: 0.15s ease;
     --transition-slow: 0.2s ease;
+  }
+}
+
+@media (max-width: 860px) {
+  .section.alt.with-aside {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .section.alt.with-aside > .container.prose {
+    padding-right: 0;
+    margin: 0;
+    max-width: 100%;
   }
 }
