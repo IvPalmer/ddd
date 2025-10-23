@@ -12,7 +12,7 @@
   const themeButtons = document.querySelectorAll(".theme-toggle");
   const rootElement = document.documentElement;
   if (!rootElement.hasAttribute("data-theme")) {
-    rootElement.setAttribute("data-theme", "mint");
+    rootElement.setAttribute("data-theme", "legacy");
   }
   const THEME_STORAGE_KEY = "ddd-theme";
 
@@ -50,11 +50,9 @@
     const brandMark = document.querySelector(".brand-mark");
     if (!brandMark) return;
     const computed = getComputedStyle(rootElement);
-    const brandImage = computed.getPropertyValue("--brand-image").trim();
-    const urlMatch = brandImage.match(/url\((['"]?)(.*?)\1\)/);
-    const url = urlMatch ? urlMatch[2] : brandImage;
-    if (brandMark.src !== url) {
-      brandMark.src = url;
+    const brandSrc = computed.getPropertyValue("--brand-src").replace(/['"]/g,"").trim();
+    if (brandSrc && brandMark.getAttribute("src") !== brandSrc) {
+      brandMark.setAttribute("src", brandSrc);
     }
   };
 
@@ -83,9 +81,12 @@
   if (storedTheme && themes[storedTheme]) {
     applyTheme(storedTheme);
   } else {
-    const defaultTheme = rootElement.dataset.theme || "mint";
+    const defaultTheme = rootElement.dataset.theme || "legacy";
     applyTheme(defaultTheme);
   }
+
+  // ensure initial brand set after first paint
+  window.addEventListener("load", updateBrand);
 
   themeButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -201,7 +202,6 @@
           float glyph = character(n, glyphUV);
           float fade = smoothstep(0.0, 120.0, grid.y) * smoothstep(u_resolution.y, u_resolution.y - 160.0, grid.y);
           vec3 base = mix(u_tintDark, u_tintLight, gray);
-          base = mix(base, u_tintLight, 0.35);
           float intensity = mix(0.75, 1.25, gray);
           if (!u_useVideo) {
             base = palette(gray);
@@ -301,12 +301,12 @@
                   light: [0.85, 0.95, 0.90],
                 },
                 mint: {
-                  dark: [0.12, 0.13, 0.12],
-                  light: [0.78, 0.88, 0.80],
+                  dark: [0.05, 0.07, 0.06],
+                  light: [0.88, 1.0, 0.93],
                 },
                 oxide: {
-                  dark: [0.22, 0.22, 0.22],
-                  light: [0.86, 0.94, 0.90],
+                  dark: [0.09, 0.09, 0.1],
+                  light: [0.5, 0.5, 0.5],
                 },
               };
               const { dark, light } = palette[theme] || palette.legacy;
