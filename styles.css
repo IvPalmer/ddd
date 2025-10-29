@@ -836,7 +836,14 @@ html[data-theme="oxide"] {
 @media (max-width: 860px) {
   .nav-toggle {
     display: inline-block;
+    position: absolute;
+    right: clamp(16px, 6vw, 24px);
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
   }
+  .header-inner { position: relative; }
   .site-nav {
     position: absolute;
     top: 64px;
