@@ -371,9 +371,32 @@ body::before {
   z-index: -1;
 }
 
-/* Remove the in-hero overlay (no longer used) */
+/* Remove the in-hero overlay (no longer used on desktop) */
 .background-overlay {
   display: none;
+}
+
+/* iOS: disable fixed background and use in-hero overlay instead */
+@supports (-webkit-overflow-scrolling: touch) {
+  body::before {
+    display: none;
+  }
+
+  .background-overlay {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: var(--hero-background) center/cover no-repeat;
+    z-index: 0; /* stays under canvas (z:1) */
+    pointer-events: none;
+    transform: translateZ(0);
+  }
+
+  body {
+    background: var(--color-bg);
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 body::after {
@@ -386,57 +409,6 @@ body::after {
   background: var(--status-bar-bg, transparent);
   z-index: 2;
   pointer-events: none;
-}
-
-/* iOS: disable fixed background due to WebKit repaint bug */
-@supports (-webkit-overflow-scrolling: touch) {
-  body::before {
-    display: none;
-  }
-
-  body {
-    background: var(--color-bg);
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-/* Mobile optimizations */
-@media screen and (max-width: 768px) {
-  body::before {
-    height: 100vh;
-    height: 100dvh;
-    min-height: 100vh;
-    min-height: 100dvh;
-  }
-
-  body {
-    overflow-x: hidden;
-  }
-
-  .container {
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-}
-
-/* Phone specific optimizations */
-@media screen and (max-width: 480px) {
-  @supports (-webkit-overflow-scrolling: touch) {
-    body::before {
-      height: 100vh;
-      height: 100dvh;
-      min-height: 100vh;
-      min-height: 100dvh;
-      background-attachment: scroll;
-    }
-
-    body {
-      min-height: 100vh;
-      min-height: 100dvh;
-      height: 100%;
-    }
-  }
 }
 
 /* Base animations */
