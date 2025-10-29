@@ -358,22 +358,21 @@ body {
   overflow-x: hidden;
 }
 
-.background-overlay {
+/* Global background for desktop and non-iOS */
+body::before {
   content: "";
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
   height: 100dvh;
   background: var(--hero-background);
-  z-index: 0;
-  pointer-events: none;
-  transform: translateZ(0);
+  z-index: -1;
 }
 
-/* Default background for non-iOS devices */
-body::before {
+/* Remove the in-hero overlay (no longer used) */
+.background-overlay {
   display: none;
 }
 
@@ -389,7 +388,7 @@ body::after {
   pointer-events: none;
 }
 
-/* Safari iOS specific background fix using pseudo-element */
+/* iOS: disable fixed background due to WebKit repaint bug */
 @supports (-webkit-overflow-scrolling: touch) {
   body::before {
     display: none;
