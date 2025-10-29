@@ -750,6 +750,9 @@ img:not([src]) {
   backdrop-filter: none;
   border: none;
 }
+/* visibility controls */
+.theme-switcher.mobile-only { display: none; }
+.theme-switcher.desktop-only { display: inline-flex; }
 
 .theme-toggle {
   position: relative;
@@ -857,6 +860,14 @@ html[data-theme="oxide"] {
   }
   .site-nav a::after {
     display: none;
+  }
+
+  /* swap theme switchers on mobile */
+  .theme-switcher.desktop-only { display: none; }
+  .theme-switcher.mobile-only {
+    display: inline-flex;
+    margin-top: 8px;
+    align-self: flex-start;
   }
 }
 
