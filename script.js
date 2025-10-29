@@ -63,7 +63,6 @@
     const brandFilter = computed.getPropertyValue("--brand-filter").trim();
     const statusBg = computed.getPropertyValue("--status-bar-bg").trim() || colorBg;
     document.documentElement.style.backgroundColor = colorBg;
-    document.body.style.backgroundColor = colorBg;
     document.documentElement.style.setProperty("--brand-filter", brandFilter);
     document.documentElement.classList.remove("theme-transition");
     void document.documentElement.offsetWidth;

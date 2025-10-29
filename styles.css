@@ -369,6 +369,7 @@ body {
   background: var(--hero-background);
   z-index: -1;
   pointer-events: none;
+  transform: translateZ(0);
 }
 
 /* Default background for non-iOS devices */
