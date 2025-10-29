@@ -687,6 +687,7 @@ img:not([src]) {
   height: var(--header-height);
   display: flex;
   align-items: center;
+  transform: translateZ(0);
 }
 .header-inner {
   width: 100%;
@@ -898,6 +899,7 @@ html[data-theme="oxide"] {
   justify-content: center;
   overflow: hidden;
   text-align: center;
+  transform: translateZ(0);
 }
 .hero::before,
 .hero-texture,
