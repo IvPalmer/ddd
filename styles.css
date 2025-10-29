@@ -400,6 +400,7 @@ body::after {
     -webkit-background-size: cover;
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
+    z-index: -1;
   }
 
   body {
@@ -898,6 +899,7 @@ html[data-theme="oxide"] {
 /* Hero */
 .hero {
   position: relative;
+  z-index: 1;
   height: 100vh;
   height: 100dvh;
   display: flex;
