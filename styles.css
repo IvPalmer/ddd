@@ -1301,6 +1301,9 @@ html[data-theme="oxide"] {
   color: var(--color-text);
   padding-inline: clamp(32px, 8vw, 160px);
 }
+.section[id="locations"] {
+  padding-inline: 0;
+}
 .section.alt.with-aside {
   display: grid;
   grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1fr);
@@ -1448,17 +1451,17 @@ html[data-theme="oxide"] {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
 }
 
+.section[id="locations"] > .container {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
 .loc-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: clamp(28px, 3vw, 40px);
-  justify-items: center;
-}
-.section[id="locations"] > .container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 clamp(24px, 6vw, 80px);
-  text-align: center;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
 }
 .location-map {
   margin-top: clamp(32px, 6vw, 72px);
@@ -1514,12 +1517,12 @@ html[data-theme="oxide"] {
   filter: saturate(0.8);
 }
 /* Photo grid layout - animations handled by JS */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .loc-grid {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
 }
-@media (max-width: 520px) {
+@media (max-width: 600px) {
   .loc-grid {
     grid-template-columns: 1fr;
   }
@@ -1527,6 +1530,8 @@ html[data-theme="oxide"] {
 .photo {
   display: block;
   transition: var(--transition-medium);
+  margin: 0;
+  border: none;
 }
 .photo:hover {
   transform: translateY(-4px);
@@ -1534,13 +1539,16 @@ html[data-theme="oxide"] {
 .photo a {
   display: block;
   width: 100%;
-  aspect-ratio: 4/3;
-  border: 1px solid var(--color-border-strong);
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  border: 0;
   overflow: hidden;
-  background: rgba(12, 15, 14, 0.85);
+  background: transparent;
   transition: var(--transition-medium);
   position: relative;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
 }
 .photo a::after {
   content: "";
@@ -1551,8 +1559,7 @@ html[data-theme="oxide"] {
   transition: var(--transition-medium);
 }
 .photo:hover a {
-  border-color: #fff;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
 }
 .photo:hover a::after {
   opacity: 1;
@@ -1564,22 +1571,31 @@ html[data-theme="oxide"] {
   display: block;
   filter: grayscale(100%) contrast(1.1);
   transition: transform var(--transition-medium), filter var(--transition-medium);
+  border-radius: 0;
+  border: none;
+  transform: scale(1.015);
+  transform-origin: center;
 }
 .photo:hover img {
   filter: grayscale(0%) hue-rotate(110deg) saturate(145%) contrast(1.05);
-  transform: scale(1.05);
+  transform: scale(1.07);
 }
 .photo figcaption {
-  position: static;
-  padding: 10px 0 0;
-  background: transparent;
-  color: var(--color-text);
+  position: absolute;
+  inset: auto 12px 12px 12px;
+  margin: 0;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
   font-size: 12px;
   border: 0;
   transition: var(--transition-fast);
   letter-spacing: 0.18em;
+  pointer-events: none;
+  text-align: left;
 }
 .photo:hover figcaption {
+  background: rgba(0, 0, 0, 0.7);
   color: #fff;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
