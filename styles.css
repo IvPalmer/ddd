@@ -1313,6 +1313,7 @@ html[data-theme="oxide"] {
 }
 .section.alt.with-aside > .container.prose {
   max-width: 640px;
+  padding-left: 0;
   padding-right: clamp(20px, 6vw, 80px);
   margin-left: auto;
   margin-right: clamp(24px, 6vw, 120px);
