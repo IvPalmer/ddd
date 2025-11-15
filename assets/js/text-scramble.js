@@ -71,6 +71,8 @@
     element.textContent = '';
     element.dataset.scrambleWrapped = 'true';
     
+    const scramblers = [];
+
     // Create a span for each character
     chars.forEach((char, index) => {
       const span = document.createElement('span');
@@ -82,6 +84,7 @@
       span.style.willChange = 'contents';
       
       const scrambler = new CharScramble(span, char, index);
+      scramblers.push(scrambler);
       
       // Add hover listener for desktop
       span.addEventListener('mouseenter', () => {
@@ -95,6 +98,12 @@
       
       element.appendChild(span);
     });
+
+    element.addEventListener('touchstart', () => {
+      scramblers.forEach((scrambler, idx) => {
+        window.setTimeout(() => scrambler.start(), idx * 10);
+      });
+    }, { passive: true });
   }
 
   // Initialize scramble effect on all text elements
