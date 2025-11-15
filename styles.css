@@ -1304,6 +1304,7 @@ html[data-theme="oxide"] {
 }
 .section[id="locations"] {
   padding-inline: 0;
+  padding-top: clamp(24px, 5vw, 64px);
 }
 .section.alt.with-aside {
   display: grid;
