@@ -1342,8 +1342,15 @@ html[data-theme="oxide"] {
   flex-direction: column;
   justify-content: flex-start;
   padding-top: clamp(40px, 8vw, 80px);
-  transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  contain: layout style;
+  isolation: isolate;
+}
+.section.alt.with-aside > .container.prose * {
+  transform: translate3d(0, 0, 0);
 }
 .section.alt.with-aside > .container.prose h2,
 .section.alt.with-aside > .container.prose p {
