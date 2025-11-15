@@ -49,6 +49,13 @@
       letter-spacing: 0;
     }
 
+    @media (max-width: 768px) {
+      #flame-output {
+        font-size: 8px;
+        line-height: 9.6px;
+      }
+    }
+
     .back-button {
       position: fixed;
       top: 20px;
@@ -106,6 +113,7 @@
         precision mediump float;
         varying vec2 v_uv;
         uniform vec2 u_resolution;
+        uniform float u_glyphSize;
         uniform sampler2D u_image;
         uniform bool u_imageLoaded;
 
@@ -117,7 +125,7 @@
         }
 
         void main() {
-          vec2 glyphUV = fract(gl_FragCoord.xy / 9.0) * 2.0 - 1.0;
+          vec2 glyphUV = fract(gl_FragCoord.xy / u_glyphSize) * 2.0 - 1.0;
 
           float gray = 0.5;
           if (u_imageLoaded) {
@@ -172,8 +180,13 @@
           gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
           const uResolution = gl.getUniformLocation(program, 'u_resolution');
+          const uGlyphSize = gl.getUniformLocation(program, 'u_glyphSize');
           const uImage = gl.getUniformLocation(program, 'u_image');
           const uImageLoaded = gl.getUniformLocation(program, 'u_imageLoaded');
+
+          // Use larger glyphs on mobile for better readability
+          const isMobile = window.innerWidth <= 768;
+          const glyphSize = isMobile ? 6.0 : 9.0;
 
           let imageLoaded = false;
           const texture = gl.createTexture();
@@ -191,6 +204,7 @@
 
           const render = () => {
             gl.uniform2f(uResolution, canvas.width, canvas.height);
+            gl.uniform1f(uGlyphSize, glyphSize);
             gl.uniform1i(uImageLoaded, imageLoaded ? 1 : 0);
             if (imageLoaded) {
               gl.activeTexture(gl.TEXTURE0);
@@ -257,8 +271,10 @@
     })();
     
     const resizeFlame = () => {
-      const charW = 7.2;
-      const charH = 14;
+      // Adjust character size based on screen width for better mobile readability
+      const isMobile = window.innerWidth <= 768;
+      const charW = isMobile ? 4.8 : 7.2;
+      const charH = isMobile ? 9.6 : 14;
       cols = Math.floor(window.innerWidth / charW);
       rows = Math.floor(window.innerHeight / charH);
       flameData = new Array(cols * rows).fill(0);
