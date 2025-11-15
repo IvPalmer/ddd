@@ -6,7 +6,7 @@ const AsciiBackground = (() => {
 
   function pick(v) {
     const i = Math.floor(((v + 1) / 2) * (density.length - 1));
-    return density[i] ?? " ";
+    return density[i] !== undefined ? density[i] : " ";
   }
 
   function init() {
