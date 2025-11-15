@@ -72,6 +72,7 @@
     element.dataset.scrambleWrapped = 'true';
     
     const scramblers = [];
+    const cascadeTouch = !element.matches('.project-intro');
 
     // Create a span for each character
     chars.forEach((char, index) => {
@@ -99,11 +100,17 @@
       element.appendChild(span);
     });
 
-    element.addEventListener('touchstart', () => {
-      scramblers.forEach((scrambler, idx) => {
-        window.setTimeout(() => scrambler.start(), idx * 10);
-      });
-    }, { passive: true });
+    if (cascadeTouch) {
+      element.addEventListener(
+        'touchstart',
+        () => {
+          scramblers.forEach((scrambler, idx) => {
+            window.setTimeout(() => scrambler.start(), idx * 10);
+          });
+        },
+        { passive: true },
+      );
+    }
   }
 
   // Initialize scramble effect on all text elements
