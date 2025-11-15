@@ -82,53 +82,7 @@
             <a href="#locations">Local</a>
             <a href="#team">Equipe</a>
             <a href="#contact">Contato</a>
-            <div class="theme-switcher mobile-only" role="group" aria-label="Alternar tema (mobile)">
-              <button
-                type="button"
-                class="theme-toggle"
-                data-theme="legacy"
-                style="--swatch: linear-gradient(135deg, #0d1110 0%, #171819 55%, #9df0c0 100%);"
-                aria-label="Tema original"
-              ></button>
-              <button
-                type="button"
-                class="theme-toggle"
-                data-theme="mint"
-                style="--swatch: linear-gradient(135deg, #e1ffed 0%, #7f7f7f 100%);"
-                aria-label="Tema menta"
-              ></button>
-              <button
-                type="button"
-                class="theme-toggle"
-                data-theme="oxide"
-                style="--swatch: linear-gradient(135deg, #101521 0%, #f2d98d 100%);"
-                aria-label="Tema oxide"
-              ></button>
-            </div>
           </nav>
-          <div class="theme-switcher desktop-only" role="group" aria-label="Alternar tema (desktop)">
-            <button
-              type="button"
-              class="theme-toggle"
-              data-theme="legacy"
-              style="--swatch: linear-gradient(135deg, #0d1110 0%, #171819 55%, #9df0c0 100%);"
-              aria-label="Tema original"
-            ></button>
-            <button
-              type="button"
-              class="theme-toggle"
-              data-theme="mint"
-              style="--swatch: linear-gradient(135deg, #e1ffed 0%, #7f7f7f 100%);"
-              aria-label="Tema menta"
-            ></button>
-            <button
-              type="button"
-              class="theme-toggle"
-              data-theme="oxide"
-              style="--swatch: linear-gradient(135deg, #101521 0%, #f2d98d 100%);"
-              aria-label="Tema oxide"
-            ></button>
-          </div>
         </div>
       </div>
     </header>
@@ -137,18 +91,7 @@
       <section class="hero" aria-label="Hero">
         <div class="background-overlay" aria-hidden="true"></div>
         <div class="hero-texture" aria-hidden="true"></div>
-        <canvas id="hero-canvas" class="hero-canvas" aria-hidden="true"></canvas>
-        <video
-          id="hero-video"
-          class="hero-video"
-          src="./assets/asciivideo/resources/test3.mp4"
-          preload="auto"
-          muted
-          autoplay
-          loop
-          playsinline
-          aria-hidden="true"
-        ></video>
+        <pre id="hero-ascii" class="hero-ascii" aria-hidden="true"></pre>
       </section>
       <section id="idea" class="section alt with-aside grid-layer">
         <div class="section-aside" aria-hidden="true">
@@ -213,9 +156,9 @@
               rel="noopener noreferrer"
               aria-label="Abrir mapa no Google Maps"
             >
-              <figure class="asc-frame">
+              <figure class="asc-frame map-asc">
                 <img
-                  src="./assets/images/location-map.png"
+                  src="./assets/images/DDD_MAPA-V2.png"
                   alt="Mapa de localização da Galeria Index"
                 />
               </figure>

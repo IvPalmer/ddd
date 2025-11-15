@@ -5,6 +5,12 @@
  */
 
 (function() {
+  const prefersReducedMotion =
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReducedMotion) {
+    return;
+  }
+
   // ASCII characters to use for scrambling (inspired by ertdfgcvb.xyz)
   const chars = '█▓▒░@%#+=*ºø¤§$&[]{}()<>|/\\~^_-.,;:!?¦¨ª«¬®¯°±²³´µ¶·¸¹»¼½¾';
   
@@ -15,7 +21,7 @@
       this.charIndex = charIndex; // Position in the character set for wave pattern
       this.frameRequest = null;
       this.frame = 0;
-      this.duration = 40; // Fixed duration for consistent wave
+      this.duration = 24; // Faster completion for lower CPU time
       this.isScrambling = false;
     }
 
@@ -93,28 +99,23 @@
 
   // Initialize scramble effect on all text elements
   function initScramble() {
-    // Target ALL text elements on the page
     const selectors = [
-      // Navigation
       '.site-nav a',
       '.brand',
-      // All headings
-      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-      // All paragraphs
-      'p',
-      // All links
-      'a',
-      // Specific elements
-      '.footer-email',
+      '#terminal-title',
+      '.hero-heading',
+      '.hero-subheading',
+      '.hero-meta',
+      '.hero-lineup',
       '.section-aside__label',
       '.section-aside__value',
-      '.footer-contact a',
-      '.site-footer p',
       '.project-intro',
-      'button',
-      'figcaption',
-      'span',
-      'label'
+      '.button',
+      '.footer-contact .button',
+      '.footer-email',
+      '.site-footer p',
+      '.team-grid .member h3',
+      '.team-grid .member p'
     ];
 
     const elements = document.querySelectorAll(selectors.join(', '));
@@ -127,28 +128,11 @@
     });
   }
 
-  // Handle touch drag to scramble characters under finger
-  let touchMoveHandler = null;
-  document.addEventListener('touchmove', (e) => {
-    const touch = e.touches[0];
-    const element = document.elementFromPoint(touch.clientX, touch.clientY);
-    
-    // Check if the element is a character span with scramble capability
-    if (element && element.tagName === 'SPAN' && element.parentElement.dataset.scrambleWrapped) {
-      // Trigger the hover effect on the character under the finger
-      const mouseEnterEvent = new Event('mouseenter', { bubbles: true });
-      element.dispatchEvent(mouseEnterEvent);
-    }
-  }, { passive: true });
-
   // Initialize when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initScramble);
   } else {
     initScramble();
   }
-
-  // Re-initialize on theme change (in case elements are re-rendered)
-  document.addEventListener('themechange', initScramble);
 })();
 
