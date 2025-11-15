@@ -411,27 +411,6 @@ body::after {
   pointer-events: none;
 }
 
-/* ASCII background effect */
-#ascii-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: 0;
-  padding: 0;
-  font-family: "FT System Mono", "IBM Plex Mono", monospace;
-  font-size: 9px;
-  line-height: 1.1em;
-  opacity: 0.15;
-  color: var(--color-text);
-  mix-blend-mode: lighten;
-  white-space: pre;
-  pointer-events: none;
-  z-index: 10;
-  overflow: hidden;
-  -webkit-font-smoothing: antialiased;
-}
 
 /* Base animations */
 @keyframes fadeInUp {
