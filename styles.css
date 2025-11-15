@@ -223,8 +223,8 @@
   --transition-fast: 0.15s ease;
   --transition-medium: 0.25s ease;
   --transition-slow: 0.4s ease;
-  --font-heading: "FK Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-body: "FK Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-heading: "FT System Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-body: "FT System Mono", "SFMono-Regular", Menlo, Consolas, monospace;
   --font-mono: "FT System Mono", "SFMono-Regular", Menlo, Consolas, monospace;
   --max-width: 1120px;
   --bg: var(--color-bg);
@@ -1308,7 +1308,7 @@ html[data-theme="oxide"] {
   display: grid;
   grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1fr);
   gap: clamp(36px, 6vw, 120px);
-  align-items: center;
+  align-items: start;
 }
 .section.alt.with-aside > .container.prose {
   max-width: 640px;
@@ -1318,9 +1318,10 @@ html[data-theme="oxide"] {
   text-align: left;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-self: center;
-  min-height: 100%;
+  justify-content: flex-start;
+  padding-top: clamp(40px, 8vw, 80px);
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 .section.alt.with-aside > .container.prose h2,
 .section.alt.with-aside > .container.prose p {
@@ -1792,9 +1793,10 @@ html[data-theme="oxide"] {
 }
 
 .footer-contact h2 {
-  margin: 0;
-  font-size: 14px;
-  letter-spacing: 0.18em;
+  margin: 0 0 18px;
+  font-size: 22px;
+  letter-spacing: 0.24em;
+  font-weight: 600;
   color: var(--color-text);
 }
 
@@ -1812,6 +1814,7 @@ html[data-theme="oxide"] {
 
 .footer-contact .button {
   margin-top: 0;
+  letter-spacing: 0.1em;
 }
 
 .footer-inner a {
@@ -1821,7 +1824,7 @@ html[data-theme="oxide"] {
 }
 
 .footer-inner a:hover {
-  color: var(--color-text-inverse);
+  color: var(--color-accent);
   transform: translateY(-1px);
 }
 
@@ -1890,3 +1893,101 @@ html[data-theme="oxide"] {
 .theme-transition {
   transition: background-color 0.001s linear;
 }
+/* ASCII Identity Section */
+.ascii-section {
+  background: var(--color-bg);
+  padding: clamp(80px, 14vw, 140px) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ascii-section h2 {
+  color: var(--color-text);
+  margin-bottom: clamp(32px, 6vw, 64px);
+}
+
+.ascii-frame {
+  position: relative;
+  width: 100%;
+  max-width: min(100%, 1200px);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: clamp(24px, 4vw, 48px);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.ascii-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("./assets/textures/noise.webp") center/200px repeat;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.ascii-output {
+  font-family: var(--font-mono);
+  font-size: clamp(6px, 1.2vw, 11px);
+  line-height: 1.2;
+  color: var(--color-accent);
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  overflow-x: auto;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 0 8px var(--glow);
+  letter-spacing: 0.05em;
+}
+
+/* Theme-specific ASCII styles */
+html[data-theme="legacy"] .ascii-output {
+  color: #9df0c0;
+  text-shadow: 0 0 12px rgba(157, 240, 192, 0.4);
+}
+
+html[data-theme="mint"] .ascii-output {
+  color: #0d1110;
+  text-shadow: 0 0 8px rgba(13, 17, 16, 0.2);
+}
+
+html[data-theme="mint"] .ascii-frame {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(13, 17, 16, 0.15);
+}
+
+html[data-theme="oxide"] .ascii-output {
+  color: #f2d98d;
+  text-shadow: 0 0 10px rgba(242, 217, 141, 0.35);
+}
+
+html[data-theme="oxide"] .ascii-frame {
+  background: rgba(16, 21, 33, 0.8);
+  border-color: rgba(242, 217, 141, 0.25);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ascii-output {
+    font-size: 8px;
+    letter-spacing: 0.02em;
+  }
+  
+  .ascii-frame {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ascii-output {
+    font-size: 6px;
+    line-height: 1.1;
+  }
+}
+
