@@ -74,11 +74,15 @@
       
       const scrambler = new CharScramble(span, char, index);
       
-      // ONLY add hover listener to individual character spans
-      // Do NOT add parent element listener to avoid triggering all at once
+      // Add hover listener for desktop
       span.addEventListener('mouseenter', () => {
         scrambler.start();
       });
+      
+      // Add touch support for mobile
+      span.addEventListener('touchstart', (e) => {
+        scrambler.start();
+      }, { passive: true });
       
       element.appendChild(span);
     });
@@ -119,6 +123,20 @@
       wrapCharacters(el);
     });
   }
+
+  // Handle touch drag to scramble characters under finger
+  let touchMoveHandler = null;
+  document.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    
+    // Check if the element is a character span with scramble capability
+    if (element && element.tagName === 'SPAN' && element.parentElement.dataset.scrambleWrapped) {
+      // Trigger the hover effect on the character under the finger
+      const mouseEnterEvent = new Event('mouseenter', { bubbles: true });
+      element.dispatchEvent(mouseEnterEvent);
+    }
+  }, { passive: true });
 
   // Initialize when DOM is ready
   if (document.readyState === 'loading') {
