@@ -111,6 +111,7 @@
     const selectors = [
       '.site-nav a',
       '.brand',
+      '.section h2',
       '#terminal-title',
       '.hero-heading',
       '.hero-subheading',
@@ -120,6 +121,7 @@
       '.section-aside__value',
       '.project-intro',
       '.button',
+      '.footer-contact h2',
       '.footer-contact .button',
       '.footer-email',
       '.site-footer p',
