@@ -1321,7 +1321,7 @@ html[data-theme="oxide"] {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding-top: clamp(24px, 4vw, 40px);
+  padding-top: 0;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
