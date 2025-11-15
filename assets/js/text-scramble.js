@@ -69,8 +69,11 @@
     chars.forEach((char, index) => {
       const span = document.createElement('span');
       span.textContent = char;
-      // Don't use inline-block to avoid spacing issues
+      // Prevent layout shifts and flickering
       span.style.display = 'inline';
+      span.style.transform = 'translate3d(0, 0, 0)';
+      span.style.backfaceVisibility = 'hidden';
+      span.style.willChange = 'contents';
       
       const scrambler = new CharScramble(span, char, index);
       
