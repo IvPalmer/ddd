@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASCII Boiler Room - DDD</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #000;
+      font-family: "FT System Mono", "IBM Plex Mono", monospace;
+    }
+
+    #ascii-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    #flame-output {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      pointer-events: none;
+      background: transparent;
+      color: #fff;
+      font-size: 12px;
+      line-height: 14px;
+      white-space: pre;
+      user-select: none;
+      overflow: hidden;
+      padding: 0;
+      margin: 0;
+      letter-spacing: 0;
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 10px 20px;
+      background: rgba(157, 240, 192, 0.1);
+      border: 1px solid rgba(157, 240, 192, 0.3);
+      color: #9df0c0;
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      z-index: 100;
+      transition: all 0.2s ease;
+      border-radius: 4px;
+    }
+
+    .back-button:hover {
+      background: rgba(157, 240, 192, 0.2);
+      border-color: #9df0c0;
+      box-shadow: 0 0 20px rgba(157, 240, 192, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-button">← VOLTAR</a>
+  <canvas id="ascii-canvas"></canvas>
+  <pre id="flame-output"></pre>
+
+  <script>
+    // ===== PART 1: WEBGL ASCII IMAGE =====
+    const canvas = document.getElementById('ascii-canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
+    if (gl) {
+      const resize = () => {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+      };
+      resize();
+      window.addEventListener('resize', resize);
+
+      const vertexSrc = `
+        attribute vec2 position;
+        varying vec2 v_uv;
+        void main() {
+          vec2 uv = (position + 1.0) * 0.5;
+          v_uv = vec2(uv.x, 1.0 - uv.y);
+          gl_Position = vec4(position, 0.0, 1.0);
+        }
+      `;
+
+      const fragmentSrc = `
+        precision mediump float;
+        varying vec2 v_uv;
+        uniform vec2 u_resolution;
+        uniform sampler2D u_image;
+        uniform bool u_imageLoaded;
+
+        float character(float n, vec2 p) {
+          p = floor(p * vec2(-4.0, 4.0) + 2.5);
+          if (p.x < 0.0 || p.x > 4.0 || p.y < 0.0 || p.y > 4.0) return 0.0;
+          float index = p.x + 5.0 * p.y;
+          return mod(floor(n / pow(2.0, index)), 2.0);
+        }
+
+        void main() {
+          vec2 glyphUV = fract(gl_FragCoord.xy / 9.0) * 2.0 - 1.0;
+
+          float gray = 0.5;
+          if (u_imageLoaded) {
+            vec3 imgCol = texture2D(u_image, v_uv).rgb;
+            gray = 0.3 * imgCol.r + 0.59 * imgCol.g + 0.11 * imgCol.b;
+          }
+
+          float n = 4096.0;
+          if (gray > 0.1) n = 65600.0;
+          if (gray > 0.2) n = 163153.0;
+          if (gray > 0.3) n = 15255086.0;
+          if (gray > 0.4) n = 13121101.0;
+          if (gray > 0.5) n = 15252014.0;
+          if (gray > 0.6) n = 13195790.0;
+          if (gray > 0.7) n = 11512810.0;
+
+          float glyph = character(n, glyphUV);
+          vec3 col = vec3(gray) * glyph;
+          
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `;
+
+      const compile = (type, source) => {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          console.error(gl.getShaderInfoLog(shader));
+          return null;
+        }
+        return shader;
+      };
+
+      const vertexShader = compile(gl.VERTEX_SHADER, vertexSrc);
+      const fragmentShader = compile(gl.FRAGMENT_SHADER, fragmentSrc);
+
+      if (vertexShader && fragmentShader) {
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.bindAttribLocation(program, 0, 'position');
+        gl.linkProgram(program);
+
+        if (gl.getProgramParameter(program, gl.LINK_STATUS)) {
+          gl.useProgram(program);
+
+          const buffer = gl.createBuffer();
+          gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+          gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+          gl.enableVertexAttribArray(0);
+          gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+          const uResolution = gl.getUniformLocation(program, 'u_resolution');
+          const uImage = gl.getUniformLocation(program, 'u_image');
+          const uImageLoaded = gl.getUniformLocation(program, 'u_imageLoaded');
+
+          let imageLoaded = false;
+          const texture = gl.createTexture();
+          const img = new Image();
+          img.onload = () => {
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            imageLoaded = true;
+          };
+          img.src = './assets/images/boiler-room.png';
+
+          const render = () => {
+            gl.uniform2f(uResolution, canvas.width, canvas.height);
+            gl.uniform1i(uImageLoaded, imageLoaded ? 1 : 0);
+            if (imageLoaded) {
+              gl.activeTexture(gl.TEXTURE0);
+              gl.bindTexture(gl.TEXTURE_2D, texture);
+              gl.uniform1i(uImage, 0);
+            }
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            requestAnimationFrame(render);
+          };
+          requestAnimationFrame(render);
+        }
+      }
+    }
+
+    // ===== PART 2: DOOM FLAMES (on top) =====
+    const flameOutput = document.getElementById('flame-output');
+    const flameChars = '...::/\\/\\/\\+=*abcdef01XYZ#';
+    
+    let cols, rows;
+    let flameData = [];
+    
+    const noise = (() => {
+      const tableSize = 256;
+      const r = new Array(tableSize);
+      const permutationTable = new Array(tableSize * 2);
+      
+      for (let k = 0; k < tableSize; k++) {
+        r[k] = Math.random();
+        permutationTable[k] = k;
+      }
+      
+      for (let k = 0; k < tableSize; k++) {
+        const i = Math.floor(Math.random() * tableSize);
+        [permutationTable[k], permutationTable[i]] = [permutationTable[i], permutationTable[k]];
+        permutationTable[k + tableSize] = permutationTable[k];
+      }
+      
+      const smoothstep = (edge0, edge1, x) => {
+        const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+        return t * t * (3 - 2 * t);
+      };
+      
+      const mix = (x, y, a) => x * (1 - a) + y * a;
+      
+      return (px, py) => {
+        const xi = Math.floor(px);
+        const yi = Math.floor(py);
+        const tx = px - xi;
+        const ty = py - yi;
+        const rx0 = xi % tableSize;
+        const rx1 = (rx0 + 1) % tableSize;
+        const ry0 = yi % tableSize;
+        const ry1 = (ry0 + 1) % tableSize;
+        const c00 = r[permutationTable[permutationTable[rx0] + ry0]];
+        const c10 = r[permutationTable[permutationTable[rx1] + ry0]];
+        const c01 = r[permutationTable[permutationTable[rx0] + ry1]];
+        const c11 = r[permutationTable[permutationTable[rx1] + ry1]];
+        const sx = smoothstep(0, 1, tx);
+        const sy = smoothstep(0, 1, ty);
+        const nx0 = mix(c00, c10, sx);
+        const nx1 = mix(c01, c11, sx);
+        return mix(nx0, nx1, sy);
+      };
+    })();
+    
+    const resizeFlame = () => {
+      const charW = 7.2;
+      const charH = 14;
+      cols = Math.floor(window.innerWidth / charW);
+      rows = Math.floor(window.innerHeight / charH);
+      flameData = new Array(cols * rows).fill(0);
+    };
+    
+    resizeFlame();
+    window.addEventListener('resize', resizeFlame);
+    
+    const rndi = (a, b = 0) => {
+      if (a > b) [a, b] = [b, a];
+      return Math.floor(a + Math.random() * (b - a + 1));
+    };
+    
+    const map = (value, start1, stop1, start2, stop2) => {
+      return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
+    };
+    
+    const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
+    
+    let time = 0;
+    
+    const renderFlames = () => {
+      time += 0.0015;
+      
+      // Fill floor with noise
+      const lastRow = cols * (rows - 1);
+      for (let i = 0; i < cols; i++) {
+        const val = Math.floor(map(noise(i * 0.05, time), 0, 1, 5, 40));
+        flameData[lastRow + i] = Math.min(val, flameData[lastRow + i] + 2);
+      }
+      
+      // Propagate upward
+      for (let i = 0; i < flameData.length; i++) {
+        const row = Math.floor(i / cols);
+        const col = i % cols;
+        const dest = row * cols + clamp(col + rndi(-1, 1), 0, cols - 1);
+        const src = Math.min(rows - 1, row + 1) * cols + col;
+        flameData[dest] = Math.max(0, flameData[src] - rndi(0, 2));
+      }
+      
+      // Render
+      let out = '';
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const idx = y * cols + x;
+          const u = flameData[idx];
+          out += u === 0 ? ' ' : flameChars[clamp(u, 0, flameChars.length - 1)];
+        }
+        out += '\n';
+      }
+      
+      flameOutput.textContent = out;
+      setTimeout(() => requestAnimationFrame(renderFlames), 1000 / 30);
+    };
+    
+    renderFlames();
+  </script>
+</body>
+</html>
