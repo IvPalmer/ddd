@@ -808,7 +808,7 @@ main {
   height: 100dvh;
   margin: 0;
   padding: 0;
-  background-color: #171819; /* Changed to black for shader consistency */
+  background-color: transparent; /* Changed to transparent for ASCII bg visibility */
   color: var(--wave-fg, #000000);
   /* Font styles removed/ignored for canvas, kept for fallback if needed */
   font-size: 12px;
