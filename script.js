@@ -721,10 +721,50 @@
       element.style.setProperty('--text-width', `${width}px`);
     }
     
-    function randomizeMessageAppearance(element) {
-      // Random vertical position (10% - 90%)
-      const randomTop = 10 + Math.random() * 80;
+    // Track occupied vertical zones to prevent stacking
+    const occupiedZones = new Set();
+    const minZoneSpacing = 15; // Minimum 15% spacing between messages
+    
+    function getAvailableVerticalPosition() {
+      // Try to find a non-overlapping position (max 20 attempts)
+      for (let attempt = 0; attempt < 20; attempt++) {
+        const randomTop = 10 + Math.random() * 80;
+        
+        // Check if this position is too close to any occupied zone
+        let tooClose = false;
+        for (const occupiedTop of occupiedZones) {
+          if (Math.abs(randomTop - occupiedTop) < minZoneSpacing) {
+            tooClose = true;
+            break;
+          }
+        }
+        
+        if (!tooClose) {
+          return randomTop;
+        }
+      }
+      
+      // If we couldn't find a free spot, just return a random position
+      // and clear some old zones (this shouldn't happen often)
+      if (occupiedZones.size > 5) {
+        occupiedZones.clear();
+      }
+      return 10 + Math.random() * 80;
+    }
+    
+    function randomizeMessageAppearance(element, updateZones = true) {
+      // Get a non-overlapping vertical position
+      const randomTop = getAvailableVerticalPosition();
       element.style.top = `${randomTop}%`;
+      
+      // Track this position if requested
+      if (updateZones) {
+        // Store the current position
+        const oldTop = parseFloat(element.getAttribute('data-top') || '0');
+        occupiedZones.delete(oldTop);
+        occupiedZones.add(randomTop);
+        element.setAttribute('data-top', randomTop.toString());
+      }
       
       // Random direction (L-R or R-L)
       const direction = Math.random() < 0.5 ? 'LR' : 'RL';
@@ -758,8 +798,8 @@
       });
       // Initialize text width
       updateTextWidth(msg, randomText);
-      // Randomize appearance
-      randomizeMessageAppearance(msg);
+      // Randomize appearance with zone tracking
+      randomizeMessageAppearance(msg, true);
     });
     
     function glitchText(data) {
@@ -802,8 +842,8 @@
       // Update text width for proper animation
       updateTextWidth(data.element, newText);
       
-      // Randomize appearance (direction, speed, position)
-      randomizeMessageAppearance(data.element);
+      // Randomize appearance (direction, speed, position) with zone tracking
+      randomizeMessageAppearance(data.element, true);
     }
     
     function glitchLoop(timestamp) {
@@ -837,7 +877,7 @@
           }
           
           updateTextWidth(data.element, newText);
-          randomizeMessageAppearance(data.element);
+          randomizeMessageAppearance(data.element, true);
         }
       });
       
