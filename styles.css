@@ -1732,7 +1732,7 @@ canvas.hero-ascii {
 
 .footer-contact .button {
   margin-top: 0;
-  letter-spacing: 0.1em;
+  letter-spacing: -0.02em;
 }
 
 .footer-inner a {
@@ -2098,8 +2098,7 @@ html[data-theme="legacy"] .ascii-output {
 .ticket-button:hover {
   transform: translateY(-4px) scale(1.05);
   box-shadow: 0 0 40px rgba(157, 240, 192, 0.5);
-  background: var(--color-bg) !important;
-  color: var(--color-accent) !important;
+  /* Removed color inversion to fix visibility issue */
 }
 
 .ticket-button span {
@@ -2107,7 +2106,7 @@ html[data-theme="legacy"] .ascii-output {
 }
 
 .ticket-button:hover span {
-  color: var(--color-accent) !important;
+  color: inherit !important;
 }
 
 .tickets-content h2 {
