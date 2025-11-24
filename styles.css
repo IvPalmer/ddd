@@ -1915,12 +1915,12 @@ canvas.hero-ascii {
   }
   
   .radio-left {
-    left: 80px;
+    left: 20px;
     width: clamp(40px, 8vw, 60px);
   }
   
   .radio-right {
-    right: 80px;
+    right: 20px;
     width: clamp(40px, 8vw, 60px);
   }
   
@@ -1930,6 +1930,100 @@ canvas.hero-ascii {
   
   .radio-message {
     font-size: clamp(9px, 2vw, 13px);
+  }
+  
+  /* Mobile-specific text animation endpoints */
+  /* Radio centers on mobile: left at ~60px, right at ~100vw - 60px */
+  @-webkit-keyframes messageLR {
+    0% {
+      -webkit-transform: translateX(30px);
+      transform: translateX(30px);
+      opacity: 0;
+    }
+    5% {
+      -webkit-transform: translateX(60px);
+      transform: translateX(60px);
+      opacity: 0.9;
+    }
+    95% {
+      -webkit-transform: translateX(calc(100vw - 100px - var(--text-width, 300px)));
+      transform: translateX(calc(100vw - 100px - var(--text-width, 300px)));
+      opacity: 0.9;
+    }
+    100% {
+      -webkit-transform: translateX(calc(100vw - 60px - var(--text-width, 300px)));
+      transform: translateX(calc(100vw - 60px - var(--text-width, 300px)));
+      opacity: 0;
+    }
+  }
+  
+  @keyframes messageLR {
+    0% {
+      -webkit-transform: translateX(30px);
+      transform: translateX(30px);
+      opacity: 0;
+    }
+    5% {
+      -webkit-transform: translateX(60px);
+      transform: translateX(60px);
+      opacity: 0.9;
+    }
+    95% {
+      -webkit-transform: translateX(calc(100vw - 100px - var(--text-width, 300px)));
+      transform: translateX(calc(100vw - 100px - var(--text-width, 300px)));
+      opacity: 0.9;
+    }
+    100% {
+      -webkit-transform: translateX(calc(100vw - 60px - var(--text-width, 300px)));
+      transform: translateX(calc(100vw - 60px - var(--text-width, 300px)));
+      opacity: 0;
+    }
+  }
+  
+  @-webkit-keyframes messageRL {
+    0% {
+      -webkit-transform: translateX(calc(100vw - 60px - var(--text-width, 300px)));
+      transform: translateX(calc(100vw - 60px - var(--text-width, 300px)));
+      opacity: 0;
+    }
+    5% {
+      -webkit-transform: translateX(calc(100vw - 100px - var(--text-width, 300px)));
+      transform: translateX(calc(100vw - 100px - var(--text-width, 300px)));
+      opacity: 0.9;
+    }
+    95% {
+      -webkit-transform: translateX(60px);
+      transform: translateX(60px);
+      opacity: 0.9;
+    }
+    100% {
+      -webkit-transform: translateX(30px);
+      transform: translateX(30px);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes messageRL {
+    0% {
+      -webkit-transform: translateX(calc(100vw - 60px - var(--text-width, 300px)));
+      transform: translateX(calc(100vw - 60px - var(--text-width, 300px)));
+      opacity: 0;
+    }
+    5% {
+      -webkit-transform: translateX(calc(100vw - 100px - var(--text-width, 300px)));
+      transform: translateX(calc(100vw - 100px - var(--text-width, 300px)));
+      opacity: 0.9;
+    }
+    95% {
+      -webkit-transform: translateX(60px);
+      transform: translateX(60px);
+      opacity: 0.9;
+    }
+    100% {
+      -webkit-transform: translateX(30px);
+      transform: translateX(30px);
+      opacity: 0;
+    }
   }
   
   .locations-layout {
