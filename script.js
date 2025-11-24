@@ -183,13 +183,25 @@
             window.addEventListener('load', start);
           }
 
-          window.addEventListener('resize', () => this.init());
+          // Throttle resize with debounce
+          let resizeTimer;
+          window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => this.init(), 150);
+          }, { passive: true });
           
-          // Track mouse position for cube thickness/exp control
+          // Throttle mouse position updates using RAF
+          let rafPending = false;
           document.addEventListener('mousemove', (e) => {
-            this.cursor.x = e.clientX;
-            this.cursor.y = e.clientY;
-          });
+            if (!rafPending) {
+              rafPending = true;
+              requestAnimationFrame(() => {
+                this.cursor.x = e.clientX;
+                this.cursor.y = e.clientY;
+                rafPending = false;
+              });
+            }
+          }, { passive: true });
         }
 
         init() {
@@ -350,13 +362,13 @@
         if (!heroAsciiController || heroAsciiController.prefersReducedMotion) return;
         if (document.hidden) heroAsciiController.stopAnimation();
         else heroAsciiController.restartAnimation();
-      });
+      }, { passive: true });
       window.addEventListener("pageshow", (event) => {
         if (event.persisted && heroAsciiController) {
           heroAsciiController.init();
           heroAsciiController.restartAnimation();
         }
-      });
+      }, { passive: true });
     })();
   } else {
     // Fallback removed - ASCII animation should work everywhere
@@ -504,7 +516,7 @@
       // Restart with new calculations
       setTimeout(terminalTyping, 100);
     }, 300);
-  });
+  }, { passive: true });
 
   // Scroll-triggered animations
   const observerOptions = {
@@ -633,15 +645,21 @@
   // Floating ticket button logic
   // Always visible now, so observer removed
 
-  // Radio message glitch effect
+  // Radio message glitch effect using RAF for better performance
   const glitchChars = '!@#$%&*+=-_?/\\|~`';
   const messages = document.querySelectorAll('.radio-message');
   
-  messages.forEach(msg => {
-    const originalText = msg.getAttribute('data-text');
+  if (messages.length > 0) {
+    let lastGlitchTime = 0;
+    const glitchInterval = 100; // ms between glitch updates
     
-    function glitchText() {
-      const chars = originalText.split('');
+    const messagesData = Array.from(messages).map(msg => ({
+      element: msg,
+      originalText: msg.getAttribute('data-text')
+    }));
+    
+    function glitchText(data) {
+      const chars = data.originalText.split('');
       const glitched = chars.map(char => {
         if (char === ' ') return ' ';
         // Random chance to glitch (20%)
@@ -650,11 +668,19 @@
         }
         return char;
       }).join('');
-      msg.textContent = glitched;
+      data.element.textContent = glitched;
     }
     
-    // Glitch every 100ms
-    setInterval(glitchText, 100);
-  });
+    function glitchLoop(timestamp) {
+      if (timestamp - lastGlitchTime >= glitchInterval) {
+        // Batch update all messages at once
+        messagesData.forEach(data => glitchText(data));
+        lastGlitchTime = timestamp;
+      }
+      requestAnimationFrame(glitchLoop);
+    }
+    
+    requestAnimationFrame(glitchLoop);
+  }
 
 })();
