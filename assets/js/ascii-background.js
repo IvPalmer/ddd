@@ -72,7 +72,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         // Style
-        ctx.fillStyle = 'rgba(225, 255, 237, 0.22)'; // Reduced opacity for subtler effect
+        ctx.fillStyle = 'rgba(225, 255, 237, 0.12)'; // Reduced opacity for subtler effect
         ctx.font = font;
 
         const m = min(cols, rows);
