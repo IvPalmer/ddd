@@ -722,17 +722,25 @@
     }
     
     // Track occupied vertical zones to prevent stacking
-    const occupiedZones = new Set();
-    const minZoneSpacing = 20; // Minimum 20% spacing between messages (increased)
+    const elementZones = new Map(); // Map element to its current position
+    const minZoneSpacing = 22; // Minimum 22% spacing between messages
     
-    function getAvailableVerticalPosition() {
-      // Try to find a non-overlapping position (max 30 attempts)
-      for (let attempt = 0; attempt < 30; attempt++) {
-        const randomTop = 15 + Math.random() * 70; // Reduced range for better centering
+    function getAvailableVerticalPosition(excludeElement = null) {
+      // Get currently occupied positions (excluding the element we're updating)
+      const occupiedPositions = [];
+      for (const [el, pos] of elementZones.entries()) {
+        if (el !== excludeElement) {
+          occupiedPositions.push(pos);
+        }
+      }
+      
+      // Try to find a non-overlapping position (max 50 attempts)
+      for (let attempt = 0; attempt < 50; attempt++) {
+        const randomTop = 20 + Math.random() * 60; // Range 20-80%
         
         // Check if this position is too close to any occupied zone
         let tooClose = false;
-        for (const occupiedTop of occupiedZones) {
+        for (const occupiedTop of occupiedPositions) {
           if (Math.abs(randomTop - occupiedTop) < minZoneSpacing) {
             tooClose = true;
             break;
@@ -744,56 +752,37 @@
         }
       }
       
-      // If we couldn't find a free spot after 30 tries, clear oldest zones
-      // and try again with a guaranteed spaced position
-      if (occupiedZones.size >= 4) {
-        // Convert to array, sort, and find the largest gap
-        const zones = Array.from(occupiedZones).sort((a, b) => a - b);
-        const gaps = [];
-        
-        // Check gap at the beginning
-        if (zones[0] > 15 + minZoneSpacing) {
-          gaps.push({ position: 15, size: zones[0] - 15 });
-        }
-        
-        // Check gaps between zones
-        for (let i = 0; i < zones.length - 1; i++) {
-          const gapSize = zones[i + 1] - zones[i];
-          if (gapSize > minZoneSpacing * 2) {
-            gaps.push({ position: zones[i] + minZoneSpacing, size: gapSize });
+      // If we couldn't find a free spot, use evenly distributed positions
+      const evenlySpacedPositions = [25, 45, 65];
+      
+      // Find which position is furthest from all occupied positions
+      let bestPosition = evenlySpacedPositions[0];
+      let maxMinDistance = 0;
+      
+      for (const testPos of evenlySpacedPositions) {
+        let minDistance = 100;
+        for (const occupiedPos of occupiedPositions) {
+          const distance = Math.abs(testPos - occupiedPos);
+          if (distance < minDistance) {
+            minDistance = distance;
           }
         }
-        
-        // Check gap at the end
-        if (85 - zones[zones.length - 1] > minZoneSpacing) {
-          gaps.push({ position: zones[zones.length - 1] + minZoneSpacing, size: 85 - zones[zones.length - 1] });
-        }
-        
-        // Use the largest gap
-        if (gaps.length > 0) {
-          gaps.sort((a, b) => b.size - a.size);
-          return gaps[0].position + Math.random() * Math.max(0, gaps[0].size - minZoneSpacing);
+        if (minDistance > maxMinDistance) {
+          maxMinDistance = minDistance;
+          bestPosition = testPos;
         }
       }
       
-      // Fallback: return a fixed position based on how many zones are occupied
-      const fallbackPositions = [20, 40, 60, 80];
-      return fallbackPositions[occupiedZones.size % fallbackPositions.length];
+      return bestPosition;
     }
     
-    function randomizeMessageAppearance(element, updateZones = true) {
-      // Get a non-overlapping vertical position
-      const randomTop = getAvailableVerticalPosition();
+    function randomizeMessageAppearance(element) {
+      // Get a non-overlapping vertical position (excluding this element's current position)
+      const randomTop = getAvailableVerticalPosition(element);
       element.style.top = `${randomTop}%`;
       
-      // Track this position if requested
-      if (updateZones) {
-        // Store the current position
-        const oldTop = parseFloat(element.getAttribute('data-top') || '0');
-        occupiedZones.delete(oldTop);
-        occupiedZones.add(randomTop);
-        element.setAttribute('data-top', randomTop.toString());
-      }
+      // Update the zone tracking for this element
+      elementZones.set(element, randomTop);
       
       // Random direction (L-R or R-L)
       const direction = Math.random() < 0.5 ? 'LR' : 'RL';
@@ -808,7 +797,7 @@
       const animationName = direction === 'LR' ? 'messageLR' : 'messageRL';
       element.style.animation = `${animationName} ${duration.toFixed(1)}s linear infinite ${delay.toFixed(1)}s`;
       
-      console.log(`Message randomized - Direction: ${direction}, Duration: ${duration.toFixed(1)}s, Top: ${randomTop.toFixed(0)}%, Delay: ${delay.toFixed(1)}s`);
+      console.log(`Message at ${randomTop.toFixed(0)}% - Direction: ${direction}, Duration: ${duration.toFixed(1)}s`);
     }
     
     // Initialize messages data with unique messages
@@ -828,7 +817,7 @@
       // Initialize text width
       updateTextWidth(msg, randomText);
       // Randomize appearance with zone tracking
-      randomizeMessageAppearance(msg, true);
+      randomizeMessageAppearance(msg);
     });
     
     function glitchText(data) {
@@ -872,7 +861,7 @@
       updateTextWidth(data.element, newText);
       
       // Randomize appearance (direction, speed, position) with zone tracking
-      randomizeMessageAppearance(data.element, true);
+      randomizeMessageAppearance(data.element);
     }
     
     function glitchLoop(timestamp) {
@@ -906,7 +895,7 @@
           }
           
           updateTextWidth(data.element, newText);
-          randomizeMessageAppearance(data.element, true);
+          randomizeMessageAppearance(data.element);
         }
       });
       
@@ -917,3 +906,4 @@
   }
 
 })();
+
