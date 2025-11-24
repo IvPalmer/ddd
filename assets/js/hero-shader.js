@@ -147,7 +147,7 @@ const initHeroShader = () => {
   const charHeight = isMobile ? 9.0 : 9.0;
 
   const video = document.createElement('video');
-  video.src = '/assets/asciivideo/resources/DDD_3D-LOGO_ROTATE_V3.mov';
+  video.src = '/assets/asciivideo/resources/DDD_3D-LOGO_ROTATE_V3.mp4';
   video.loop = true;
   video.muted = true;
   video.playsInline = true;
