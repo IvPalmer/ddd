@@ -43,18 +43,18 @@
     window.addEventListener('resize', resize, { passive: true });
     resize();
 
-    // Interaction
+    // Interaction - listen on document since canvas has pointer-events: none
     const toggleMode = (e) => {
         // Toggle mode on click, unless clicking a link, button, or interactive element
-        if (!e.target.closest('a, button, .lightbox, .nav-toggle, input, textarea, .map-link, .floating-ticket-btn')) {
+        if (!e.target.closest('a, button, .lightbox, .nav-toggle, input, textarea, .map-link, .floating-ticket-btn, header, nav')) {
             mode = (mode + 1) % 3;
         }
     };
 
-    window.addEventListener('click', toggleMode, { passive: true });
+    document.addEventListener('click', toggleMode, { passive: true });
     
     // Also listen for touchend to ensure responsiveness on mobile
-    window.addEventListener('touchend', toggleMode, { passive: true });
+    document.addEventListener('touchend', toggleMode, { passive: true });
 
     // Main render loop
     function render(timestamp) {
