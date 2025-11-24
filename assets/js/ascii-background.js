@@ -59,7 +59,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         // Style
-        ctx.fillStyle = 'rgba(225, 255, 237, 0.15)'; // Mint color with low opacity
+        ctx.fillStyle = 'rgba(225, 255, 237, 0.4)'; // Mint color with increased opacity
         ctx.font = font;
 
         const m = min(cols, rows);
