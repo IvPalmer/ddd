@@ -92,7 +92,8 @@ const initHeroShader = () => {
       if (gray > 0.7) n = 11512810.0; 
 
       float glyph = character(n, glyphUV);
-      vec3 col = vec3(gray) * glyph;
+      vec3 mintColor = vec3(0.88, 1.0, 0.93); // #e1ffed
+      vec3 col = vec3(gray) * mintColor * glyph;
       
       float alpha = 1.0;
       if (length(col) < 0.01) {
