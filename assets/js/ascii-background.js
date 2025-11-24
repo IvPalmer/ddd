@@ -44,12 +44,17 @@
     resize();
 
     // Interaction
-    window.addEventListener('click', (e) => {
-        // Toggle mode on click, unless clicking a link or button
-        if (!e.target.closest('a, button, .lightbox')) {
+    const toggleMode = (e) => {
+        // Toggle mode on click, unless clicking a link, button, or interactive element
+        if (!e.target.closest('a, button, .lightbox, .nav-toggle, input, textarea, .map-link')) {
             mode = (mode + 1) % 3;
         }
-    }, { passive: true });
+    };
+
+    window.addEventListener('click', toggleMode, { passive: true });
+    // Adding touchstart for better responsiveness, but preventing double-fire might be needed.
+    // However, usually click follows touch. We'll rely on click for now as it handles the 'intent' better (vs scrolling).
+    // If faster response is needed, we'd need to handle touchstart/touchend/touchmove to detect taps.
 
     // Main render loop
     function render(timestamp) {
