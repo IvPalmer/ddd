@@ -691,9 +691,11 @@
   
   if (messages.length > 0) {
     let lastGlitchTime = 0;
-    let lastMessageChangeTime = 0;
     const glitchInterval = 100; // ms between glitch updates
-    const messageChangeInterval = 12000; // Change messages every 12 seconds
+    
+    // Track recently used messages to avoid repetition
+    const recentlyUsedMessages = [];
+    const maxRecentMessages = Math.ceil(messagePool.length * 0.4); // Remember 40% of pool
     
     function updateTextWidth(element, text) {
       // Get the computed style from the actual element to match exactly
@@ -716,21 +718,28 @@
       const width = temp.offsetWidth;
       document.body.removeChild(temp);
       
-      // Set CSS custom property for this element's animation
-      // Left radio center: 190px, Right radio center: 100vw - 190px
-      // For right side: text right edge should be at 100vw - 190px
-      // So translateX = 100vw - 190px - textWidth
       element.style.setProperty('--text-width', `${width}px`);
+    }
+    
+    function randomizeMessageAppearance(element) {
+      // Random vertical position (10% - 90%)
+      const randomTop = 10 + Math.random() * 80;
+      element.style.top = `${randomTop}%`;
       
-      // Force animation restart by removing and re-adding animation
-      const currentAnimation = element.style.animation;
-      element.style.animation = 'none';
-      // Trigger reflow
-      requestAnimationFrame(() => {
-        element.style.animation = currentAnimation;
-      });
+      // Random direction (L-R or R-L)
+      const direction = Math.random() < 0.5 ? 'LR' : 'RL';
       
-      console.log(`Text: "${text.substring(0, 20)}...", Width: ${width}px, Animation: ${currentAnimation}`);
+      // Random speed (5s - 8s)
+      const duration = 5 + Math.random() * 3;
+      
+      // Random delay (0 - 3s)
+      const delay = Math.random() * 3;
+      
+      // Apply animation with randomized properties
+      const animationName = direction === 'LR' ? 'messageLR' : 'messageRL';
+      element.style.animation = `${animationName} ${duration.toFixed(1)}s linear infinite ${delay.toFixed(1)}s`;
+      
+      console.log(`Message randomized - Direction: ${direction}, Duration: ${duration.toFixed(1)}s, Top: ${randomTop.toFixed(0)}%, Delay: ${delay.toFixed(1)}s`);
     }
     
     // Initialize messages data with unique messages
@@ -740,13 +749,17 @@
     Array.from(messages).forEach(msg => {
       const randomText = getRandomMessage(usedMessages);
       usedMessages.push(randomText);
+      recentlyUsedMessages.push(randomText);
       msg.setAttribute('data-text', randomText);
       messagesData.push({
         element: msg,
-        originalText: randomText
+        originalText: randomText,
+        lastChanged: Date.now()
       });
       // Initialize text width
       updateTextWidth(msg, randomText);
+      // Randomize appearance
+      randomizeMessageAppearance(msg);
     });
     
     function glitchText(data) {
@@ -767,18 +780,30 @@
       const randomIndex = Math.floor(Math.random() * messagesData.length);
       const data = messagesData[randomIndex];
       
-      // Get currently visible messages (excluding the one we're updating)
+      // Get currently visible messages and recently used (excluding the one we're updating)
       const currentlyVisible = messagesData
         .filter((_, index) => index !== randomIndex)
         .map(d => d.originalText);
       
-      // Get a new random message that's not currently visible
-      const newText = getRandomMessage(currentlyVisible);
+      const excludeMessages = [...new Set([...currentlyVisible, ...recentlyUsedMessages])];
+      
+      // Get a new random message that's not currently visible or recently used
+      const newText = getRandomMessage(excludeMessages);
       data.originalText = newText;
       data.element.setAttribute('data-text', newText);
+      data.lastChanged = Date.now();
+      
+      // Track recently used
+      recentlyUsedMessages.push(newText);
+      if (recentlyUsedMessages.length > maxRecentMessages) {
+        recentlyUsedMessages.shift(); // Remove oldest
+      }
       
       // Update text width for proper animation
       updateTextWidth(data.element, newText);
+      
+      // Randomize appearance (direction, speed, position)
+      randomizeMessageAppearance(data.element);
     }
     
     function glitchLoop(timestamp) {
@@ -788,11 +813,33 @@
         lastGlitchTime = timestamp;
       }
       
-      // Randomly cycle through messages
-      if (timestamp - lastMessageChangeTime >= messageChangeInterval) {
-        updateRandomMessage();
-        lastMessageChangeTime = timestamp;
-      }
+      // Randomly update messages at varying intervals (every 8-15 seconds per message)
+      messagesData.forEach((data, index) => {
+        const timeSinceLastChange = Date.now() - data.lastChanged;
+        const randomInterval = 8000 + Math.random() * 7000; // 8-15 seconds
+        
+        if (timeSinceLastChange >= randomInterval) {
+          // Update this specific message
+          const currentlyVisible = messagesData
+            .filter((_, idx) => idx !== index)
+            .map(d => d.originalText);
+          
+          const excludeMessages = [...new Set([...currentlyVisible, ...recentlyUsedMessages])];
+          const newText = getRandomMessage(excludeMessages);
+          
+          data.originalText = newText;
+          data.element.setAttribute('data-text', newText);
+          data.lastChanged = Date.now();
+          
+          recentlyUsedMessages.push(newText);
+          if (recentlyUsedMessages.length > maxRecentMessages) {
+            recentlyUsedMessages.shift();
+          }
+          
+          updateTextWidth(data.element, newText);
+          randomizeMessageAppearance(data.element);
+        }
+      });
       
       requestAnimationFrame(glitchLoop);
     }

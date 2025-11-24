@@ -1647,39 +1647,7 @@ canvas.hero-ascii {
   opacity: 0;
 }
 
-.msg-1 {
-  -webkit-animation: messageLR 8s linear infinite;
-  animation: messageLR 8s linear infinite;
-  top: 15%;
-}
-
-.msg-2 {
-  -webkit-animation: messageRL 9s linear infinite;
-  animation: messageRL 9s linear infinite;
-  animation-delay: 2s;
-  top: 35%;
-}
-
-.msg-3 {
-  -webkit-animation: messageLR 8.5s linear infinite;
-  animation: messageLR 8.5s linear infinite;
-  animation-delay: 4s;
-  top: 55%;
-}
-
-.msg-4 {
-  -webkit-animation: messageRL 9.5s linear infinite;
-  animation: messageRL 9.5s linear infinite;
-  animation-delay: 6s;
-  top: 75%;
-}
-
-.msg-5 {
-  -webkit-animation: messageLR 8.8s linear infinite;
-  animation: messageLR 8.8s linear infinite;
-  animation-delay: 8s;
-  top: 95%;
-}
+/* Message slots - animations and positioning handled dynamically by JavaScript */
 
 /* LOCATIONS SECTION - Absolute Positioning Layout */
 .locations-layout {
