@@ -589,4 +589,29 @@
     });
   }
 
+  // Floating ticket button logic
+  const floatingBtn = document.querySelector('.floating-ticket-btn');
+  const heroSection = document.querySelector('.hero');
+  
+  if (floatingBtn && heroSection) {
+    const observerOptions = {
+      root: null,
+      threshold: 0,
+      rootMargin: "-100px 0px 0px 0px"
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        // Show button when hero is NOT intersecting (user scrolled past hero)
+        if (!entry.isIntersecting) {
+          floatingBtn.classList.add('visible');
+        } else {
+          floatingBtn.classList.remove('visible');
+        }
+      });
+    }, observerOptions);
+
+    observer.observe(heroSection);
+  }
+
 })();
