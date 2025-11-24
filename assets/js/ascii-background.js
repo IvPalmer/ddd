@@ -1,6 +1,7 @@
 // ASCII Background Animation
 // Ported from: https://play.ertdfgcvb.xyz/
-// Moiré explorer by ertdfgcvb
+// Original author: ertdfgcvb
+// Title: Sin Sin
 
 (function() {
     // Create canvas
@@ -11,20 +12,16 @@
     const ctx = canvas.getContext('2d');
 
     // Settings
-    const density = ' ..._-:=+abcXW@#ÑÑÑ';
+    const pattern = '┌┘└┐╰╮╭╯';
     const fontSize = 14; // Adjust for resolution/performance
     const font = `${fontSize}px "FT System Mono", monospace`;
     
     let cols, rows;
     let charSize = { w: 0, h: fontSize };
-    let mode = 0;
+    let mode = 0; // Keeping mode variable for future extensibility/compatibility, though this pattern is single-mode
     
     // Math helpers
-    const { sin, cos, atan2, floor, min, PI, hypot } = Math;
-    const vec2 = (x, y) => ({x, y});
-    const dist = (v1, v2) => hypot(v1.x - v2.x, v1.y - v2.y);
-    const mulN = (v, n) => ({x: v.x * n, y: v.y * n});
-    const map = (v, i1, i2, o1, o2) => o1 + (o2 - o1) * ((v - i1) / (i2 - i1));
+    const { sin, round, abs } = Math;
 
     // Resize handler
     function resize() {
@@ -43,80 +40,36 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // Interaction
+    // Interaction - keeping simple click handler to prevent errors if clicked
     const toggleMode = (e) => {
-        // Toggle mode on click, unless clicking a link, button, or interactive element
         if (!e.target.closest('a, button, .lightbox, .nav-toggle, input, textarea, .map-link')) {
-            mode = (mode + 1) % 3;
+            // Effect has no modes, but we keep the interaction hook
         }
     };
 
-    window.addEventListener('click', toggleMode);
-    
-    // Also listen for touchend to ensure responsiveness on mobile
-    window.addEventListener('touchend', (e) => {
-        // Simple check to avoid double-toggling if click fires too (handled by logic or browser)
-        // But strictly speaking, if click doesn't fire, this ensures it works.
-        // A more robust way is to prevent default or use a flag, but for this simple toggle:
-        // We can check if the touch event wasn't a scroll. 
-        // However, simpler is to rely on 'click' being fired by the browser after touchend.
-        // If 'click' is missing, something is blocking it. 
-        // Let's just stick to click for now but ensure passive is false or removed.
-    }, { passive: true });
+    window.addEventListener('click', toggleMode, { passive: true });
+    window.addEventListener('touchend', () => {}, { passive: true });
 
     // Main render loop
     function render(timestamp) {
-        const t = timestamp * 0.0003; // Scale time to match original speed approx
+        const t = timestamp * 0.0005; // Time scale matching original
         
         // Clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Style
-        ctx.fillStyle = 'rgba(225, 255, 237, 0.12)'; // Reduced opacity for subtler effect
+        // Style - Opacity 0.12 as requested ("mesma opacidade")
+        ctx.fillStyle = 'rgba(225, 255, 237, 0.12)'; 
         ctx.font = font;
-
-        const m = min(cols, rows);
-        const aspect = cols / rows;
-
-        // Pre-calculate frame values
-        const centerA = mulN(vec2(cos(t*3), sin(t*7)), 0.5);
-        const centerB = mulN(vec2(cos(t*5), sin(t*4)), 0.5);
-        
-        const aMod = map(cos(t*2.12), -1, 1, 6, 60);
-        const bMod = map(cos(t*3.33), -1, 1, 6, 60);
 
         for (let y = 0; y < rows; y++) {
             for (let x = 0; x < cols; x++) {
-                // Normalize coordinates
-                let stX = 2.0 * (x - cols / 2) / m;
-                let stY = 2.0 * (y - rows / 2) / m;
-                stX *= (canvas.width / canvas.height); // Aspect correction
-
-                const st = { x: stX, y: stY };
-
-                let A_val, B_val;
-
-                if (mode % 2 === 0) {
-                    A_val = atan2(centerA.y - st.y, centerA.x - st.x);
-                } else {
-                    A_val = dist(st, centerA);
-                }
-
-                if (mode === 0) {
-                    B_val = atan2(centerB.y - st.y, centerB.x - st.x);
-                } else {
-                    B_val = dist(st, centerB);
-                }
-
-                const a = cos(A_val * aMod);
-                const b = cos(B_val * bMod);
-
-                const i = ((a * b) + 1) / 2;
-                const idx = floor(i * density.length);
                 
-                const char = density[Math.max(0, Math.min(idx, density.length - 1))];
+                const o = sin(y * x * sin(t) * 0.003 + y * 0.01 + t) * 20;
+                const i = round(abs(x + y + o)) % pattern.length;
+                
+                const char = pattern[i];
 
-                if (char !== ' ') {
+                if (char) {
                     ctx.fillText(char, x * charSize.w, y * charSize.h);
                 }
             }
@@ -127,4 +80,3 @@
 
     requestAnimationFrame(render);
 })();
-
