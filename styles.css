@@ -1425,13 +1425,13 @@ canvas.hero-ascii {
     opacity: 0.9;
   }
   95% {
-    -webkit-transform: translateX(calc(100vw - 190px));
-    transform: translateX(calc(100vw - 190px));
+    -webkit-transform: translateX(calc(100vw - 230px - var(--text-width, 450px)));
+    transform: translateX(calc(100vw - 230px - var(--text-width, 450px)));
     opacity: 0.9;
   }
   100% {
-    -webkit-transform: translateX(calc(100vw - 150px));
-    transform: translateX(calc(100vw - 150px));
+    -webkit-transform: translateX(calc(100vw - 190px - var(--text-width, 450px)));
+    transform: translateX(calc(100vw - 190px - var(--text-width, 450px)));
     opacity: 0;
   }
 }
@@ -1448,13 +1448,13 @@ canvas.hero-ascii {
     opacity: 0.9;
   }
   95% {
-    -webkit-transform: translateX(calc(100vw - 190px));
-    transform: translateX(calc(100vw - 190px));
+    -webkit-transform: translateX(calc(100vw - 230px - var(--text-width, 450px)));
+    transform: translateX(calc(100vw - 230px - var(--text-width, 450px)));
     opacity: 0.9;
   }
   100% {
-    -webkit-transform: translateX(calc(100vw - 150px));
-    transform: translateX(calc(100vw - 150px));
+    -webkit-transform: translateX(calc(100vw - 190px - var(--text-width, 450px)));
+    transform: translateX(calc(100vw - 190px - var(--text-width, 450px)));
     opacity: 0;
   }
 }
@@ -1462,13 +1462,13 @@ canvas.hero-ascii {
 /* Radio Message Travel - Right to Left */
 @-webkit-keyframes messageRL {
   0% {
-    -webkit-transform: translateX(calc(100vw - 150px));
-    transform: translateX(calc(100vw - 150px));
+    -webkit-transform: translateX(calc(100vw - 190px - var(--text-width, 450px)));
+    transform: translateX(calc(100vw - 190px - var(--text-width, 450px)));
     opacity: 0;
   }
   5% {
-    -webkit-transform: translateX(calc(100vw - 190px));
-    transform: translateX(calc(100vw - 190px));
+    -webkit-transform: translateX(calc(100vw - 230px - var(--text-width, 450px)));
+    transform: translateX(calc(100vw - 230px - var(--text-width, 450px)));
     opacity: 0.9;
   }
   95% {
@@ -1485,13 +1485,13 @@ canvas.hero-ascii {
 
 @keyframes messageRL {
   0% {
-    -webkit-transform: translateX(calc(100vw - 150px));
-    transform: translateX(calc(100vw - 150px));
+    -webkit-transform: translateX(calc(100vw - 190px - var(--text-width, 450px)));
+    transform: translateX(calc(100vw - 190px - var(--text-width, 450px)));
     opacity: 0;
   }
   5% {
-    -webkit-transform: translateX(calc(100vw - 190px));
-    transform: translateX(calc(100vw - 190px));
+    -webkit-transform: translateX(calc(100vw - 230px - var(--text-width, 450px)));
+    transform: translateX(calc(100vw - 230px - var(--text-width, 450px)));
     opacity: 0.9;
   }
   95% {

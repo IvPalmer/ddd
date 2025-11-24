@@ -655,15 +655,18 @@
     { text: "eai ja ouviu falar da ddd?", weight: 8 },
     { text: "fiquei sabendo que vai ser na galeria index!!", weight: 10 },
     { text: "vai ser dia 06.12 as 21h ate umas 4h", weight: 10 },
-    { text: "brasilia ta precisando ne?!", weight: 5 },
-    { text: "nossa gg limona no line??", weight: 10 },
+    { text: "ai brasilia tava precisando de um rolezinho novo ne?!", weight: 4 },
+    { text: "gg limona tudo pra mim", weight: 10 },
     { text: "unexpected beats drive our minds and bodies", weight: 6 },
     { text: "eu amo kurup!!", weight: 7 },
     { text: "aff dj chokolaty lenda", weight: 10 },
     { text: "leriss e gio patrimonios de bsb!!", weight: 10 },
-    { text: "nice dreamks melhor bar da cidade", weight: 10 },
+    { text: "nice dreamks melhor bar da cidade mona", weight: 10 },
+    { text: "bolsonaro na cadeiaaaa", weight: 4 },
     { text: "boiler room de c* é rola amiga vamo pra ddd", weight: 2 },
     { text: "dsrptv sundsystem é o palmer ne?", weight: 5 },
+    { text: "vamo chegar cedo ne pra dar close nas gravações", weight: 8 },
+    { text: "ingresso muito barato ne? 30 reais os 50 primeiros!", weight: 7 },
   ];
   
   // Weighted random selection with exclusion list
@@ -692,6 +695,44 @@
     const glitchInterval = 100; // ms between glitch updates
     const messageChangeInterval = 12000; // Change messages every 12 seconds
     
+    function updateTextWidth(element, text) {
+      // Get the computed style from the actual element to match exactly
+      const computedStyle = window.getComputedStyle(element);
+      
+      // Create temporary element to measure text width with exact same styling
+      const temp = document.createElement('div');
+      temp.style.cssText = `
+        position: absolute;
+        visibility: hidden;
+        top: -9999px;
+        font-family: ${computedStyle.fontFamily};
+        font-size: ${computedStyle.fontSize};
+        font-weight: ${computedStyle.fontWeight};
+        letter-spacing: ${computedStyle.letterSpacing};
+        white-space: nowrap;
+      `;
+      temp.textContent = text;
+      document.body.appendChild(temp);
+      const width = temp.offsetWidth;
+      document.body.removeChild(temp);
+      
+      // Set CSS custom property for this element's animation
+      // Left radio center: 190px, Right radio center: 100vw - 190px
+      // For right side: text right edge should be at 100vw - 190px
+      // So translateX = 100vw - 190px - textWidth
+      element.style.setProperty('--text-width', `${width}px`);
+      
+      // Force animation restart by removing and re-adding animation
+      const currentAnimation = element.style.animation;
+      element.style.animation = 'none';
+      // Trigger reflow
+      requestAnimationFrame(() => {
+        element.style.animation = currentAnimation;
+      });
+      
+      console.log(`Text: "${text.substring(0, 20)}...", Width: ${width}px, Animation: ${currentAnimation}`);
+    }
+    
     // Initialize messages data with unique messages
     const messagesData = [];
     const usedMessages = [];
@@ -704,6 +745,8 @@
         element: msg,
         originalText: randomText
       });
+      // Initialize text width
+      updateTextWidth(msg, randomText);
     });
     
     function glitchText(data) {
@@ -733,6 +776,9 @@
       const newText = getRandomMessage(currentlyVisible);
       data.originalText = newText;
       data.element.setAttribute('data-text', newText);
+      
+      // Update text width for proper animation
+      updateTextWidth(data.element, newText);
     }
     
     function glitchLoop(timestamp) {
