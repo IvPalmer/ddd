@@ -59,57 +59,85 @@
     }
   }
 
-  // Wrap each character in a span and apply scramble effect
-  function wrapCharacters(element) {
-    // Skip if already wrapped
-    if (element.dataset.scrambleWrapped) return;
-    
-    const text = element.textContent;
-    const chars = text.split('');
-    
-    // Clear the element
-    element.textContent = '';
-    element.dataset.scrambleWrapped = 'true';
-    
-    const scramblers = [];
-    const cascadeTouch = !element.matches('.project-intro');
-
-    // Create a span for each character
-    chars.forEach((char, index) => {
-      const span = document.createElement('span');
-      span.textContent = char;
-      // Prevent layout shifts and flickering
+  function setupScrambler(span, char, index) {
       span.style.display = 'inline';
       span.style.transform = 'translate3d(0, 0, 0)';
       span.style.backfaceVisibility = 'hidden';
       span.style.willChange = 'contents';
       
       const scrambler = new CharScramble(span, char, index);
-      scramblers.push(scrambler);
       
-      // Add hover listener for desktop
       span.addEventListener('mouseenter', () => {
         scrambler.start();
       });
       
-      // Add touch support for mobile
       span.addEventListener('touchstart', (e) => {
         scrambler.start();
       }, { passive: true });
-      
-      element.appendChild(span);
-    });
 
-    if (cascadeTouch) {
-      element.addEventListener(
-        'touchstart',
-        () => {
-          scramblers.forEach((scrambler, idx) => {
-            window.setTimeout(() => scrambler.start(), idx * 10);
-          });
-        },
-        { passive: true },
-      );
+      return scrambler;
+  }
+
+  // Wrap each character in a span and apply scramble effect, preserving HTML structure
+  function wrapCharacters(element) {
+    // Skip if already wrapped
+    if (element.dataset.scrambleWrapped) return;
+    element.dataset.scrambleWrapped = 'true';
+    
+    const allScramblers = [];
+    
+    function processNode(node) {
+        if (node.nodeType === 3) { // Text node
+            const text = node.nodeValue;
+            // Skip empty text nodes that are just whitespace layout formatting
+            if (!text.trim()) return;
+            
+            const fragment = document.createDocumentFragment();
+            const chars = text.split('');
+            
+            chars.forEach((char, index) => {
+                // Preserve spaces but don't scramble them? 
+                // Or wrap spaces too to keep layout consistent?
+                // Wrapping spaces is safer for spacing.
+                const span = document.createElement('span');
+                span.textContent = char;
+                
+                if (char.trim()) {
+                    const s = setupScrambler(span, char, index);
+                    allScramblers.push(s);
+                } else {
+                    // Just a space, no scramble needed but style to match
+                    span.style.display = 'inline';
+                }
+                
+                fragment.appendChild(span);
+            });
+            node.parentNode.replaceChild(fragment, node);
+        } else if (node.nodeType === 1) { // Element node
+            // Skip scripts, styles, and already interactive elements that might break
+            if (['SCRIPT', 'STYLE', 'svg', 'IMG'].includes(node.tagName)) return;
+            
+            // Recurse into children
+            Array.from(node.childNodes).forEach(child => processNode(child));
+        }
+    }
+
+    Array.from(element.childNodes).forEach(child => processNode(child));
+
+    // Optional: add cascade effect on container touch
+    if (!element.matches('.project-intro')) {
+        element.addEventListener(
+            'touchstart',
+            () => {
+              allScramblers.forEach((scrambler, idx) => {
+                // Randomize or sequential start
+                if (Math.random() > 0.7) {
+                    window.setTimeout(() => scrambler.start(), idx * 2);
+                }
+              });
+            },
+            { passive: true },
+        );
     }
   }
 
@@ -119,6 +147,7 @@
       '.site-nav a',
       '.brand',
       '.section h2',
+      '.section h3',
       '#terminal-title',
       '.hero-heading',
       '.hero-subheading',
@@ -134,15 +163,18 @@
       '.site-footer p',
       '.team-grid .member h3',
       '.team-grid .member p',
-      '.big-date-text'
+      '.big-date-text',
+      '.detail-title',
+      '.detail-text',
+      '.info-label',
+      '.info-value',
+      '.tickets-text',
+      '.ticket-button'
     ];
 
     const elements = document.querySelectorAll(selectors.join(', '));
     
     elements.forEach(el => {
-      // Skip if element is empty, only whitespace, or has child elements
-      if (!el.textContent.trim() || el.children.length > 0) return;
-      
       wrapCharacters(el);
     });
   }
@@ -154,4 +186,3 @@
     initScramble();
   }
 })();
-

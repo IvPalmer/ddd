@@ -151,6 +151,10 @@ const initHeroShader = () => {
   video.loop = true;
   video.muted = true;
   video.playsInline = true;
+  // Important for iOS
+  video.setAttribute('playsinline', '');
+  video.setAttribute('webkit-playsinline', '');
+  
   video.preload = "auto";
   video.crossOrigin = "anonymous";
   
