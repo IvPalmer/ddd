@@ -158,6 +158,10 @@ const initHeroShader = () => {
   video.preload = "auto";
   video.crossOrigin = "anonymous";
   
+  // Append to body to ensure Chrome/Android handles it properly (sometimes off-DOM video is deprioritized)
+  video.style.display = 'none'; // Use display none or visibility hidden
+  document.body.appendChild(video);
+  
   let videoReady = false;
   
   video.addEventListener('canplay', () => {
