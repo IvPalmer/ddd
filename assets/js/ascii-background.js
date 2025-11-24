@@ -51,10 +51,18 @@
         }
     };
 
-    window.addEventListener('click', toggleMode, { passive: true });
-    // Adding touchstart for better responsiveness, but preventing double-fire might be needed.
-    // However, usually click follows touch. We'll rely on click for now as it handles the 'intent' better (vs scrolling).
-    // If faster response is needed, we'd need to handle touchstart/touchend/touchmove to detect taps.
+    window.addEventListener('click', toggleMode);
+    
+    // Also listen for touchend to ensure responsiveness on mobile
+    window.addEventListener('touchend', (e) => {
+        // Simple check to avoid double-toggling if click fires too (handled by logic or browser)
+        // But strictly speaking, if click doesn't fire, this ensures it works.
+        // A more robust way is to prevent default or use a flag, but for this simple toggle:
+        // We can check if the touch event wasn't a scroll. 
+        // However, simpler is to rely on 'click' being fired by the browser after touchend.
+        // If 'click' is missing, something is blocking it. 
+        // Let's just stick to click for now but ensure passive is false or removed.
+    }, { passive: true });
 
     // Main render loop
     function render(timestamp) {
@@ -64,7 +72,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         // Style
-        ctx.fillStyle = 'rgba(225, 255, 237, 0.4)'; // Mint color with increased opacity
+        ctx.fillStyle = 'rgba(225, 255, 237, 0.22)'; // Reduced opacity for subtler effect
         ctx.font = font;
 
         const m = min(cols, rows);

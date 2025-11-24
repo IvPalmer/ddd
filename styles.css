@@ -258,6 +258,7 @@ body {
 html {
   scroll-behavior: smooth;
   background: var(--color-bg);
+  touch-action: manipulation; /* Improve touch response speed */
 }
 body {
   margin: 0;
