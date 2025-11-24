@@ -1526,32 +1526,95 @@ canvas.hero-ascii {
   filter: grayscale(0%);
 }
 
-.radio-left {
+.radio-left,
+.radio-right {
   position: absolute;
-  left: 120px;
   width: clamp(50px, 6vw, 80px);
   height: auto;
   opacity: 1;
-  filter: grayscale(0%) brightness(1.1);
+  filter: grayscale(0%) brightness(1.4) contrast(1.2);
   transition: opacity var(--transition-medium), filter var(--transition-medium);
   pointer-events: auto;
+  animation: radioGlow 3s ease-in-out infinite;
+}
+
+.radio-left {
+  left: 120px;
 }
 
 .radio-right {
-  position: absolute;
   right: 120px;
-  width: clamp(50px, 6vw, 80px);
-  height: auto;
-  opacity: 1;
-  filter: grayscale(0%) brightness(1.1);
-  transition: opacity var(--transition-medium), filter var(--transition-medium);
-  pointer-events: auto;
+  animation-delay: 1.5s;
+}
+
+/* ASCII scanline effect overlay */
+.radio-left::after,
+.radio-right::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15) 0px,
+    transparent 1px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 3px
+  );
+  pointer-events: none;
+  opacity: 0.6;
+  animation: scanlineMove 4s linear infinite;
+}
+
+@-webkit-keyframes scanlineMove {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(3px);
+    transform: translateY(3px);
+  }
+}
+
+@keyframes scanlineMove {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(3px);
+  }
 }
 
 .radio-left:hover,
 .radio-right:hover {
   opacity: 1;
-  filter: grayscale(0%) brightness(1.2);
+  filter: grayscale(0%) brightness(1.6) contrast(1.3);
+}
+
+/* Radio glow animation */
+@-webkit-keyframes radioGlow {
+  0%, 100% {
+    -webkit-filter: grayscale(0%) brightness(1.4) contrast(1.2) drop-shadow(0 0 3px rgba(157, 240, 192, 0.3));
+    filter: grayscale(0%) brightness(1.4) contrast(1.2) drop-shadow(0 0 3px rgba(157, 240, 192, 0.3));
+  }
+  50% {
+    -webkit-filter: grayscale(0%) brightness(1.5) contrast(1.25) drop-shadow(0 0 8px rgba(157, 240, 192, 0.6));
+    filter: grayscale(0%) brightness(1.5) contrast(1.25) drop-shadow(0 0 8px rgba(157, 240, 192, 0.6));
+  }
+}
+
+@keyframes radioGlow {
+  0%, 100% {
+    -webkit-filter: grayscale(0%) brightness(1.4) contrast(1.2) drop-shadow(0 0 3px rgba(157, 240, 192, 0.3));
+    filter: grayscale(0%) brightness(1.4) contrast(1.2) drop-shadow(0 0 3px rgba(157, 240, 192, 0.3));
+  }
+  50% {
+    -webkit-filter: grayscale(0%) brightness(1.5) contrast(1.25) drop-shadow(0 0 8px rgba(157, 240, 192, 0.6));
+    filter: grayscale(0%) brightness(1.5) contrast(1.25) drop-shadow(0 0 8px rgba(157, 240, 192, 0.6));
+  }
 }
 
 .radio-waves-container {
