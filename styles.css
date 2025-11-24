@@ -1732,7 +1732,8 @@ canvas.hero-ascii {
 
 .footer-contact .button {
   margin-top: 0;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.02em !important;
+  gap: 0 !important;
 }
 
 .footer-inner a {
