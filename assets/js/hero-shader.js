@@ -77,19 +77,26 @@ const initHeroShader = () => {
             } else {
                 vec3 imgCol = texColor.rgb;
                 gray = 0.3 * imgCol.r + 0.59 * imgCol.g + 0.11 * imgCol.b;
-                gray = gray * 1.2; 
+                
+                // Hard cutoff for video background noise to ensure transparency
+                if (gray < 0.15) {
+                    gray = 0.0;
+                } else {
+                    gray = gray * 1.2;
+                }
             }
         }
       }
 
-      float n = 4096.0; 
-      if (gray > 0.1) n = 65600.0;   
-      if (gray > 0.2) n = 163153.0;  
-      if (gray > 0.3) n = 15255086.0; 
-      if (gray > 0.4) n = 13121101.0; 
-      if (gray > 0.5) n = 15252014.0; 
-      if (gray > 0.6) n = 13195790.0; 
-      if (gray > 0.7) n = 11512810.0; 
+      float n = 0.0; // Default to empty (transparent)
+      if (gray > 0.15) n = 4096.0;   // Small dot for very faint details
+      if (gray > 0.25) n = 65600.0;  // ... and so on
+      if (gray > 0.35) n = 163153.0;  
+      if (gray > 0.45) n = 15255086.0; 
+      if (gray > 0.55) n = 13121101.0; 
+      if (gray > 0.65) n = 15252014.0; 
+      if (gray > 0.75) n = 13195790.0; 
+      if (gray > 0.85) n = 11512810.0; 
 
       float glyph = character(n, glyphUV);
       vec3 mintColor = vec3(0.88, 1.0, 0.93); // #e1ffed
