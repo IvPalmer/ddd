@@ -652,32 +652,38 @@
   // Message pool with varying probabilities
   const messagePool = [
     // Original messages
-    { text: "eai ja ouviu falar da ddd?", weight: 10 },
-    { text: "fiquei sabendo que vai ser", weight: 10 },
-    { text: "na galeria index!!", weight: 10 },
-    { text: "06.12 · 21h as 4h", weight: 10 },
-    { text: "brasilia precisa disso", weight: 10 },
-    // New messages
+    { text: "eai ja ouviu falar da ddd?", weight: 8 },
+    { text: "fiquei sabendo que vai ser na galeria index!!", weight: 10 },
+    { text: "vai ser dia 06.12 as 21h ate umas 4h", weight: 10 },
+    { text: "brasilia ta precisando ne?!", weight: 5 },
     { text: "nossa gg limona no line??", weight: 10 },
-    { text: "unexpected beats drive our minds and bodies", weight: 10 },
-    { text: "eu amo kurup!!", weight: 10 },
+    { text: "unexpected beats drive our minds and bodies", weight: 6 },
+    { text: "eu amo kurup!!", weight: 7 },
     { text: "aff dj chokolaty lenda", weight: 10 },
     { text: "leriss e gio patrimonios de bsb!!", weight: 10 },
-    { text: "nice dreams melhor bar da cidade", weight: 10 },
-    // Rare message - appears much less often
-    { text: "boiler room de c* é rola amiga vamo pra ddd", weight: 1 }
+    { text: "nice dreamks melhor bar da cidade", weight: 10 },
+    { text: "boiler room de c* é rola amiga vamo pra ddd", weight: 2 },
+    { text: "dsrptv sundsystem é o palmer ne?", weight: 5 },
   ];
   
-  // Weighted random selection
-  function getRandomMessage() {
-    const totalWeight = messagePool.reduce((sum, msg) => sum + msg.weight, 0);
+  // Weighted random selection with exclusion list
+  function getRandomMessage(excludeTexts = []) {
+    // Filter out messages that are already visible
+    const availableMessages = messagePool.filter(msg => !excludeTexts.includes(msg.text));
+    
+    // If no messages available (shouldn't happen), use full pool
+    if (availableMessages.length === 0) {
+      availableMessages.push(...messagePool);
+    }
+    
+    const totalWeight = availableMessages.reduce((sum, msg) => sum + msg.weight, 0);
     let random = Math.random() * totalWeight;
     
-    for (const msg of messagePool) {
+    for (const msg of availableMessages) {
       random -= msg.weight;
       if (random <= 0) return msg.text;
     }
-    return messagePool[0].text; // Fallback
+    return availableMessages[0].text; // Fallback
   }
   
   if (messages.length > 0) {
@@ -686,14 +692,18 @@
     const glitchInterval = 100; // ms between glitch updates
     const messageChangeInterval = 12000; // Change messages every 12 seconds
     
-    // Initialize messages data
-    const messagesData = Array.from(messages).map(msg => {
-      const randomText = getRandomMessage();
+    // Initialize messages data with unique messages
+    const messagesData = [];
+    const usedMessages = [];
+    
+    Array.from(messages).forEach(msg => {
+      const randomText = getRandomMessage(usedMessages);
+      usedMessages.push(randomText);
       msg.setAttribute('data-text', randomText);
-      return {
+      messagesData.push({
         element: msg,
         originalText: randomText
-      };
+      });
     });
     
     function glitchText(data) {
@@ -714,8 +724,13 @@
       const randomIndex = Math.floor(Math.random() * messagesData.length);
       const data = messagesData[randomIndex];
       
-      // Get a new random message (might be the same, that's okay)
-      const newText = getRandomMessage();
+      // Get currently visible messages (excluding the one we're updating)
+      const currentlyVisible = messagesData
+        .filter((_, index) => index !== randomIndex)
+        .map(d => d.originalText);
+      
+      // Get a new random message that's not currently visible
+      const newText = getRandomMessage(currentlyVisible);
       data.originalText = newText;
       data.element.setAttribute('data-text', newText);
     }
