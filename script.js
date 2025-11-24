@@ -649,14 +649,50 @@
   const glitchChars = '!@#$%&*+=-_?/\\|~`';
   const messages = document.querySelectorAll('.radio-message');
   
+  // Message pool with varying probabilities
+  const messagePool = [
+    // Original messages
+    { text: "eai ja ouviu falar da ddd?", weight: 10 },
+    { text: "fiquei sabendo que vai ser", weight: 10 },
+    { text: "na galeria index!!", weight: 10 },
+    { text: "06.12 · 21h as 4h", weight: 10 },
+    { text: "brasilia precisa disso", weight: 10 },
+    // New messages
+    { text: "nossa gg limona no line??", weight: 10 },
+    { text: "unexpected beats drive our minds and bodies", weight: 10 },
+    { text: "eu amo kurup!!", weight: 10 },
+    { text: "aff dj chokolaty lenda", weight: 10 },
+    { text: "leriss e gio patrimonios de bsb!!", weight: 10 },
+    { text: "nice dreams melhor bar da cidade", weight: 10 },
+    // Rare message - appears less often
+    { text: "boiler room de c* é rola amiga vamo pra ddd", weight: 2 }
+  ];
+  
+  // Weighted random selection
+  function getRandomMessage() {
+    const totalWeight = messagePool.reduce((sum, msg) => sum + msg.weight, 0);
+    let random = Math.random() * totalWeight;
+    
+    for (const msg of messagePool) {
+      random -= msg.weight;
+      if (random <= 0) return msg.text;
+    }
+    return messagePool[0].text; // Fallback
+  }
+  
   if (messages.length > 0) {
     let lastGlitchTime = 0;
     const glitchInterval = 100; // ms between glitch updates
     
-    const messagesData = Array.from(messages).map(msg => ({
-      element: msg,
-      originalText: msg.getAttribute('data-text')
-    }));
+    // Assign random messages to each element
+    const messagesData = Array.from(messages).map(msg => {
+      const randomText = getRandomMessage();
+      msg.setAttribute('data-text', randomText);
+      return {
+        element: msg,
+        originalText: randomText
+      };
+    });
     
     function glitchText(data) {
       const chars = data.originalText.split('');
