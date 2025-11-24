@@ -40,7 +40,7 @@
         rows = Math.ceil(canvas.height / charSize.h);
     }
 
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize, { passive: true });
     resize();
 
     // Interaction
@@ -54,8 +54,7 @@
     window.addEventListener('click', toggleMode, { passive: true });
     
     // Also listen for touchend to ensure responsiveness on mobile
-    window.addEventListener('touchend', (e) => {
-    }, { passive: true });
+    window.addEventListener('touchend', toggleMode, { passive: true });
 
     // Main render loop
     function render(timestamp) {

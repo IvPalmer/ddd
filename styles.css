@@ -1514,10 +1514,11 @@ canvas.hero-ascii {
   align-items: center;
   justify-content: space-between;
   margin-top: clamp(48px, 8vw, 80px);
+  margin-bottom: clamp(48px, 8vw, 80px);
   padding: 0;
   overflow: visible;
   pointer-events: none;
-  height: 100px;
+  height: 0;
 }
 
 .radio-images:hover {
@@ -1563,7 +1564,7 @@ canvas.hero-ascii {
   align-items: flex-start;
   justify-content: center;
   overflow: visible;
-  height: 100%;
+  height: 80px;
   gap: 8px;
   pointer-events: none;
 }
