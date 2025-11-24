@@ -6,6 +6,11 @@
   const heroLightMode = false;
   const disableScramble = prefersReducedMotion;
   window.__DDD_DISABLE_SCRAMBLE__ = disableScramble;
+  
+  // Add Safari class to body for CSS targeting
+  if (isSafari || isIOSDevice) {
+    document.documentElement.classList.add('is-safari');
+  }
 
   const navToggle = document.querySelector(".nav-toggle");
   const nav = document.getElementById("primary-nav");
@@ -532,7 +537,43 @@
     items.forEach((item) => {
       item.classList.add("animate-item");
     });
+
   });
+
+  // Cross-browser scroll animation for location images
+  const setupLocationAnimation = () => {
+    const imgWrapper = document.querySelector('.location-image-wrapper');
+    const mapWrapper = document.querySelector('.location-map-wrapper');
+    
+    if (!imgWrapper && !mapWrapper) return;
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Small delay ensures browser has rendered initial state
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              entry.target.classList.add('visible');
+            }, 50);
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { 
+      threshold: 0.15,
+      rootMargin: '0px 0px -50px 0px'
+    });
+    
+    if (imgWrapper) observer.observe(imgWrapper);
+    if (mapWrapper) observer.observe(mapWrapper);
+  };
+  
+  // Run after DOM loads
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupLocationAnimation);
+  } else {
+    setupLocationAnimation();
+  }
 
   // Observe footer
   const footer = document.querySelector(".site-footer");
@@ -592,5 +633,28 @@
   // Floating ticket button logic
   // Always visible now, so observer removed
 
+  // Radio message glitch effect
+  const glitchChars = '!@#$%&*+=-_?/\\|~`';
+  const messages = document.querySelectorAll('.radio-message');
+  
+  messages.forEach(msg => {
+    const originalText = msg.getAttribute('data-text');
+    
+    function glitchText() {
+      const chars = originalText.split('');
+      const glitched = chars.map(char => {
+        if (char === ' ') return ' ';
+        // Random chance to glitch (20%)
+        if (Math.random() < 0.2) {
+          return glitchChars[Math.floor(Math.random() * glitchChars.length)];
+        }
+        return char;
+      }).join('');
+      msg.textContent = glitched;
+    }
+    
+    // Glitch every 100ms
+    setInterval(glitchText, 100);
+  });
 
 })();
