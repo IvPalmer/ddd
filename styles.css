@@ -274,16 +274,35 @@ body {
 }
 
 /* Global background for desktop and non-iOS */
-body::before {
-  content: "";
+#ascii-bg {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
-  height: 100dvh;
-  background: var(--hero-background);
-  z-index: -1;
+  height: 100%;
+  z-index: 0;
+  pointer-events: auto; /* Allow clicks for mode toggle */
+  mix-blend-mode: overlay;
+}
+
+/* Ensure content sits above the background */
+.section, 
+.site-footer, 
+main > *:not(#ascii-bg) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Remove opaque backgrounds from alternate sections to reveal ASCII */
+.section.alt {
+  background: transparent; /* Was var(--color-surface) */
+}
+/* Re-add contrast for alt section text if needed, or rely on dark bg */
+/* For now, keeping it transparent as requested "background of site" */
+
+body::before {
+  /* Disable old background setup */
+  display: none;
 }
 
 /* Remove the in-hero overlay (no longer used on desktop) */
