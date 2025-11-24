@@ -723,12 +723,12 @@
     
     // Track occupied vertical zones to prevent stacking
     const occupiedZones = new Set();
-    const minZoneSpacing = 15; // Minimum 15% spacing between messages
+    const minZoneSpacing = 20; // Minimum 20% spacing between messages (increased)
     
     function getAvailableVerticalPosition() {
-      // Try to find a non-overlapping position (max 20 attempts)
-      for (let attempt = 0; attempt < 20; attempt++) {
-        const randomTop = 10 + Math.random() * 80;
+      // Try to find a non-overlapping position (max 30 attempts)
+      for (let attempt = 0; attempt < 30; attempt++) {
+        const randomTop = 15 + Math.random() * 70; // Reduced range for better centering
         
         // Check if this position is too close to any occupied zone
         let tooClose = false;
@@ -744,12 +744,41 @@
         }
       }
       
-      // If we couldn't find a free spot, just return a random position
-      // and clear some old zones (this shouldn't happen often)
-      if (occupiedZones.size > 5) {
-        occupiedZones.clear();
+      // If we couldn't find a free spot after 30 tries, clear oldest zones
+      // and try again with a guaranteed spaced position
+      if (occupiedZones.size >= 4) {
+        // Convert to array, sort, and find the largest gap
+        const zones = Array.from(occupiedZones).sort((a, b) => a - b);
+        const gaps = [];
+        
+        // Check gap at the beginning
+        if (zones[0] > 15 + minZoneSpacing) {
+          gaps.push({ position: 15, size: zones[0] - 15 });
+        }
+        
+        // Check gaps between zones
+        for (let i = 0; i < zones.length - 1; i++) {
+          const gapSize = zones[i + 1] - zones[i];
+          if (gapSize > minZoneSpacing * 2) {
+            gaps.push({ position: zones[i] + minZoneSpacing, size: gapSize });
+          }
+        }
+        
+        // Check gap at the end
+        if (85 - zones[zones.length - 1] > minZoneSpacing) {
+          gaps.push({ position: zones[zones.length - 1] + minZoneSpacing, size: 85 - zones[zones.length - 1] });
+        }
+        
+        // Use the largest gap
+        if (gaps.length > 0) {
+          gaps.sort((a, b) => b.size - a.size);
+          return gaps[0].position + Math.random() * Math.max(0, gaps[0].size - minZoneSpacing);
+        }
       }
-      return 10 + Math.random() * 80;
+      
+      // Fallback: return a fixed position based on how many zones are occupied
+      const fallbackPositions = [20, 40, 60, 80];
+      return fallbackPositions[occupiedZones.size % fallbackPositions.length];
     }
     
     function randomizeMessageAppearance(element, updateZones = true) {
