@@ -133,7 +133,8 @@
       '.footer-email',
       '.site-footer p',
       '.team-grid .member h3',
-      '.team-grid .member p'
+      '.team-grid .member p',
+      '.big-date-text'
     ];
 
     const elements = document.querySelectorAll(selectors.join(', '));

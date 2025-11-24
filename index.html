@@ -55,6 +55,7 @@
     <link rel="stylesheet" href="./styles.css" />
     <script defer src="./script.js"></script>
     <script defer src="./assets/js/text-scramble.js"></script>
+    <script defer src="./assets/js/hero-shader.js"></script>
   </head>
   <body>
     <header class="site-header" role="banner">
@@ -80,7 +81,9 @@
           <nav id="primary-nav" class="site-nav" aria-label="Primary">
             <a href="#idea">Projeto</a>
             <a href="#locations">Local</a>
-            <a href="#team">Equipe</a>
+            <a href="#date">Data</a>
+            <a href="#info">Info</a>
+            <a href="#tickets">Ingressos</a>
             <a href="#contact">Contato</a>
           </nav>
         </div>
@@ -91,7 +94,7 @@
       <section class="hero" aria-label="Hero">
         <div class="background-overlay" aria-hidden="true"></div>
         <div class="hero-texture" aria-hidden="true"></div>
-        <pre id="hero-ascii" class="hero-ascii" aria-hidden="true"></pre>
+        <canvas id="hero-ascii-canvas" class="hero-ascii" aria-hidden="true"></canvas>
       </section>
       <section id="idea" class="section alt with-aside grid-layer">
         <div class="section-aside" aria-hidden="true">
@@ -158,10 +161,85 @@
             >
               <figure class="asc-frame map-asc">
                 <img
-                  src="./assets/images/DDD_MAPA-V2.png"
+                  src="./assets/images/DDD_MAPA-V5_3000x2048px.png"
                   alt="Mapa de localização da Galeria Index"
                 />
               </figure>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- BIG DATE SECTION -->
+      <section id="date" class="section">
+        <div class="big-date-wrapper" aria-label="06 de dezembro">
+          <div class="big-date-container">
+            <h2 class="big-date-text">06.12</h2>
+          </div>
+        </div>
+      </section>
+
+      <!-- INFO / LINEUP SECTION -->
+      <section id="info" class="section grid-layer">
+        <div class="container prose info-content">
+          <h2>LINEUP</h2>
+          
+          <div class="info-list">
+            <div class="info-item">
+              <span class="info-label">VINIL SET</span>
+              <span class="info-value">DJ CHOKOLATY <span class="rec-icon" aria-label="Gravação">●</span></span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">DJ SET</span>
+              <span class="info-value">GG LIMONA <span class="rec-icon" aria-label="Gravação">●</span></span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">B2B</span>
+              <span class="info-value">LERISS B2B GIOGRANG <span class="rec-icon" aria-label="Gravação">●</span></span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">DJ SET</span>
+              <span class="info-value">KURUP</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">VINIL SET</span>
+              <span class="info-value">DSRPTV SOUNDSYSTEM</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">DJ SET</span>
+              <span class="info-value">DJ BALADAS</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DETAILS SECTION -->
+      <section id="details" class="section grid-layer">
+        <div class="container details-container">
+          <div class="details-grid">
+            <div class="detail-block">
+              <h3 class="detail-title">BAR</h3>
+              <p class="detail-text">SERVIÇO COMPLETO DE BAR COM DRINKS, CERVEJAS E NÃO ALCOÓLICOS.<br>ACEITAMOS PIX E CARTÃO.</p>
+            </div>
+            <div class="detail-block">
+              <h3 class="detail-title">ESTRUTURA</h3>
+              <p class="detail-text">SISTEMA DE SOM DE ALTA FIDELIDADE, ILUMINAÇÃO IMERSIVA, ÁREA DE DESCANSO E CHAPELARIA.</p>
+            </div>
+            <div class="detail-block">
+              <h3 class="detail-title">IMPORTANTE</h3>
+              <p class="detail-text">EVENTO PARA MAIORES DE 18 ANOS. OBRIGATÓRIA APRESENTAÇÃO DE DOCUMENTO COM FOTO.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TICKETS SECTION -->
+      <section id="tickets" class="section grid-layer">
+        <div class="container tickets-container">
+          <div class="tickets-content">
+            <h2>INGRESSOS</h2>
+            <a href="https://www.sympla.com.br/" target="_blank" rel="noopener noreferrer" class="button ticket-button">
+              COMPRAR INGRESSO NO SYMPLA
             </a>
           </div>
         </div>
@@ -182,7 +260,7 @@
       <div id="lightbox-caption" class="lightbox-caption"></div>
     </div>
 
-    <footer class="site-footer">
+    <footer id="contact" class="site-footer">
       <div class="container footer-inner">
         <div class="footer-contact">
           <h2>CONTATO</h2>

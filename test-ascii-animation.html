@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DDD ASCII Animation Test</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      background-color: #171819;
+      font-family: 'Courier New', monospace;
+    }
+
+    #ascii-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      background-color: transparent;
+      color: rgba(157, 240, 192, 0.6);
+      font-size: 12px;
+      line-height: 1.1;
+      white-space: pre;
+      overflow: hidden;
+      z-index: 1;
+      pointer-events: none;
+      font-family: 'Courier New', 'Courier', monospace;
+    }
+
+    .content {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #9df0c0;
+      font-family: 'Courier New', monospace;
+      font-size: 24px;
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <pre id="ascii-canvas" aria-hidden="true"></pre>
+
+  <script>
+    (function() {
+      'use strict';
+
+      // Inverted wave colors (light to dark instead of dark to light)
+      const chars = " ░▒▓█".split('');
+      const density = ' -=+abcdX';
+
+      // Helper functions for cube rendering
+      function map(value, inMin, inMax, outMin, outMax) {
+        return outMin + (outMax - outMin) * (value - inMin) / (inMax - inMin);
+      }
+
+      function vec2(x, y) {
+        return { x, y };
+      }
+
+      function vec3(x, y, z) {
+        return { x, y, z };
+      }
+
+      function vec2MulN(v, n) {
+        return vec2(v.x * n, v.y * n);
+      }
+
+      function vec3Copy(v) {
+        return vec3(v.x, v.y, v.z);
+      }
+
+      function vec3RotX(v, angle) {
+        const c = Math.cos(angle);
+        const s = Math.sin(angle);
+        return vec3(v.x, v.y * c - v.z * s, v.y * s + v.z * c);
+      }
+
+      function vec3RotY(v, angle) {
+        const c = Math.cos(angle);
+        const s = Math.sin(angle);
+        return vec3(v.x * c + v.z * s, v.y, -v.x * s + v.z * c);
+      }
+
+      function vec3RotZ(v, angle) {
+        const c = Math.cos(angle);
+        const s = Math.sin(angle);
+        return vec3(v.x * c - v.y * s, v.x * s + v.y * c, v.z);
+      }
+
+      function vec2Sub(a, b) {
+        return vec2(a.x - b.x, a.y - b.y);
+      }
+
+      function vec2Dot(a, b) {
+        return a.x * b.x + a.y * b.y;
+      }
+
+      function vec2Length(v) {
+        return Math.sqrt(v.x * v.x + v.y * v.y);
+      }
+
+      function vec2Normalize(v) {
+        const len = vec2Length(v);
+        return len > 0 ? vec2(v.x / len, v.y / len) : vec2(0, 0);
+      }
+
+      function sdSegment(p, a, b, thickness) {
+        const pa = vec2Sub(p, a);
+        const ba = vec2Sub(b, a);
+        const h = Math.max(0, Math.min(1, vec2Dot(pa, ba) / vec2Dot(ba, ba)));
+        const q = vec2Sub(pa, vec2MulN(ba, h));
+        return vec2Length(q) - thickness;
+      }
+
+      function wave(t, x, seeds, amps) {
+        return (
+          (Math.sin(t + x * seeds[0]) + 1) * amps[0] +
+          (Math.sin(t + x * seeds[1]) + 1) * amps[1] +
+          (Math.sin(t + x * seeds[2])) * amps[2]
+        );
+      }
+
+      // Cube data
+      const l = 0.6;
+      const box = {
+        vertices: [
+          vec3( l, l, l),
+          vec3(-l, l, l),
+          vec3(-l,-l, l),
+          vec3( l,-l, l),
+          vec3( l, l,-l),
+          vec3(-l, l,-l),
+          vec3(-l,-l,-l),
+          vec3( l,-l,-l)
+        ],
+        edges: [
+          [0, 1], [1, 2], [2, 3], [3, 0],
+          [4, 5], [5, 6], [6, 7], [7, 4],
+          [0, 4], [1, 5], [2, 6], [3, 7]
+        ]
+      };
+
+
+      class ASCIIAnimation {
+        constructor(element) {
+          this.element = element;
+          this.cols = 0;
+          this.rows = 0;
+          this.startTime = Date.now();
+          this.boxProj = [];
+          this.cursor = { x: 0, y: 0 };
+          
+          this.init();
+          this.animate();
+          window.addEventListener('resize', () => this.init());
+          
+          // Track mouse position for cube thickness/exp control
+          document.addEventListener('mousemove', (e) => {
+            this.cursor.x = e.clientX;
+            this.cursor.y = e.clientY;
+          });
+        }
+
+        init() {
+          const rect = this.element.getBoundingClientRect();
+          const testChar = document.createElement('span');
+          testChar.style.font = '12px/1.1 "Courier New", monospace';
+          testChar.textContent = 'M';
+          testChar.style.visibility = 'hidden';
+          testChar.style.position = 'absolute';
+          document.body.appendChild(testChar);
+          const charWidth = testChar.offsetWidth || 7.2;
+          const lineHeight = testChar.offsetHeight || 13.2;
+          document.body.removeChild(testChar);
+          
+          this.cols = Math.floor(rect.width / charWidth);
+          this.rows = Math.floor(rect.height / lineHeight);
+        }
+
+        updateCubeProjection(t) {
+          const rot = vec3(t * 0.11, t * 0.13, -t * 0.15);
+          const d = 2;
+          const zOffs = map(Math.sin(t * 0.12), -1, 1, -2.5, -6);
+          
+          for (let i = 0; i < box.vertices.length; i++) {
+            const v = vec3Copy(box.vertices[i]);
+            let vt = vec3RotX(v, rot.x);
+            vt = vec3RotY(vt, rot.y);
+            vt = vec3RotZ(vt, rot.z);
+            this.boxProj[i] = vec2MulN(vec2(vt.x, vt.y), d / (vt.z - zOffs));
+          }
+        }
+
+        getCubeChar(x, y, t) {
+          const m = Math.min(this.cols, this.rows);
+          // Account for character aspect ratio (characters are taller than wide)
+          // Need to compress x-axis to compensate, so divide by charAspect
+          const charAspect = 2.2; // Character height/width ratio
+          const aspect = (this.cols / this.rows) / charAspect;
+          
+          const st = {
+            x: 2.0 * (x - this.cols / 2 + 0.5) / m * aspect,
+            y: 2.0 * (y - this.rows / 2 + 0.5) / m,
+          };
+          
+          let d = 1e10;
+          const thickness = map(this.cursor.x, 0, window.innerWidth, 0.001, 0.1);
+          const expMul = map(this.cursor.y, 0, window.innerHeight, -100, -5);
+          
+          for (let i = 0; i < box.edges.length; i++) {
+            const a = this.boxProj[box.edges[i][0]];
+            const b = this.boxProj[box.edges[i][1]];
+            d = Math.min(d, sdSegment(st, a, b, thickness));
+          }
+          
+          const idx = Math.floor(Math.exp(expMul * Math.abs(d)) * density.length);
+          
+          if (idx === 0) {
+            // No cube visible here - return null so waves show through
+            return {
+              char: null,
+              color: null,
+              visible: false
+            };
+          } else {
+            return {
+              char: density[Math.min(idx, density.length - 1)],
+              color: 'royalblue',
+              visible: true
+            };
+          }
+        }
+
+        animate() {
+          const t = (Date.now() - this.startTime) * 0.002;
+          const tCube = (Date.now() - this.startTime) * 0.01;
+          
+          // Update cube projection
+          this.updateCubeProjection(tCube);
+          
+          let output = '';
+          
+          for (let y = 0; y < this.rows; y++) {
+            for (let x = 0; x < this.cols; x++) {
+              // Always render wave background first
+              // Horizontal waves: use x in wave function, compare y against wave values
+              const v0 = this.rows / 4 + wave(t, x, [0.15, 0.13, 0.37], [10, 8, 5]) * 0.9;
+              const v1 = v0 + wave(t, x, [0.12, 0.14, 0.27], [3, 6, 5]) * 0.8;
+              const v2 = v1 + wave(t, x, [0.089, 0.023, 0.217], [2, 4, 2]) * 0.3;
+              const v3 = v2 + wave(t, x, [0.167, 0.054, 0.147], [4, 6, 7]) * 0.4;
+              
+              // Inverted: where waves were dark, now light (and vice versa)
+              const waveChar = chars[y > v3 ? 0 : y > v2 ? 1 : y > v1 ? 2 : y > v0 ? 3 : 4];
+              
+              // Check if cube should overlay here
+              const cubeResult = this.getCubeChar(x, y, tCube);
+              
+              // Only overlay cube if it's visible and has a density character (not background)
+              if (cubeResult.visible && cubeResult.char !== null && density.includes(cubeResult.char)) {
+                output += cubeResult.char;
+              } else {
+                // Use wave background
+                output += waveChar;
+              }
+            }
+            output += '\n';
+          }
+          
+          this.element.textContent = output;
+          requestAnimationFrame(() => this.animate());
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          new ASCIIAnimation(document.getElementById('ascii-canvas'));
+        });
+      } else {
+        new ASCIIAnimation(document.getElementById('ascii-canvas'));
+      }
+    })();
+  </script>
+</body>
+</html>

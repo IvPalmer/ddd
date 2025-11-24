@@ -204,6 +204,7 @@
   --hero-ascii-color: var(--color-surface);
   --wave-bg: #6c6c6c;
   --wave-fg: #171819;
+  --section-spacing: clamp(60px, 10vh, 100px);
 }
 
 html[data-theme="legacy"] {
@@ -788,8 +789,9 @@ main {
   height: 100dvh;
   margin: 0;
   padding: 0;
-  background-color: var(--wave-bg, #6c6c6c);
+  background-color: #171819; /* Changed to black for shader consistency */
   color: var(--wave-fg, #000000);
+  /* Font styles removed/ignored for canvas, kept for fallback if needed */
   font-size: 12px;
   line-height: 1;
   white-space: pre;
@@ -805,6 +807,11 @@ main {
   letter-spacing: -0.04em;
   word-spacing: 0;
   text-shadow: 0 0 0.8px rgba(0, 0, 0, 0.45);
+}
+
+canvas.hero-ascii {
+  display: block;
+  object-fit: cover;
 }
 .hero-video {
   position: absolute;
@@ -1166,11 +1173,11 @@ main {
 
 /* Sections */
 .section {
-  padding: clamp(80px, 14vw, 140px) 0;
+  padding: var(--section-spacing) 0;
   background: transparent;
 }
 .section.alt.with-aside {
-  padding-top: clamp(24px, 5vw, 64px);
+  padding-top: var(--section-spacing);
 }
 .section.alt {
   position: relative;
@@ -1180,8 +1187,8 @@ main {
 }
 .section[id="locations"] {
   padding-inline: 0;
-  padding-top: clamp(24px, 5vw, 64px);
-  padding-bottom: clamp(24px, 4vw, 48px);
+  padding-top: var(--section-spacing);
+  padding-bottom: var(--section-spacing);
 }
 .section.alt.with-aside {
   display: grid;
@@ -1685,7 +1692,7 @@ main {
 
 /* Footer */
 .site-footer {
-  padding: clamp(40px, 8vw, 72px) 0;
+  padding: var(--section-spacing) 0;
   background: var(--bg);
 }
 
@@ -1704,7 +1711,7 @@ main {
 }
 
 .footer-contact h2 {
-  margin: 0 0 18px;
+  margin: 0;
   font-size: 22px;
   letter-spacing: 0.24em;
   font-weight: 600;
@@ -1863,5 +1870,253 @@ html[data-theme="legacy"] .ascii-output {
     font-size: 6px;
     line-height: 1.1;
   }
+}
+
+/* =========================================
+   NEW SECTIONS (Update: Nov 2024)
+   ========================================= */
+
+/* BIG DATE SECTION */
+#date.section {
+  padding: 0;
+}
+
+.big-date-wrapper {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.big-date-container {
+  width: 100%;
+  min-height: auto;
+  padding: clamp(10px, 2vh, 30px) 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Increased specificity */
+#date .big-date-text {
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  padding-inline: 0;
+  font-family: "FK Grotesk", sans-serif;
+  font-weight: 900;
+  font-size: 24vw;
+  line-height: 0.8;
+  color: var(--color-text);
+  text-align: center;
+  letter-spacing: -0.05em;
+  text-transform: none;
+  white-space: nowrap;
+  user-select: none;
+  display: block;
+  transform-origin: center;
+  transition: transform 0.6s cubic-bezier(0.215, 0.61, 0.355, 1);
+  padding-top: 0.05em;
+}
+
+#date .big-date-text:hover {
+  transform: scale(1.015);
+  color: var(--color-accent);
+  cursor: default;
+}
+
+@media (max-width: 768px) {
+  #date .big-date-text {
+    font-size: clamp(72px, 28vw, 200px);
+    letter-spacing: -0.03em;
+  }
+}
+
+/* INFO SECTION */
+#info.section {
+  display: block;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--section-spacing) 24px;
+  box-sizing: border-box;
+}
+
+#info .section-aside {
+  display: none;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(32px, 5vw, 48px);
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.info-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-border);
+}
+
+.info-item {
+  display: grid;
+  grid-template-columns: minmax(140px, 200px) 1fr;
+  align-items: baseline;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: clamp(14px, 2vw, 20px);
+  transition: background-color 0.2s ease;
+  gap: 24px;
+}
+
+.info-item:hover {
+  background-color: rgba(157, 240, 192, 0.05);
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.info-label {
+  color: var(--color-text-muted);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  font-size: 0.85em;
+  text-transform: uppercase;
+}
+
+.info-value {
+  color: var(--color-text);
+  font-weight: 700;
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* DETAILS SECTION */
+#details.section {
+  padding: var(--section-spacing) 24px;
+  display: block;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.details-container {
+  width: 100%;
+  padding: 0;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(24px, 4vw, 48px);
+  border-top: 1px solid var(--color-border);
+  padding-top: 32px;
+}
+
+.detail-block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.detail-title {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--color-accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0;
+  font-weight: 600;
+}
+
+.detail-text {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* TICKETS SECTION */
+.tickets-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  /* padding removed to avoid double padding with .section */
+}
+
+.tickets-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  max-width: 600px;
+}
+
+.tickets-text {
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
+  margin-bottom: 16px;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ticket-button {
+  font-size: clamp(16px, 2vw, 20px);
+  padding: 20px 40px;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border: 1px solid var(--color-accent);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+  box-shadow: 0 0 20px rgba(157, 240, 192, 0.2);
+}
+
+.ticket-button:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 0 40px rgba(157, 240, 192, 0.5);
+  background: var(--color-bg);
+  color: var(--color-accent);
+}
+
+.tickets-content h2 {
+  letter-spacing: 0.05em;
+  margin-bottom: 0;
+}
+
+/* REC Icon Style */
+.rec-icon {
+  color: #ff3333;
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 0.8em;
+  vertical-align: middle;
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 

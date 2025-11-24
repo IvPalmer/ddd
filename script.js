@@ -151,8 +151,33 @@
           this.animationHandle = null;
           this.densityScale = this.lightMode ? 1.35 : 1;
           
-          this.init();
-          this.startAnimation();
+          // Hide initially to prevent FOUC/glitch
+          this.element.style.opacity = '0';
+          this.element.style.transition = 'opacity 0.4s ease-out';
+          
+          const start = () => {
+            // First pass calculation
+            this.init();
+            this.startAnimation();
+            
+            // Safety delay for Safari layout stability
+            setTimeout(() => {
+              this.init(); // Recalculate metrics
+              // Show only after stabilization
+              requestAnimationFrame(() => {
+                this.element.style.opacity = '1';
+              });
+            }, 150);
+          };
+
+          // Wait for fonts to load before initializing to ensure correct char metrics
+          if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(start);
+          } else {
+            // Fallback for older browsers
+            window.addEventListener('load', start);
+          }
+
           window.addEventListener('resize', () => this.init());
           
           // Track mouse position for cube thickness/exp control
