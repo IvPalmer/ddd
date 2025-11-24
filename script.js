@@ -664,8 +664,8 @@
     { text: "aff dj chokolaty lenda", weight: 10 },
     { text: "leriss e gio patrimonios de bsb!!", weight: 10 },
     { text: "nice dreams melhor bar da cidade", weight: 10 },
-    // Rare message - appears less often
-    { text: "boiler room de c* é rola amiga vamo pra ddd", weight: 2 }
+    // Rare message - appears much less often
+    { text: "boiler room de c* é rola amiga vamo pra ddd", weight: 1 }
   ];
   
   // Weighted random selection
@@ -682,9 +682,11 @@
   
   if (messages.length > 0) {
     let lastGlitchTime = 0;
+    let lastMessageChangeTime = 0;
     const glitchInterval = 100; // ms between glitch updates
+    const messageChangeInterval = 12000; // Change messages every 12 seconds
     
-    // Assign random messages to each element
+    // Initialize messages data
     const messagesData = Array.from(messages).map(msg => {
       const randomText = getRandomMessage();
       msg.setAttribute('data-text', randomText);
@@ -707,12 +709,30 @@
       data.element.textContent = glitched;
     }
     
+    function updateRandomMessage() {
+      // Pick a random message element to update
+      const randomIndex = Math.floor(Math.random() * messagesData.length);
+      const data = messagesData[randomIndex];
+      
+      // Get a new random message (might be the same, that's okay)
+      const newText = getRandomMessage();
+      data.originalText = newText;
+      data.element.setAttribute('data-text', newText);
+    }
+    
     function glitchLoop(timestamp) {
+      // Update glitch effect
       if (timestamp - lastGlitchTime >= glitchInterval) {
-        // Batch update all messages at once
         messagesData.forEach(data => glitchText(data));
         lastGlitchTime = timestamp;
       }
+      
+      // Randomly cycle through messages
+      if (timestamp - lastMessageChangeTime >= messageChangeInterval) {
+        updateRandomMessage();
+        lastMessageChangeTime = timestamp;
+      }
+      
       requestAnimationFrame(glitchLoop);
     }
     
