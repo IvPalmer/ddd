@@ -2130,3 +2130,20 @@ html[data-theme="legacy"] .ascii-output {
   50% { opacity: 0.4; }
 }
 
+/* Generic Hover Effect (Movement only) */
+.hover-effect {
+  display: block;
+  transition: transform var(--transition-medium);
+  /* Ensure rounded corners are respected if present */
+  overflow: hidden; 
+}
+.hover-effect:hover {
+  transform: translateY(-4px);
+}
+.hover-effect img {
+  transition: transform var(--transition-medium);
+}
+.hover-effect:hover img {
+  transform: scale(1.07);
+}
+
