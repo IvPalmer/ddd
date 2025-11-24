@@ -165,6 +165,17 @@ const initHeroShader = () => {
     video.play().catch(e => console.log("Video play error:", e));
   });
   
+  // Android autoplay fallback
+  const onInteraction = () => {
+    if (video.paused) {
+        video.play().catch(() => {});
+    }
+    document.removeEventListener('click', onInteraction);
+    document.removeEventListener('touchstart', onInteraction);
+  };
+  document.addEventListener('click', onInteraction);
+  document.addEventListener('touchstart', onInteraction);
+
   video.load();
 
   const texture = gl.createTexture();
@@ -174,7 +185,7 @@ const initHeroShader = () => {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255]));
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 0]));
 
   // New optimized render loop using requestVideoFrameCallback
   const updateTexture = () => {

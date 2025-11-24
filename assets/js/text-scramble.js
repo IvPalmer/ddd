@@ -96,9 +96,6 @@
             const chars = text.split('');
             
             chars.forEach((char, index) => {
-                // Preserve spaces but don't scramble them? 
-                // Or wrap spaces too to keep layout consistent?
-                // Wrapping spaces is safer for spacing.
                 const span = document.createElement('span');
                 span.textContent = char;
                 
@@ -124,13 +121,13 @@
 
     Array.from(element.childNodes).forEach(child => processNode(child));
 
-    // Optional: add cascade effect on container touch
-    if (!element.matches('.project-intro')) {
+    // Only apply full-container touch effect to headings and special elements
+    // to avoid massive glitching on long paragraphs
+    if (element.matches('h1, h2, h3, .hero-heading, .hero-meta, .hero-lineup, #terminal-title, .button')) {
         element.addEventListener(
             'touchstart',
             () => {
               allScramblers.forEach((scrambler, idx) => {
-                // Randomize or sequential start
                 if (Math.random() > 0.7) {
                     window.setTimeout(() => scrambler.start(), idx * 2);
                 }
