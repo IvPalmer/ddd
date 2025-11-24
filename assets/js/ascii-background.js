@@ -46,7 +46,7 @@
     // Interaction
     const toggleMode = (e) => {
         // Toggle mode on click, unless clicking a link, button, or interactive element
-        if (!e.target.closest('a, button, .lightbox, .nav-toggle, input, textarea, .map-link')) {
+        if (!e.target.closest('a, button, .lightbox, .nav-toggle, input, textarea, .map-link, .floating-ticket-btn')) {
             mode = (mode + 1) % 3;
         }
     };
@@ -55,7 +55,6 @@
     
     // Also listen for touchend to ensure responsiveness on mobile
     window.addEventListener('touchend', (e) => {
-        // Logic handled by click usually, keeping listener for consistency if needed
     }, { passive: true });
 
     // Main render loop
@@ -66,7 +65,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         // Style
-        ctx.fillStyle = 'rgba(225, 255, 237, 0.12)'; // Reduced opacity
+        ctx.fillStyle = 'rgba(225, 255, 237, 0.12)'; // Reduced opacity for subtler effect
         ctx.font = font;
 
         const m = min(cols, rows);

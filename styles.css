@@ -1189,38 +1189,7 @@ canvas.hero-ascii {
   left: 0;
 }
 
-/* Floating Ticket Button */
-.floating-ticket-button {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 100;
-  background: var(--color-accent);
-  color: var(--color-bg);
-  border: 1px solid var(--color-accent);
-  font-weight: 700;
-  letter-spacing: -0.05em !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-}
-
-.floating-ticket-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(157, 240, 192, 0.3);
-  background: var(--color-accent);
-  color: var(--color-bg);
-}
-
-.floating-ticket-button::before {
-  display: none; /* Disable the slide animation for the floating button to keep it solid */
-}
-
-@media (max-width: 768px) {
-  .floating-ticket-button {
-    bottom: 20px;
-    right: 20px;
-    padding: 12px 20px;
-  }
-}
+/* CTA Button - animation handled by JS */
 
 /* Sections */
 .section {
@@ -1232,9 +1201,29 @@ canvas.hero-ascii {
 }
 .section.alt {
   position: relative;
-  background: var(--color-surface);
+  background: rgba(127, 127, 127, 0.25);
+  backdrop-filter: blur(3px);
   color: var(--color-text);
   padding-inline: clamp(32px, 8vw, 160px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section[id="locations"] img {
+  mix-blend-mode: screen;
+  opacity: 0.6;
+  transition: filter 0.3s ease;
+  pointer-events: none; /* Disable interaction for regular image */
+}
+
+.location-map img {
+  pointer-events: auto; /* Re-enable for map if link is present, though link handles click */
+}
+
+.location-map .hover-effect:hover img {
+  transform: none;
+  filter: sepia(1) hue-rotate(90deg) saturate(1.5) brightness(1.1); /* Mint tone shift */
+  opacity: 0.6; /* Keep transparent */
 }
 .section[id="locations"] {
   padding-inline: 0;
@@ -1354,7 +1343,7 @@ canvas.hero-ascii {
   font-weight: 600;
 }
 .section[id="locations"] h2 {
-  margin-bottom: clamp(32px, 5vw, 48px);
+  margin-bottom: 18px;
 }
 .section p {
   margin: 0 0 18px;
@@ -1605,9 +1594,9 @@ canvas.hero-ascii {
   border-radius: var(--radius-sm);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
-  opacity: 0;
-  transform: translateY(20px);
-  pointer-events: none;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .floating-ticket-btn.visible {
@@ -2065,14 +2054,7 @@ html[data-theme="legacy"] .ascii-output {
   border-bottom: 1px solid var(--color-border);
   font-family: var(--font-mono);
   font-size: clamp(14px, 2vw, 20px);
-  transition: background-color 0.2s ease;
   gap: 24px;
-}
-
-.info-item:hover {
-  background-color: transparent;
-  padding-left: 0;
-  padding-right: 0;
 }
 
 .info-label {
@@ -2114,6 +2096,14 @@ html[data-theme="legacy"] .ascii-output {
   padding-top: 32px;
 }
 
+.collaborators-section {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0.7;
+  text-align: center;
+}
+
 .detail-block {
   display: flex;
   flex-direction: column;
@@ -2150,6 +2140,11 @@ html[data-theme="legacy"] .ascii-output {
 }
 
 /* TICKETS SECTION */
+#tickets.section {
+  padding-top: 0;
+  padding-bottom: var(--section-spacing);
+}
+
 .tickets-container {
   display: flex;
   justify-content: center;
@@ -2212,7 +2207,8 @@ html[data-theme="legacy"] .ascii-output {
 .rec-icon {
   color: #ff3333;
   display: inline-block;
-  margin-left: 8px;
+  margin-right: 8px;
+  margin-left: 0;
   font-size: 0.8em;
   vertical-align: middle;
   animation: blink 2s infinite;
