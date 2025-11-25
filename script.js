@@ -12,6 +12,46 @@
     document.documentElement.classList.add('is-safari');
   }
 
+  // Initialize Lenis smooth scroll
+  let lenis = null;
+  
+  function initLenis() {
+    if (!prefersReducedMotion && typeof Lenis !== 'undefined') {
+      // Add lenis class to html element
+      document.documentElement.classList.add('lenis', 'lenis-smooth');
+      
+      lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        smoothTouch: false,
+        touchMultiplier: 2,
+        infinite: false,
+      });
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+      
+      console.log('Lenis initialized successfully');
+    } else if (typeof Lenis === 'undefined') {
+      console.warn('Lenis library not loaded');
+    }
+  }
+  
+  // Initialize Lenis immediately or wait for it to load
+  if (typeof Lenis !== 'undefined') {
+    initLenis();
+  } else {
+    // Wait a bit for Lenis to load (since scripts are deferred)
+    setTimeout(initLenis, 100);
+  }
+
   const navToggle = document.querySelector(".nav-toggle");
   const nav = document.getElementById("primary-nav");
   if (navToggle && nav) {
@@ -21,7 +61,7 @@
     });
   }
 
-  // Smooth scroll (respects reduced motion)
+  // Smooth scroll with Lenis (respects reduced motion)
   if (!prefersReducedMotion) {
     document.querySelectorAll('a[href^="#"]').forEach((a) => {
       a.addEventListener("click", (e) => {
@@ -30,7 +70,16 @@
         const target = document.querySelector(id);
         if (!target) return;
         e.preventDefault();
-        target.scrollIntoView({ behavior: "smooth" });
+        
+        // Use Lenis if available, fallback to native smooth scroll
+        if (lenis) {
+          lenis.scrollTo(target, {
+            offset: 0,
+            duration: 1.2
+          });
+        } else {
+          target.scrollIntoView({ behavior: "smooth" });
+        }
       });
     });
   }
