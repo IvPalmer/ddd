@@ -1,4 +1,4 @@
-# DDD — Discagem Direta a Distancia
+# DDD — Discagem Direta à Distância
 
 Static site scaffold for a boiler room–style broadcast project in Brasília.
 
