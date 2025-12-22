@@ -703,7 +703,7 @@
     // Original messages
     { text: "eai ja ouviu falar da ddd?", weight: 8 },
     { text: "fiquei sabendo que vai ser na galeria index!!", weight: 10 },
-    { text: "vai ser dia 06.12 as 21h ate umas 4h", weight: 10 },
+    { text: "vai ser dia 24.01 as 21h ate umas 4h", weight: 10 },
     { text: "ai brasilia tava precisando de um rolezinho novo ne?!", weight: 4 },
     { text: "gg limona tudo pra mim", weight: 10 },
     { text: "unexpected beats drive our minds and bodies", weight: 6 },
