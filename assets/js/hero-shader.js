@@ -150,9 +150,8 @@ const initHeroShader = () => {
   const uScreenRatio = gl.getUniformLocation(program, 'uScreenRatio');
   const uVideoRatio = gl.getUniformLocation(program, 'uVideoRatio');
 
-  const isMobile = window.innerWidth <= 768;
-  const charWidth = isMobile ? 5.4 : 5.4;
-  const charHeight = isMobile ? 9.0 : 9.0;
+  const charWidth = 5.4;
+  const charHeight = 9.0;
 
   const video = document.createElement('video');
   video.src = '/assets/asciivideo/resources/DDD_3D-LOGO_ROTATE_V3.mp4';

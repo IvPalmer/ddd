@@ -15,18 +15,10 @@
 }
 
 .footer-contact .button:hover {
-  color: var(--footer-button-hover-text, var(--color-text-inverse));
-  background: var(--footer-button-hover, var(--color-accent));
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
-  transform: translateY(-2px);
-}
-.footer-contact .button::before {
-  background: var(--color-accent);
-}
-
-.footer-contact .button:hover {
   color: var(--color-text-inverse);
+  background: var(--footer-button-hover, var(--color-accent));
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  transform: translateY(-2px);
   border-color: var(--color-accent);
 }
 .team-wrapper {

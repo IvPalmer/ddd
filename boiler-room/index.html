@@ -180,9 +180,8 @@
 
           // Use larger characters on mobile for better readability
           // Maintain proper aspect ratio: width is ~0.6 of height for monospace
-          const isMobile = window.innerWidth <= 768;
-          const charWidth = isMobile ? 5.4 : 5.4;
-          const charHeight = isMobile ? 9.0 : 9.0;
+          const charWidth = 5.4;
+          const charHeight = 9.0;
 
           let imageLoaded = false;
           const texture = gl.createTexture();
