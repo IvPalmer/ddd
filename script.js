@@ -215,22 +215,22 @@
   
   // Message pool with varying probabilities
   const messagePool = [
-    // Original messages
-    { text: "eai ja ouviu falar da ddd?", weight: 8 },
-    { text: "fiquei sabendo que vai ser na galeria index!!", weight: 10 },
-    { text: "vai ser dia 24.01 as 21h ate umas 4h", weight: 10 },
-    { text: "ai brasilia tava precisando de um rolezinho novo ne?!", weight: 4 },
-    { text: "gg limona tudo pra mim", weight: 10 },
-    { text: "unexpected beats drive our minds and bodies", weight: 6 },
-    { text: "eu amo kurup!!", weight: 7 },
-    { text: "aff dj chokolaty lenda", weight: 10 },
-    { text: "leriss e gio patrimonios de bsb!!", weight: 10 },
-    { text: "nice dreamks melhor bar da cidade mona", weight: 10 },
-    { text: "bolsonaro na cadeiaaaa", weight: 4 },
-    { text: "boiler room de c* é rola amiga vamo pra ddd", weight: 2 },
-    { text: "dsrptv sundsystem é o palmer ne?", weight: 5 },
-    { text: "vamo chegar cedo ne pra dar close nas gravações", weight: 8 },
-    { text: "ingresso muito barato ne? 30 reais os 50 primeiros!", weight: 7 },
+    // Post-event messages
+    { text: "mano quando é a próxima??", weight: 10 },
+    { text: "nossa foi mto bommm", weight: 10 },
+    { text: "quero de novo!!", weight: 8 },
+    { text: "a vibe tava insana", weight: 8 },
+    { text: "brasília precisa de mais ddd", weight: 10 },
+    { text: "melhor noite do ano ate agora", weight: 8 },
+    { text: "o set do chokolaty me destruiu", weight: 7 },
+    { text: "gg limona não tem explicação", weight: 7 },
+    { text: "leriss e gio acabaram comigo", weight: 7 },
+    { text: "kurup fechou a noite demais", weight: 7 },
+    { text: "galeria index é o lugar certo", weight: 6 },
+    { text: "já quero ingresso da próxima", weight: 8 },
+    { text: "assistiu o aftermovie?? ficou lindo", weight: 6 },
+    { text: "sem celular foi a melhor decisão", weight: 5 },
+    { text: "nice dreamks melhor bar da cidade", weight: 6 },
   ];
   
   // Weighted random selection with exclusion list

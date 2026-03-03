@@ -1226,11 +1226,11 @@ canvas.hero-ascii {
   align-items: start;
 }
 .section.alt.with-aside > .container.prose {
-  max-width: 640px;
-  padding-left: 0;
+  max-width: 720px;
+  padding-left: clamp(20px, 6vw, 80px);
   padding-right: clamp(20px, 6vw, 80px);
   margin-left: auto;
-  margin-right: clamp(24px, 6vw, 120px);
+  margin-right: auto;
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -1280,10 +1280,10 @@ canvas.hero-ascii {
   width: 100%;
 }
 .section.alt.with-aside > .container.prose {
-  max-width: 640px;
+  max-width: 720px;
   padding-right: clamp(20px, 6vw, 80px);
   margin-left: auto;
-  margin-right: clamp(24px, 6vw, 120px);
+  margin-right: auto;
 }
 .section.alt:not(.with-aside) > .container {
   width: min(100%, var(--max-width));
@@ -1411,11 +1411,24 @@ canvas.hero-ascii {
 
 .locations-container > h2 {
   margin-top: 0;
-  margin-bottom: clamp(40px, 6vw, 64px);
-  text-align: left;
-  font-size: clamp(48px, 8vw, 96px); /* Significantly bigger font */
-  line-height: 0.9;
-  letter-spacing: -0.02em;
+  margin-bottom: clamp(24px, 4vw, 40px);
+  text-align: center;
+  font-size: clamp(24px, 4vw, 48px);
+  line-height: 1;
+  letter-spacing: 0.05em;
+}
+
+.video-embed-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+}
+
+.video-embed-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 /* Radio Message Travel - Left to Right */
@@ -2546,13 +2559,12 @@ html[data-theme="legacy"] .ascii-output {
   padding-inline: 0;
   font-family: "FK Grotesk", sans-serif;
   font-weight: 900;
-  font-size: 24vw;
+  font-size: clamp(48px, 14vw, 260px);
   line-height: 0.8;
   color: var(--color-text);
   text-align: center;
   letter-spacing: -0.05em;
   text-transform: none;
-  white-space: nowrap;
   user-select: none;
   display: block;
   transform-origin: center;
@@ -2568,7 +2580,7 @@ html[data-theme="legacy"] .ascii-output {
 
 @media (max-width: 768px) {
   #date .big-date-text {
-    font-size: clamp(72px, 28vw, 200px);
+    font-size: clamp(36px, 12vw, 120px);
     letter-spacing: -0.03em;
   }
 }
