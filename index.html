@@ -52,9 +52,13 @@
     <meta name="twitter:site" content="@ddd" />
     <meta name="twitter:creator" content="@ddd" />
 
-    <link rel="stylesheet" href="./styles.css?v=4" />
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="./assets/fonts/FKGrotesk-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./assets/fonts/FTSystemMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+
+    <link rel="stylesheet" href="./styles.css?v=5" />
     <!-- Lenis Smooth Scroll -->
-    <script defer src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+    <script defer src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" integrity="sha384-B2WBjDzEjJpYvhmi2UyEn7rektqkf5suS6sNoyyrf0EBAwBHdkiXxIlU0V5Ru2ed" crossorigin="anonymous"></script>
     <script defer src="./script.js?v=5"></script>
     <script defer src="./assets/js/text-scramble.js?v=4"></script>
     <script defer src="./assets/js/hero-shader.js?v=4"></script>
@@ -66,7 +70,7 @@
         <a class="brand" href="#home" aria-label="DDD home">
           <img
             class="brand-mark"
-            src="./assets/logo-symbol-green.png"
+            src="./assets/logo-symbol-green@256.png"
             alt="DDD symbol"
             width="40"
             height="40"
@@ -83,7 +87,7 @@
         <div class="header-actions">
           <nav id="primary-nav" class="site-nav" aria-label="Primary">
             <a href="#idea">Projeto</a>
-            <a href="#locations">Local</a>
+            <a href="#sets">Sets</a>
             <a href="#date">Data</a>
             <a href="#contact">Contato</a>
           </nav>
@@ -123,56 +127,51 @@
         </div>
       </section>
 
-      <section id="locations" class="section grid-layer">
-        <div class="container locations-container">
-          <!-- <h2>DDD 001</h2> -->
-          <!-- Location content commented out for post-event state
-          <div class="locations-layout">
-            <div class="location-image-wrapper">
-              <figure class="location-image-frame" aria-label="GALERIA INDEX">
+      <!-- SETS SECTION -->
+      <section id="sets" class="section grid-layer sets-section">
+        <div class="container sets-container">
+          <div class="sets-header">
+            <h2>DDD 001</h2>
+            <span class="sets-tag">GALERIA INDEX — BRASÍLIA</span>
+          </div>
+          <div class="sets-grid">
+            <div class="set-card">
+              <div class="set-video-wrapper yt-facade" data-id="H7BY5JJu_Zg">
+                <div class="set-scanlines" aria-hidden="true"></div>
                 <img
-                  src="./assets/images/DDD_IMAGES-INDEX_V6_3000x1651px.png"
-                  alt="Galeria Index"
-                  width="3000"
-                  height="1651"
+                  src="https://i.ytimg.com/vi/H7BY5JJu_Zg/hqdefault.jpg"
+                  alt="DDD 001 — Aftermovie"
                   loading="lazy"
+                  class="yt-facade-thumb"
                 />
-              </figure>
-              <div class="location-info">
-                <p class="location-name">GALERIA INDEX</p>
-                <p class="location-address">Térreo, SCS Qd 01 Ed. Morro Vermelho - Asa Sul, Brasília - DF, 70399-900</p>
+                <button class="yt-facade-play" aria-label="Reproduzir vídeo">
+                  <svg viewBox="0 0 68 48" width="68" height="48"><path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="red"/><path d="M45 24 27 14v20" fill="#fff"/></svg>
+                </button>
+              </div>
+              <div class="set-meta">
+                <span class="set-artist">AFTERMOVIE</span>
+                <span class="set-type">DDD 001</span>
               </div>
             </div>
-            <div class="location-map-wrapper">
-              <figure class="location-map-frame">
-                <a
-                  class="map-link"
-                  href="https://maps.app.goo.gl/wQyF3Tp76j9vRA7W9"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Abrir mapa no Google Maps"
-                >
-                  <img
-                    src="./assets/images/DDD_MAPA-V5_3000x2048px.png"
-                    alt="Mapa de localização da Galeria Index"
-                    width="3000"
-                    height="2048"
-                    loading="lazy"
-                  />
-                </a>
-              </figure>
+            <div class="set-card">
+              <div class="set-video-wrapper yt-facade" data-id="kpv-9T7ocMQ">
+                <div class="set-scanlines" aria-hidden="true"></div>
+                <img
+                  src="https://i.ytimg.com/vi/kpv-9T7ocMQ/hqdefault.jpg"
+                  alt="DDD 61.01 @ Index — Leriss b2b Giograng"
+                  loading="lazy"
+                  class="yt-facade-thumb"
+                />
+                <button class="yt-facade-play" aria-label="Reproduzir vídeo">
+                  <svg viewBox="0 0 68 48" width="68" height="48"><path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="red"/><path d="M45 24 27 14v20" fill="#fff"/></svg>
+                </button>
+              </div>
+              <div class="set-meta">
+                <span class="set-artist">LERISS B2B GIOGRANG</span>
+                <span class="set-type">DJ SET</span>
+                <span class="set-rec">● REC</span>
+              </div>
             </div>
-          </div>
-          -->
-          <div class="video-embed-wrapper">
-            <iframe
-              src="https://www.youtube.com/embed/H7BY5JJu_Zg"
-              title="DDD 001 — Aftermovie"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-              loading="lazy"
-            ></iframe>
           </div>
         </div>
       </section>
@@ -242,7 +241,7 @@
             <div class="detail-block">
               <h3 class="detail-title">DINÂMICA</h3>
               <p class="detail-text">
-                CHEGUE CEDO. COMEÇAMOS A GRAVAR ÀS 23H.<br>
+                CHEGUE CEDO. AS GRAVAÇÕES COMEÇAM NO HORÁRIO.<br>
                 EVITE O FLUXO DE ENTRADA DURANTE AS FILMAGENS.
               </p>
             </div>
@@ -260,14 +259,14 @@
               <p class="detail-text">
                 • PROIBIDO FUMAR NAS ÁREAS INTERNAS.<br>
                 • USE OS BANHEIROS COM CUIDADO.<br>
-                • VAMOS PRESERVAR O SCS (SETOR COMERCIAL SUL) COMO TERRITÓRIO VIVO DA ARTE.
+                • VAMOS PRESERVAR CADA ESPAÇO COMO TERRITÓRIO VIVO DA ARTE.
               </p>
             </div>
 
             <div class="detail-block">
               <h3 class="detail-title">USO DE CELULARES</h3>
               <p class="detail-text">
-                • NA ENTRADA, CÂMERAS SERÃO ADESIVADAS.<br>
+                • NA ENTRADA, CÂMERAS SÃO ADESIVADAS.<br>
                 • FOTOS E VÍDEOS NÃO SÃO PERMITIDOS.<br><br>
                 GARANTIA DE FOCO, PRIVACIDADE E RESPEITO AO TRABALHO AUDIOVISUAL.
               </p>
@@ -287,7 +286,7 @@
               <h3 class="detail-title">IMPORTANTE</h3>
               <p class="detail-text">
                 EVENTO INDEPENDENTE E SEM FINS LUCRATIVOS. TODA A ARRECADAÇÃO É DESTINADA AOS ARTISTAS E EQUIPE TÉCNICA.<br><br>
-                AO ADQUIRIR O INGRESSO, VOCÊ ACEITA O TERMO DE USO DE IMAGEM E SOM.
+                AO PARTICIPAR, VOCÊ ACEITA O TERMO DE USO DE IMAGEM E SOM.
               </p>
             </div>
 
@@ -340,9 +339,14 @@
             >CONTACT@DDD.IN.NET</a
           >
           <a class="button" href="mailto:contact@ddd.in.net">ENVIAR&nbsp;&nbsp;E-MAIL</a>
-          <a href="https://www.instagram.com/ddd.in.fm/?hl=en" target="_blank" rel="noopener noreferrer" aria-label="Instagram" style="margin-top: 12px;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-          </a>
+          <div class="footer-socials">
+            <a href="https://www.instagram.com/ddd.in.fm/?hl=en" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            </a>
+            <a href="https://www.youtube.com/@DDD-IN-NET" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19.13C5.12 19.56 12 19.56 12 19.56s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.43z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+            </a>
+          </div>
         </div>
         <p>© <span id="year"></span> DDD — DISCAGEM DIRETA À DISTÂNCIA</p>
       </div>

@@ -78,6 +78,27 @@
     });
   }
 
+  // YouTube facade — load iframe on click
+  document.querySelectorAll('.yt-facade').forEach(function(facade) {
+    facade.addEventListener('click', function() {
+      var id = facade.getAttribute('data-id');
+      if (!id) return;
+      var iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      iframe.style.border = '0';
+      iframe.style.position = 'absolute';
+      iframe.style.inset = '0';
+      facade.textContent = '';
+      facade.appendChild(iframe);
+      facade.classList.remove('yt-facade');
+    });
+  });
+
   // Footer year
   const y = document.getElementById("year");
   if (y) y.textContent = String(new Date().getFullYear());
@@ -467,6 +488,7 @@
     
     requestAnimationFrame(glitchLoop);
   }
+
 
 })();
 

@@ -74,16 +74,6 @@
 @font-face {
   font-family: "FK Grotesk";
   src:
-    url("./assets/fonts/FKGrotesk-Light.woff2") format("woff2"),
-    url("./assets/fonts/FKGrotesk-Light.woff") format("woff");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "FK Grotesk";
-  src:
     url("./assets/fonts/FKGrotesk-Regular.woff2") format("woff2"),
     url("./assets/fonts/FKGrotesk-Regular.woff") format("woff");
   font-weight: 400;
@@ -107,16 +97,6 @@
     url("./assets/fonts/FKGrotesk-Bold.woff2") format("woff2"),
     url("./assets/fonts/FKGrotesk-Bold.woff") format("woff");
   font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "FK Grotesk";
-  src:
-    url("./assets/fonts/FKGrotesk-Black.woff2") format("woff2"),
-    url("./assets/fonts/FKGrotesk-Black.woff") format("woff");
-  font-weight: 900;
   font-style: normal;
   font-display: swap;
 }
@@ -1001,7 +981,7 @@ canvas.hero-ascii {
 #cursor {
   color: var(--color-accent);
   animation: blink 1s infinite;
-  font-weight: 300;
+  font-weight: 400;
   display: inline;
 }
 
@@ -1429,6 +1409,155 @@ canvas.hero-ascii {
   width: 100%;
   height: 100%;
   border: 0;
+}
+
+/* ── SETS SECTION ── */
+.sets-section {
+  padding-block: clamp(48px, 8vw, 96px);
+}
+
+.sets-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sets-header {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(12px, 2vw, 24px);
+  margin-bottom: clamp(24px, 4vw, 48px);
+  border-bottom: 1px solid rgba(225, 255, 237, 0.12);
+  padding-bottom: 16px;
+}
+
+.sets-header h2 {
+  margin: 0;
+  font-size: clamp(24px, 4vw, 48px);
+  letter-spacing: 0.08em;
+}
+
+.sets-tag {
+  font-family: "FT System Mono", "IBM Plex Mono", monospace;
+  font-size: clamp(10px, 1.2vw, 13px);
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.sets-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(16px, 2vw, 24px);
+}
+
+@media (max-width: 768px) {
+  .sets-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.set-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.set-video-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #0a0a0a;
+}
+
+.set-video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* YouTube facade (lightweight thumbnail until click) */
+.yt-facade {
+  cursor: pointer;
+}
+
+.yt-facade-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.yt-facade-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+  opacity: 0.85;
+  transition: opacity 0.2s, transform 0.2s;
+  padding: 0;
+}
+
+.yt-facade:hover .yt-facade-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.set-scanlines {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.set-video-wrapper:hover .set-scanlines {
+  opacity: 1;
+}
+
+.set-meta {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 3vw, 32px);
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(225, 255, 237, 0.08);
+  font-family: "FT System Mono", "IBM Plex Mono", monospace;
+  font-size: clamp(11px, 1.2vw, 14px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.set-artist {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.set-type {
+  color: var(--color-text-muted);
+}
+
+.set-rec {
+  color: #ff3b3b;
+  font-size: 0.85em;
+  animation: recBlink 2s ease-in-out infinite;
+  margin-left: auto;
+}
+
+@keyframes recBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
 
 /* Radio Message Travel - Left to Right */
@@ -2381,6 +2510,23 @@ canvas.hero-ascii {
   color: var(--color-accent);
 }
 
+.footer-socials {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.footer-socials a {
+  color: var(--color-text);
+  transition: color 0.3s, transform 0.3s;
+}
+
+.footer-socials a:hover {
+  color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
 .footer-contact .button {
   margin-top: 0;
   letter-spacing: -0.02em !important;
@@ -2558,7 +2704,7 @@ html[data-theme="legacy"] .ascii-output {
   box-sizing: border-box;
   padding-inline: 0;
   font-family: "FK Grotesk", sans-serif;
-  font-weight: 900;
+  font-weight: 700;
   font-size: clamp(48px, 14vw, 260px);
   line-height: 0.8;
   color: var(--color-text);
