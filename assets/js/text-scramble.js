@@ -166,7 +166,11 @@
       '.info-label',
       '.info-value',
       '.tickets-text',
-      '.ticket-button'
+      '.ticket-button',
+      '.sets-tag',
+      '.set-artist',
+      '.set-type',
+      '.set-rec'
     ];
 
     const elements = document.querySelectorAll(selectors.join(', '));
