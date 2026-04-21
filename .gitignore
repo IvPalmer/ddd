@@ -1,3 +1,12 @@
 .DS_Store
 **/.DS_Store
 
+
+# VPS deploy: exclude heavy local-only research artifacts
+JacflxOZHbg.mp4
+JacflxOZHbg.en.vtt
+recordings/
+screenshots/
+firebase-debug.log
+node_modules/
+.DS_Store
