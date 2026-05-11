@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DDD — Pretext ASCII Hero Demo v2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --color-bg: #171819;
+    --color-text: #e1ffed;
+    --color-text-muted: rgba(225, 255, 237, 0.55);
+    --color-border: rgba(225, 255, 237, 0.15);
+    --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  }
+
+  html, body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .hero {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .site-header {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 32px;
+    background: rgba(23, 24, 25, 0.5);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(225, 255, 237, 0.08);
+  }
+
+  .brand-mark {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(225,255,237,0.25) 0%, rgba(225,255,237,0.04) 70%);
+    border: 1px solid rgba(225, 255, 237, 0.2);
+  }
+
+  .site-nav { display: flex; gap: 28px; }
+  .site-nav a {
+    font: 400 11px/1 var(--font-mono);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: color 0.2s;
+  }
+  .site-nav a:hover { color: var(--color-text); }
+
+  #ascii-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .scanlines {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,0.035) 2px, rgba(0,0,0,0.035) 4px);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .noise {
+    position: absolute; inset: 0;
+    opacity: 0.05;
+    pointer-events: none; z-index: 9;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+  }
+
+  .demo-badge {
+    position: absolute;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    font: 400 10px/1.6 var(--font-mono);
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: 8px 20px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: rgba(23, 24, 25, 0.7);
+    backdrop-filter: blur(8px);
+  }
+  .demo-badge strong { color: var(--color-text); font-weight: 500; }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 76px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    animation: fadeIn 1s ease 2s both;
+  }
+  .scroll-hint span {
+    font: 400 9px/1 var(--font-mono);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+  .scroll-arrow {
+    width: 1px; height: 24px;
+    background: linear-gradient(to bottom, var(--color-text-muted), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 0.8; transform: scaleY(1.3); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <header class="site-header">
+    <div class="brand-mark"></div>
+    <nav class="site-nav">
+      <a href="#">Projeto</a>
+      <a href="#">Sets</a>
+      <a href="#">Data</a>
+      <a href="#">Contato</a>
+    </nav>
+  </header>
+
+  <canvas id="ascii-canvas"></canvas>
+  <div class="scanlines"></div>
+  <div class="noise"></div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+
+  <div class="demo-badge">
+    <strong>Approach A</strong> — Variable Typographic ASCII Hero powered by pretext &mdash; Move your mouse to interact
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DDD Pretext-style ASCII Hero — Canvas-rendered for performance
+// 3 attractors (2 autonomous + mouse), 200 particles, brightness field
+// ============================================================
+
+const canvas = document.getElementById('ascii-canvas');
+const ctx = canvas.getContext('2d');
+
+const FONT_SIZE = 14;
+const LINE_HEIGHT = 16;
+const CHAR_W = FONT_SIZE * 0.602; // Approximate monospace char width
+const PARTICLE_N = 200;
+const FIELD_DECAY = 0.78;
+const FIELD_OVERSAMPLE = 2;
+
+let COLS, ROWS, FIELD_COLS, FIELD_ROWS;
+let brightnessField;
+let particles = [];
+
+// Brightness → character + style
+const RAMP = ' .`\u0027-_:,;^=+/|)\\!?0oOQ#%@MWN';
+
+// DDD logo text (will be centered)
+const DDD_LOGO = [
+  "DDDDD     DDDDD     DDDDD",
+  "DD  DD    DD  DD    DD  DD",
+  "DD   DD   DD   DD   DD   DD",
+  "DD   DD   DD   DD   DD   DD",
+  "DD   DD   DD   DD   DD   DD",
+  "DD  DD    DD  DD    DD  DD",
+  "DDDDD     DDDDD     DDDDD",
+];
+const DDD_SUBTITLE = "D I S C A G E M   D I R E T A   A   D I S T A N C I A";
+
+let mouseX = 0, mouseY = 0, mouseActive = false;
+let mouseColX = 0, mouseRowY = 0;
+
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  mouseX = e.clientX - rect.left;
+  mouseY = e.clientY - rect.top;
+  mouseColX = mouseX / CHAR_W;
+  mouseRowY = mouseY / LINE_HEIGHT;
+  mouseActive = true;
+});
+canvas.addEventListener('mouseleave', () => { mouseActive = false; });
+
+function resize() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = window.innerWidth * dpr;
+  canvas.height = window.innerHeight * dpr;
+  canvas.style.width = window.innerWidth + 'px';
+  canvas.style.height = window.innerHeight + 'px';
+  ctx.scale(dpr, dpr);
+
+  COLS = Math.floor(window.innerWidth / CHAR_W);
+  ROWS = Math.floor(window.innerHeight / LINE_HEIGHT);
+  FIELD_COLS = COLS * FIELD_OVERSAMPLE;
+  FIELD_ROWS = ROWS * FIELD_OVERSAMPLE;
+  brightnessField = new Float32Array(FIELD_COLS * FIELD_ROWS);
+
+  // Re-init particles spread across field
+  particles = [];
+  for (let i = 0; i < PARTICLE_N; i++) {
+    particles.push({
+      x: Math.random() * COLS,
+      y: Math.random() * ROWS,
+      vx: (Math.random() - 0.5) * 1.2,
+      vy: (Math.random() - 0.5) * 0.8,
+    });
+  }
+}
+
+resize();
+window.addEventListener('resize', resize);
+
+// Stamp for brightness field splatting
+function createStamp(radius) {
+  const r = Math.ceil(radius);
+  const size = r * 2 + 1;
+  const values = new Float32Array(size * size);
+  for (let y = -r; y <= r; y++) {
+    for (let x = -r; x <= r; x++) {
+      const dist = Math.sqrt((x / radius) ** 2 + (y / radius) ** 2);
+      if (dist >= 1) continue;
+      values[(y + r) * size + (x + r)] = dist <= 0.3
+        ? 0.5 + (0.2 - 0.5) * (dist / 0.3)
+        : 0.2 * (1 - (dist - 0.3) / 0.7);
+    }
+  }
+  return { radius: r, size, values };
+}
+
+function splatStamp(cx, cy, stamp) {
+  const gcx = Math.round(cx * FIELD_OVERSAMPLE);
+  const gcy = Math.round(cy * FIELD_OVERSAMPLE);
+  for (let y = -stamp.radius; y <= stamp.radius; y++) {
+    const gy = gcy + y;
+    if (gy < 0 || gy >= FIELD_ROWS) continue;
+    for (let x = -stamp.radius; x <= stamp.radius; x++) {
+      const gx = gcx + x;
+      if (gx < 0 || gx >= FIELD_COLS) continue;
+      const val = stamp.values[(y + stamp.radius) * stamp.size + (x + stamp.radius)];
+      if (val === 0) continue;
+      const idx = gy * FIELD_COLS + gx;
+      brightnessField[idx] = Math.min(1, brightnessField[idx] + val);
+    }
+  }
+}
+
+const particleStamp = createStamp(6);
+const attractorStampLarge = createStamp(14);
+const attractorStampMed = createStamp(10);
+const mouseStamp = createStamp(18);
+
+// Get DDD mask brightness at a grid position
+function getDDDMask(col, row) {
+  // Center the DDD logo
+  const logoW = DDD_LOGO[2].length; // widest line
+  const logoH = DDD_LOGO.length;
+  const startCol = Math.floor((COLS - logoW) / 2);
+  const startRow = Math.floor((ROWS - logoH) / 2) - 2;
+
+  const lc = col - startCol;
+  const lr = row - startRow;
+
+  if (lr >= 0 && lr < logoH && lc >= 0 && lc < DDD_LOGO[lr].length) {
+    if (DDD_LOGO[lr][lc] !== ' ') return 0.18;
+  }
+
+  // Subtitle
+  const subRow = startRow + logoH + 2;
+  const subStartCol = Math.floor((COLS - DDD_SUBTITLE.length) / 2);
+  const sc = col - subStartCol;
+
+  if (row === subRow && sc >= 0 && sc < DDD_SUBTITLE.length) {
+    if (DDD_SUBTITLE[sc] !== ' ') return 0.12;
+  }
+
+  return 0;
+}
+
+function render(now) {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  // 3 autonomous attractors with different orbits
+  const a1x = Math.cos(now * 0.00035) * COLS * 0.3 + COLS * 0.35;
+  const a1y = Math.sin(now * 0.00055) * ROWS * 0.3 + ROWS * 0.4;
+  const a2x = Math.cos(now * 0.00065 + 2.1) * COLS * 0.25 + COLS * 0.6;
+  const a2y = Math.sin(now * 0.00045 + 2.1) * ROWS * 0.25 + ROWS * 0.55;
+  const a3x = Math.cos(now * 0.0004 + 4.2) * COLS * 0.2 + COLS * 0.5;
+  const a3y = Math.sin(now * 0.0006 + 4.2) * ROWS * 0.2 + ROWS * 0.35;
+
+  // Update particles
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i];
+    const attractors = [
+      { x: a1x, y: a1y, f: 0.15 },
+      { x: a2x, y: a2y, f: 0.08 },
+      { x: a3x, y: a3y, f: 0.06 },
+    ];
+    if (mouseActive) {
+      attractors.push({ x: mouseColX, y: mouseRowY, f: 0.28 });
+    }
+
+    // Find closest attractor
+    let bestDist = Infinity, bestA = attractors[0];
+    for (const a of attractors) {
+      const dx = a.x - p.x, dy = a.y - p.y;
+      const d = dx * dx + dy * dy;
+      if (d < bestDist) { bestDist = d; bestA = a; }
+    }
+
+    const dx = bestA.x - p.x, dy = bestA.y - p.y;
+    const dist = Math.sqrt(dx * dx + dy * dy) + 0.5;
+    p.vx += (dx / dist) * bestA.f;
+    p.vy += (dy / dist) * bestA.f;
+    p.vx += (Math.random() - 0.5) * 0.3;
+    p.vy += (Math.random() - 0.5) * 0.2;
+    p.vx *= 0.96;
+    p.vy *= 0.96;
+    p.x += p.vx;
+    p.y += p.vy;
+
+    // Wrap
+    if (p.x < -4) p.x += COLS + 8;
+    if (p.x > COLS + 4) p.x -= COLS + 8;
+    if (p.y < -4) p.y += ROWS + 8;
+    if (p.y > ROWS + 4) p.y -= ROWS + 8;
+  }
+
+  // Decay
+  for (let i = 0; i < brightnessField.length; i++) {
+    brightnessField[i] *= FIELD_DECAY;
+  }
+
+  // Splat particles
+  for (const p of particles) {
+    splatStamp(p.x, p.y, particleStamp);
+  }
+
+  // Splat attractors
+  splatStamp(a1x, a1y, attractorStampLarge);
+  splatStamp(a2x, a2y, attractorStampMed);
+  splatStamp(a3x, a3y, attractorStampMed);
+  if (mouseActive) {
+    splatStamp(mouseColX, mouseRowY, mouseStamp);
+  }
+
+  // Render to canvas
+  ctx.fillStyle = '#171819';
+  ctx.fillRect(0, 0, w, h);
+
+  for (let row = 0; row < ROWS; row++) {
+    const fieldRowStart = row * FIELD_OVERSAMPLE * FIELD_COLS;
+    const y = row * LINE_HEIGHT + LINE_HEIGHT;
+
+    for (let col = 0; col < COLS; col++) {
+      const fieldColStart = col * FIELD_OVERSAMPLE;
+      let brightness = 0;
+      for (let sy = 0; sy < FIELD_OVERSAMPLE; sy++) {
+        const sampleRow = fieldRowStart + sy * FIELD_COLS + fieldColStart;
+        for (let sx = 0; sx < FIELD_OVERSAMPLE; sx++) {
+          brightness += brightnessField[sampleRow + sx];
+        }
+      }
+      brightness /= (FIELD_OVERSAMPLE * FIELD_OVERSAMPLE);
+
+      // Add DDD text mask
+      brightness = Math.min(1, brightness + getDDDMask(col, row));
+
+      if (brightness < 0.02) continue;
+
+      const charIdx = Math.min(RAMP.length - 1, (brightness * RAMP.length) | 0);
+      const char = RAMP[charIdx];
+      if (char === ' ') continue;
+
+      const alpha = Math.max(0.06, Math.min(0.95, brightness * 1.15));
+      const x = col * CHAR_W;
+
+      // Style based on brightness band
+      let weight, italic;
+      if (brightness < 0.15) { weight = '300'; italic = false; }
+      else if (brightness < 0.3) { weight = '400'; italic = (col + row) % 7 === 0; }
+      else if (brightness < 0.55) { weight = '500'; italic = (col + row) % 5 === 0; }
+      else { weight = '700'; italic = (col * row) % 11 === 0; }
+
+      ctx.font = `${italic ? 'italic ' : ''}${weight} ${FONT_SIZE}px "IBM Plex Mono", monospace`;
+      ctx.fillStyle = `rgba(225, 255, 237, ${alpha.toFixed(3)})`;
+
+      // Add glow for bright characters
+      if (brightness > 0.5) {
+        ctx.shadowColor = `rgba(225, 255, 237, ${(brightness * 0.3).toFixed(3)})`;
+        ctx.shadowBlur = brightness * 8;
+      } else {
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+      }
+
+      ctx.fillText(char, x, y);
+    }
+  }
+
+  // Reset shadow
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+
+  requestAnimationFrame(render);
+}
+
+requestAnimationFrame(render);
+</script>
+
+</body>
+</html>

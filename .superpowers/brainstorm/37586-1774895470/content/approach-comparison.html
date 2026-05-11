@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DDD Pretext Integration — Approach Comparison</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --color-bg: #171819;
+    --color-bg-elevated: #1f2021;
+    --color-text: #e1ffed;
+    --color-text-muted: rgba(225, 255, 237, 0.55);
+    --color-accent: #e1ffed;
+    --color-border: rgba(225, 255, 237, 0.15);
+    --color-border-strong: rgba(225, 255, 237, 0.3);
+    --glow: rgba(225, 255, 237, 0.25);
+    --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  }
+
+  html, body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body {
+    padding: 40px 24px 80px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .page-header h1 {
+    font: 700 28px/1.2 var(--font-mono);
+    color: var(--color-text);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .page-header .subtitle {
+    font: 400 13px/1.6 var(--font-mono);
+    color: var(--color-text-muted);
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .approaches {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .approach {
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .approach:hover {
+    border-color: var(--color-border-strong);
+    box-shadow: 0 0 40px rgba(225, 255, 237, 0.05);
+  }
+
+  .approach.selected {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 30px rgba(225, 255, 237, 0.1);
+  }
+
+  .approach.selected::after {
+    content: 'SELECTED';
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font: 700 10px/1 var(--font-mono);
+    color: var(--color-bg);
+    background: var(--color-accent);
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.1em;
+    z-index: 10;
+  }
+
+  .approach-header {
+    padding: 24px 28px;
+    background: var(--color-bg-elevated);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .approach-letter {
+    font: 700 20px/1 var(--font-mono);
+    color: var(--color-bg);
+    background: var(--color-accent);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .approach-title {
+    font: 700 16px/1.3 var(--font-mono);
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .approach-subtitle {
+    font: 400 12px/1.4 var(--font-mono);
+    color: var(--color-text-muted);
+    margin-top: 2px;
+  }
+
+  .approach-body {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    min-height: 480px;
+  }
+
+  .approach-mockup {
+    position: relative;
+    overflow: hidden;
+    background: #0a0b0c;
+  }
+
+  .approach-details {
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border-left: 1px solid var(--color-border);
+  }
+
+  .detail-section h4 {
+    font: 700 10px/1 var(--font-mono);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+  }
+
+  .detail-section p, .detail-section li {
+    font: 400 12px/1.7 var(--font-mono);
+    color: rgba(225, 255, 237, 0.75);
+  }
+
+  .detail-section ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .detail-section li::before {
+    content: '>';
+    color: var(--color-text-muted);
+    margin-right: 8px;
+  }
+
+  .tag {
+    display: inline-block;
+    font: 500 10px/1 var(--font-mono);
+    padding: 3px 8px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 4px;
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .tag.recommended {
+    background: rgba(225, 255, 237, 0.1);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+
+  /* ============ APPROACH A: ASCII HERO ============ */
+  .hero-mockup {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .hero-mockup .mock-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    background: rgba(23, 24, 25, 0.45);
+    backdrop-filter: blur(8px);
+  }
+
+  .hero-mockup .mock-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(225,255,237,0.3), rgba(225,255,237,0.05));
+    border: 1px solid rgba(225,255,237,0.2);
+  }
+
+  .hero-mockup .mock-nav {
+    display: flex;
+    gap: 20px;
+    font: 400 10px/1 var(--font-mono);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .ascii-field {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ascii-art-container {
+    position: relative;
+    font: 400 11px/13px var(--font-mono);
+    color: rgba(225, 255, 237, 0.06);
+    white-space: pre;
+    letter-spacing: 0.02em;
+    text-align: center;
+  }
+
+  /* Animated particle ASCII - simulating pretext variable typographic output */
+  .ascii-particle-layer {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ascii-line {
+    white-space: pre;
+    font: 400 11px/13px var(--font-mono);
+    height: 13px;
+  }
+
+  .ascii-line .bright {
+    color: rgba(225, 255, 237, 0.85);
+    text-shadow: 0 0 8px rgba(225, 255, 237, 0.3);
+  }
+  .ascii-line .med {
+    color: rgba(225, 255, 237, 0.45);
+  }
+  .ascii-line .dim {
+    color: rgba(225, 255, 237, 0.15);
+  }
+  .ascii-line .faint {
+    color: rgba(225, 255, 237, 0.06);
+  }
+
+  /* Glow orb behind ASCII */
+  .ascii-glow {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(225,255,237,0.12) 0%, transparent 70%);
+    animation: floatOrb 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .ascii-glow.orb2 {
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(225,255,237,0.08) 0%, transparent 70%);
+    animation: floatOrb2 6s ease-in-out infinite;
+  }
+
+  @keyframes floatOrb {
+    0%, 100% { transform: translate(-40px, -20px); }
+    33% { transform: translate(30px, -40px); }
+    66% { transform: translate(-10px, 30px); }
+  }
+
+  @keyframes floatOrb2 {
+    0%, 100% { transform: translate(50px, 10px); }
+    50% { transform: translate(-30px, -30px); }
+  }
+
+  /* DDD logo text overlay */
+  .hero-center-text {
+    position: absolute;
+    font: 700 64px/1 var(--font-mono);
+    color: rgba(225, 255, 237, 0.04);
+    letter-spacing: 0.3em;
+    z-index: 2;
+  }
+
+  /* Noise overlay */
+  .noise-overlay {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* ============ APPROACH B: EDITORIAL TEXT FLOW ============ */
+  .editorial-mockup {
+    width: 100%;
+    height: 100%;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .editorial-mockup .section-label {
+    font: 500 10px/1 var(--font-mono);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  .editorial-flow {
+    display: flex;
+    gap: 28px;
+    flex: 1;
+    position: relative;
+  }
+
+  .editorial-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .editorial-line {
+    font: 400 11px/1.7 var(--font-mono);
+    color: rgba(225, 255, 237, 0.6);
+  }
+
+  .editorial-line.break {
+    color: transparent;
+  }
+
+  .editorial-orb {
+    position: absolute;
+    border-radius: 50%;
+    animation: orbPulse 4s ease-in-out infinite;
+  }
+
+  .editorial-orb.orb-a {
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, rgba(255, 140, 80, 0.25) 0%, rgba(255, 100, 50, 0.05) 60%, transparent 100%);
+    top: 30%;
+    left: 38%;
+  }
+
+  .editorial-orb.orb-b {
+    width: 50px;
+    height: 50px;
+    background: radial-gradient(circle, rgba(100, 200, 150, 0.2) 0%, rgba(100, 200, 150, 0.03) 60%, transparent 100%);
+    top: 55%;
+    left: 58%;
+    animation-delay: -2s;
+  }
+
+  @keyframes orbPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.7; }
+  }
+
+  .editorial-pullquote {
+    font: 700 18px/1.4 var(--font-mono);
+    color: rgba(225, 255, 237, 0.85);
+    border-left: 2px solid rgba(225, 255, 237, 0.3);
+    padding-left: 16px;
+    margin: 16px 0;
+  }
+
+  .editorial-headline {
+    font: 700 32px/1.1 var(--font-mono);
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+  }
+
+  /* ============ APPROACH C: MASONRY ARCHIVE ============ */
+  .masonry-mockup {
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .masonry-mockup .section-label {
+    font: 500 10px/1 var(--font-mono);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+  }
+
+  .masonry-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .masonry-card {
+    background: rgba(225, 255, 237, 0.03);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 14px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .masonry-card:hover {
+    border-color: var(--color-border-strong);
+    transform: translateY(-2px);
+  }
+
+  .masonry-card.tall { grid-row: span 2; }
+
+  .masonry-card-type {
+    font: 700 9px/1 var(--font-mono);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .masonry-card-title {
+    font: 700 13px/1.3 var(--font-mono);
+    color: var(--color-text);
+    margin-bottom: 6px;
+  }
+
+  .masonry-card-text {
+    font: 400 10px/1.6 var(--font-mono);
+    color: rgba(225, 255, 237, 0.5);
+  }
+
+  .masonry-card .video-thumb {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, #1a2a1f, #0d1510);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .masonry-card .video-thumb::after {
+    content: '>';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font: 700 18px/1 var(--font-mono);
+    color: rgba(225, 255, 237, 0.4);
+  }
+
+  .masonry-card .video-thumb .scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 3px,
+      rgba(0,0,0,0.1) 3px,
+      rgba(0,0,0,0.1) 4px
+    );
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .masonry-card:hover .scanlines {
+    opacity: 1;
+  }
+
+  .masonry-card .rec-dot {
+    color: #ff3b3b;
+    font-size: 8px;
+    margin-right: 4px;
+    animation: blink 1.5s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .masonry-stats {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .masonry-stat {
+    font: 400 9px/1 var(--font-mono);
+    color: var(--color-text-muted);
+    padding: 2px 6px;
+    border: 1px solid rgba(225, 255, 237, 0.1);
+    border-radius: 3px;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 900px) {
+    .approach-body {
+      grid-template-columns: 1fr;
+    }
+    .approach-details {
+      border-left: none;
+      border-top: 1px solid var(--color-border);
+    }
+    .approach-mockup {
+      min-height: 400px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>DDD + Pretext</h1>
+  <p class="subtitle">Three approaches for integrating @chenglou/pretext into the DDD website revamp. Each uses pretext's DOM-free text measurement in a different way that fits the existing dark/mint ASCII aesthetic. Click an approach to select it.</p>
+</div>
+
+<div class="approaches">
+
+  <!-- ========== APPROACH A ========== -->
+  <div class="approach" data-choice="a" onclick="toggleSelect(this)">
+    <div class="approach-header">
+      <div class="approach-letter">A</div>
+      <div>
+        <div class="approach-title">Variable Typographic ASCII Hero</div>
+        <div class="approach-subtitle">Replace the WebGL hero with pretext-driven particle ASCII art</div>
+      </div>
+    </div>
+    <div class="approach-body">
+      <div class="approach-mockup">
+        <div class="hero-mockup">
+          <div class="mock-header">
+            <div class="mock-logo"></div>
+            <div class="mock-nav">
+              <span>Projeto</span>
+              <span>Sets</span>
+              <span>Data</span>
+              <span>Contato</span>
+            </div>
+          </div>
+          <div class="ascii-field">
+            <div class="ascii-glow" style="top: 35%; left: 30%;"></div>
+            <div class="ascii-glow orb2" style="top: 45%; left: 55%;"></div>
+            <div class="hero-center-text">DDD</div>
+            <div class="ascii-particle-layer">
+<div class="ascii-line"><span class="faint">. , ; . . . . , ; : . . . . . . , . . . . . : ; , . . . . . ,</span></div>
+<div class="ascii-line"><span class="faint">. . . . . ,</span> <span class="dim">: ; = + /</span> <span class="faint">. . . . . . . . .</span> <span class="dim">/ + = ; :</span> <span class="faint">, . . . . .</span></div>
+<div class="ascii-line"><span class="faint">. . . ,</span> <span class="dim">; = * #</span> <span class="med">@ % & A</span> <span class="dim"># * =</span> <span class="faint">. . .</span> <span class="dim">= * #</span> <span class="med">A & % @</span> <span class="dim"># * = ;</span> <span class="faint">, . . .</span></div>
+<div class="ascii-line"><span class="faint">. . ,</span> <span class="dim">+ # @</span> <span class="med">% B d k</span> <span class="bright">W M N</span> <span class="med">k d B</span> <span class="dim">@ #</span> <span class="med">B d k</span> <span class="bright">N M W</span> <span class="med">k d B %</span> <span class="dim">@ # +</span> <span class="faint">, . .</span></div>
+<div class="ascii-line"><span class="faint">. ;</span> <span class="dim">= #</span> <span class="med">& k W</span> <span class="bright">M # @ % & Z</span> <span class="med">W k &</span> <span class="bright">Z & % @ # M</span> <span class="med">W k &</span> <span class="dim"># =</span> <span class="faint">; .</span></div>
+<div class="ascii-line"><span class="faint">. ;</span> <span class="dim">* @</span> <span class="med">d M</span> <span class="bright">@ % & A B d k W M #</span> <span class="bright">@ # M W k d B A &</span> <span class="med">M d</span> <span class="dim">@ *</span> <span class="faint">; .</span></div>
+<div class="ascii-line"><span class="faint">. ;</span> <span class="dim">* @</span> <span class="med">d M</span> <span class="bright">@ % & A B d k W M #</span> <span class="bright">@ # M W k d B A &</span> <span class="med">M d</span> <span class="dim">@ *</span> <span class="faint">; .</span></div>
+<div class="ascii-line"><span class="faint">. ;</span> <span class="dim">= #</span> <span class="med">& k W</span> <span class="bright">M # @ % & Z</span> <span class="med">W k &</span> <span class="bright">Z & % @ # M</span> <span class="med">W k &</span> <span class="dim"># =</span> <span class="faint">; .</span></div>
+<div class="ascii-line"><span class="faint">. . ,</span> <span class="dim">+ # @</span> <span class="med">% B d k</span> <span class="bright">W M N</span> <span class="med">k d B</span> <span class="dim">@ #</span> <span class="med">B d k</span> <span class="bright">N M W</span> <span class="med">k d B %</span> <span class="dim">@ # +</span> <span class="faint">, . .</span></div>
+<div class="ascii-line"><span class="faint">. . . ,</span> <span class="dim">; = * #</span> <span class="med">@ % & A</span> <span class="dim"># * =</span> <span class="faint">. . .</span> <span class="dim">= * #</span> <span class="med">A & % @</span> <span class="dim"># * = ;</span> <span class="faint">, . . .</span></div>
+<div class="ascii-line"><span class="faint">. . . . . ,</span> <span class="dim">: ; = + /</span> <span class="faint">. . . . . . . . .</span> <span class="dim">/ + = ; :</span> <span class="faint">, . . . . .</span></div>
+<div class="ascii-line"><span class="faint">. , ; . . . . , ; : . . . . . . , . . . . . : ; , . . . . . ,</span></div>
+            </div>
+            <div class="noise-overlay"></div>
+          </div>
+        </div>
+      </div>
+      <div class="approach-details">
+        <div class="detail-section">
+          <h4>What Changes</h4>
+          <p>The current WebGL hero shader is replaced with pretext's particle-driven ASCII system. Floating attractors create organic blob shapes rendered as proportional ASCII characters — each glyph measured by pretext for precise width fitting. The DDD logo emerges from and dissolves into the particle field.</p>
+        </div>
+        <div class="detail-section">
+          <h4>Why It Works</h4>
+          <ul>
+            <li>Directly upgrades existing ASCII aesthetic</li>
+            <li>Variable weight + italic creates depth</li>
+            <li>Particle physics feel organic, not static</li>
+            <li>Mint-on-dark palette preserved perfectly</li>
+            <li>Mouse interaction moves attractors</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <h4>Complexity</h4>
+          <div class="tags">
+            <span class="tag recommended">Recommended</span>
+            <span class="tag">Hero only</span>
+            <span class="tag">~200 LOC</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== APPROACH B ========== -->
+  <div class="approach" data-choice="b" onclick="toggleSelect(this)">
+    <div class="approach-header">
+      <div class="approach-letter">B</div>
+      <div>
+        <div class="approach-title">Editorial Engine for Project Section</div>
+        <div class="approach-subtitle">Multi-column text flowing around animated orbs — zero DOM reflow</div>
+      </div>
+    </div>
+    <div class="approach-body">
+      <div class="approach-mockup">
+        <div class="editorial-mockup">
+          <div class="section-label">Projeto</div>
+          <div class="editorial-headline">DDD 001</div>
+          <div class="editorial-flow">
+            <div class="editorial-orb orb-a"></div>
+            <div class="editorial-orb orb-b"></div>
+            <div class="editorial-col">
+              <div class="editorial-line">DDD e uma serie documental</div>
+              <div class="editorial-line">dedicada a registrar atos</div>
+              <div class="editorial-line">musicais ao vivo em Brasilia,</div>
+              <div class="editorial-line">a partir do coracao do</div>
+              <div class="editorial-line">Distrito Federal, para</div>
+              <div class="editorial-line">formar um arquivo vivo da</div>
+              <div class="editorial-line" style="color: transparent;">.</div>
+              <div class="editorial-line" style="color: transparent;">.</div>
+              <div class="editorial-line">cena contemporanea.</div>
+              <div class="editorial-line">DJs, live acts e</div>
+              <div class="editorial-line">performers transformam</div>
+              <div class="editorial-line">espacos na cidade</div>
+              <div class="editorial-pullquote">som, corpo<br>e cidade<br>se cruzam</div>
+            </div>
+            <div class="editorial-col">
+              <div class="editorial-line">em zonas de escuta e</div>
+              <div class="editorial-line">convivencia — palcos</div>
+              <div class="editorial-line">efemeros onde som, corpo</div>
+              <div class="editorial-line">e cidade se cruzam.</div>
+              <div class="editorial-line" style="color: transparent;">.</div>
+              <div class="editorial-line" style="color: transparent;">.</div>
+              <div class="editorial-line" style="color: transparent;">.</div>
+              <div class="editorial-line">A cada episodio, criamos</div>
+              <div class="editorial-line">uma memoria audiovisual</div>
+              <div class="editorial-line">autoral. O projeto nasce</div>
+              <div class="editorial-line">do desejo de documentar,</div>
+              <div class="editorial-line">experimentar e conectar —</div>
+              <div class="editorial-line">de Brasilia para o Brasil</div>
+              <div class="editorial-line">e o mundo.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="approach-details">
+        <div class="detail-section">
+          <h4>What Changes</h4>
+          <p>The #idea project description section becomes a multi-column editorial layout. Text flows around floating colored orbs using pretext's layoutNextLine() with variable-width lines. Pull quotes emerge as highlighted blocks. Text reflows live as orbs drift.</p>
+        </div>
+        <div class="detail-section">
+          <h4>Why It Works</h4>
+          <ul>
+            <li>Makes the manifesto feel alive, not static</li>
+            <li>Orbs add warmth to the dark palette</li>
+            <li>Pull quotes create visual hierarchy</li>
+            <li>Text reflow is mesmerizing on scroll</li>
+            <li>Zero DOM measurement = butter smooth</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <h4>Complexity</h4>
+          <div class="tags">
+            <span class="tag">Project section</span>
+            <span class="tag">~350 LOC</span>
+            <span class="tag">Canvas render</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== APPROACH C ========== -->
+  <div class="approach" data-choice="c" onclick="toggleSelect(this)">
+    <div class="approach-header">
+      <div class="approach-letter">C</div>
+      <div>
+        <div class="approach-title">Masonry Archive Grid</div>
+        <div class="approach-subtitle">Virtualized masonry layout for sets, photos & text — heights predicted by pretext</div>
+      </div>
+    </div>
+    <div class="approach-body">
+      <div class="approach-mockup">
+        <div class="masonry-mockup">
+          <div class="section-label">DDD 001 — Galeria Index</div>
+          <div class="masonry-grid">
+            <div class="masonry-card">
+              <div class="video-thumb"><div class="scanlines"></div></div>
+              <div class="masonry-card-type"><span class="rec-dot">●</span> DJ Set</div>
+              <div class="masonry-card-title">GG LIMONA</div>
+              <div class="masonry-card-text">Full DJ set recorded live at Galeria Index</div>
+              <div class="masonry-stats">
+                <span class="masonry-stat">1:42:00</span>
+                <span class="masonry-stat">REC</span>
+              </div>
+            </div>
+            <div class="masonry-card tall">
+              <div class="masonry-card-type">Manifesto</div>
+              <div class="masonry-card-title">SOBRE O PROJETO</div>
+              <div class="masonry-card-text">DDD e uma serie documental dedicada a registrar atos musicais ao vivo em Brasilia. DJs, live acts e performers transformam espacos na cidade em zonas de escuta e convivencia. A cada episodio, criamos uma memoria audiovisual autoral.</div>
+            </div>
+            <div class="masonry-card">
+              <div class="video-thumb"><div class="scanlines"></div></div>
+              <div class="masonry-card-type"><span class="rec-dot">●</span> DJ Set</div>
+              <div class="masonry-card-title">LERISS B2B GIOGRANG</div>
+              <div class="masonry-card-text">Collaborative set at DDD 001</div>
+              <div class="masonry-stats">
+                <span class="masonry-stat">1:15:00</span>
+                <span class="masonry-stat">REC</span>
+              </div>
+            </div>
+            <div class="masonry-card">
+              <div class="masonry-card-type">Aftermovie</div>
+              <div class="masonry-card-title">DDD 001</div>
+              <div class="masonry-card-text">Highlights from the first edition</div>
+            </div>
+            <div class="masonry-card">
+              <div class="masonry-card-type">Info</div>
+              <div class="masonry-card-title">DINAMICA</div>
+              <div class="masonry-card-text">Respeite todos os presentes. Nao faca fotos ou videos sem consentimento.</div>
+            </div>
+            <div class="masonry-card">
+              <div class="video-thumb" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #1a1e1f, #0d1210);"><div class="scanlines"></div></div>
+              <div class="masonry-card-type">Gallery</div>
+              <div class="masonry-card-title">GALERIA INDEX</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="approach-details">
+        <div class="detail-section">
+          <h4>What Changes</h4>
+          <p>The sets section + details grid merge into a single masonry layout where video cards, text manifesto blocks, info cards, and gallery images coexist. Pretext predicts card heights without DOM reads, enabling smooth virtualized scrolling and real-time layout updates.</p>
+        </div>
+        <div class="detail-section">
+          <h4>Why It Works</h4>
+          <ul>
+            <li>Unifies fragmented sections into one flow</li>
+            <li>Scales naturally as episodes are added</li>
+            <li>Virtualized = fast with many items</li>
+            <li>Text cards shrink-wrap perfectly</li>
+            <li>Retains scanlines, REC badges, etc.</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <h4>Complexity</h4>
+          <div class="tags">
+            <span class="tag">Multiple sections</span>
+            <span class="tag">~500 LOC</span>
+            <span class="tag">Architecture change</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggleSelect(el) {
+  const wasSelected = el.classList.contains('selected');
+  document.querySelectorAll('.approach').forEach(a => a.classList.remove('selected'));
+  if (!wasSelected) {
+    el.classList.add('selected');
+  }
+}
+</script>
+
+</body>
+</html>

@@ -260,7 +260,7 @@ body {
   width: 100%;
 }
 
-/* Global background for desktop and non-iOS */
+/* ASCII background canvas */
 #ascii-bg {
   position: fixed;
   top: 0;
@@ -268,9 +268,17 @@ body {
   width: 100%;
   height: 100%;
   z-index: 0;
-  pointer-events: none; /* Don't block scrolling */
-  mix-blend-mode: normal; /* Changed from overlay to normal for better visibility on dark bg */
-  opacity: 0.6; /* Increased base opacity */
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Pretext editorial reflow */
+.pretext-line {
+  position: absolute;
+  white-space: pre;
+  pointer-events: auto;
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 /* Ensure content sits above the background */
@@ -795,24 +803,10 @@ main {
   height: 100dvh;
   margin: 0;
   padding: 0;
-  background-color: transparent; /* Changed to transparent for ASCII bg visibility */
-  color: var(--wave-fg, #000000);
-  /* Font styles removed/ignored for canvas, kept for fallback if needed */
-  font-size: 12px;
-  line-height: 1;
-  white-space: pre;
-  overflow: hidden;
+  background-color: transparent;
   z-index: 1;
   pointer-events: none;
-  font-family: 'Courier New', 'Courier', monospace;
   opacity: 1;
-  mix-blend-mode: normal;
-  filter: none;
-  box-sizing: border-box;
-  text-align: left;
-  letter-spacing: -0.04em;
-  word-spacing: 0;
-  text-shadow: 0 0 0.8px rgba(0, 0, 0, 0.45);
 }
 
 canvas.hero-ascii {
@@ -1187,12 +1181,12 @@ canvas.hero-ascii {
 }
 .section.alt {
   position: relative;
-  background: rgba(127, 127, 127, 0.25);
+  background: rgba(23, 24, 25, 0.65);
   backdrop-filter: blur(3px);
   color: var(--color-text);
   padding-inline: clamp(32px, 8vw, 160px);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 /* Old location styles removed - using new locations-layout */
@@ -2473,7 +2467,7 @@ canvas.hero-ascii {
 /* Footer */
 .site-footer {
   padding: var(--section-spacing) 0;
-  background: var(--bg);
+  background: var(--color-bg);
 }
 
 .footer-inner {

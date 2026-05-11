@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DDD — Pretext ASCII Hero Demo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --color-bg: #171819;
+    --color-text: #e1ffed;
+    --color-text-muted: rgba(225, 255, 237, 0.55);
+    --color-border: rgba(225, 255, 237, 0.15);
+    --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  }
+
+  html, body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* ===== FULL PAGE HERO LAYOUT ===== */
+  .hero {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header */
+  .site-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 32px;
+    background: rgba(23, 24, 25, 0.5);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(225, 255, 237, 0.08);
+  }
+
+  .brand-mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(225,255,237,0.25) 0%, rgba(225,255,237,0.04) 70%);
+    border: 1px solid rgba(225, 255, 237, 0.2);
+  }
+
+  .site-nav {
+    display: flex;
+    gap: 28px;
+  }
+
+  .site-nav a {
+    font: 400 11px/1 var(--font-mono);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: color 0.2s;
+  }
+
+  .site-nav a:hover {
+    color: var(--color-text);
+  }
+
+  /* ASCII Art Container */
+  .ascii-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  #ascii-output {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    line-height: 15px;
+    white-space: pre;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    user-select: none;
+  }
+
+  /* Scanline overlay */
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,0.04) 2px,
+      rgba(0,0,0,0.04) 4px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Noise texture */
+  .noise {
+    position: absolute;
+    inset: 0;
+    opacity: 0.06;
+    pointer-events: none;
+    z-index: 9;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+  }
+
+  /* Info badge */
+  .demo-badge {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    font: 400 10px/1.6 var(--font-mono);
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: 8px 20px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: rgba(23, 24, 25, 0.7);
+    backdrop-filter: blur(8px);
+    letter-spacing: 0.04em;
+  }
+
+  .demo-badge strong {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  /* Scroll hint */
+  .scroll-hint {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: fadeInUp 1s ease 2s both;
+  }
+
+  .scroll-hint span {
+    font: 400 9px/1 var(--font-mono);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  .scroll-arrow {
+    width: 1px;
+    height: 24px;
+    background: linear-gradient(to bottom, var(--color-text-muted), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 0.8; transform: scaleY(1.3); }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <header class="site-header">
+    <div class="brand-mark"></div>
+    <nav class="site-nav">
+      <a href="#">Projeto</a>
+      <a href="#">Sets</a>
+      <a href="#">Data</a>
+      <a href="#">Contato</a>
+    </nav>
+  </header>
+
+  <div class="ascii-container">
+    <div id="ascii-output"></div>
+    <div class="scanlines"></div>
+    <div class="noise"></div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+
+  <div class="demo-badge">
+    <strong>Approach A</strong> — Variable Typographic ASCII Hero powered by pretext<br>
+    Move your mouse to interact with the particle field
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DDD Pretext-style Variable Typographic ASCII Hero
+// Particle system with attractors, brightness field, and
+// proportional character selection (simulating pretext measurement)
+// ============================================================
+
+const COLS = 72;
+const ROWS = 36;
+const FONT_SIZE = 13;
+const LINE_HEIGHT = 15;
+const PARTICLE_N = 140;
+const SPRITE_R = 16;
+const ATTRACTOR_R = 14;
+const LARGE_ATTRACTOR_R = 35;
+const ATTRACTOR_FORCE_1 = 0.18;
+const ATTRACTOR_FORCE_2 = 0.04;
+const FIELD_DECAY = 0.80;
+const FIELD_OVERSAMPLE = 2;
+const FIELD_COLS = COLS * FIELD_OVERSAMPLE;
+const FIELD_ROWS = ROWS * FIELD_OVERSAMPLE;
+
+// Brightness ramp — characters sorted by visual density
+const RAMP_CHARS =  ' .`\'-_:,;^=+/|)\\!?0oOQ#%@MWN';
+const RAMP_LEN = RAMP_CHARS.length;
+
+// Weight classes for styling
+const WEIGHT_CLASSES = ['w3', 'w4', 'w5', 'w7'];
+const STYLE_CLASSES = ['', 'it'];
+
+// Alpha classes (opacity levels)
+const ALPHA_STEPS = 10;
+
+// Color: DDD mint green with varying alpha
+const BASE_R = 225, BASE_G = 255, BASE_B = 237;
+
+// Build the brightness lookup table
+const brightnessLookup = [];
+for (let b = 0; b < 256; b++) {
+  const brightness = b / 255;
+  if (brightness < 0.02) {
+    brightnessLookup.push({ char: ' ', html: ' ' });
+    continue;
+  }
+
+  const charIdx = Math.min(RAMP_LEN - 1, (brightness * RAMP_LEN) | 0);
+  const char = RAMP_CHARS[charIdx];
+
+  // Select weight based on brightness bands
+  let weight, style;
+  if (brightness < 0.2) { weight = 300; style = 'normal'; }
+  else if (brightness < 0.4) { weight = 400; style = Math.random() > 0.7 ? 'italic' : 'normal'; }
+  else if (brightness < 0.65) { weight = 500; style = Math.random() > 0.5 ? 'italic' : 'normal'; }
+  else { weight = 700; style = Math.random() > 0.6 ? 'italic' : 'normal'; }
+
+  const alpha = Math.max(0.08, Math.min(1, brightness * 1.1));
+  const color = `rgba(${BASE_R},${BASE_G},${BASE_B},${alpha.toFixed(2)})`;
+  const fontStyle = style === 'italic' ? 'font-style:italic;' : '';
+  const escaped = char === '<' ? '&lt;' : char === '>' ? '&gt;' : char === '&' ? '&amp;' : char;
+
+  brightnessLookup.push({
+    char,
+    html: brightness < 0.05
+      ? ' '
+      : `<span style="color:${color};font-weight:${weight};${fontStyle}">${escaped}</span>`
+  });
+}
+
+// Particle system
+const particles = [];
+for (let i = 0; i < PARTICLE_N; i++) {
+  const angle = Math.random() * Math.PI * 2;
+  const radius = Math.random() * 50 + 20;
+  particles.push({
+    x: COLS / 2 + Math.cos(angle) * radius * 0.3,
+    y: ROWS / 2 + Math.sin(angle) * radius * 0.15,
+    vx: (Math.random() - 0.5) * 0.6,
+    vy: (Math.random() - 0.5) * 0.3,
+  });
+}
+
+// Brightness field
+const brightnessField = new Float32Array(FIELD_COLS * FIELD_ROWS);
+
+// Mouse tracking
+let mouseX = COLS * 0.35;
+let mouseY = ROWS * 0.45;
+let mouseActive = false;
+
+document.addEventListener('mousemove', (e) => {
+  const output = document.getElementById('ascii-output');
+  const rect = output.getBoundingClientRect();
+  mouseX = ((e.clientX - rect.left) / rect.width) * COLS;
+  mouseY = ((e.clientY - rect.top) / rect.height) * ROWS;
+  mouseActive = true;
+});
+
+document.addEventListener('mouseleave', () => {
+  mouseActive = false;
+});
+
+// Stamp creation for brightness field
+function createStamp(radius) {
+  const r = Math.ceil(radius);
+  const size = r * 2 + 1;
+  const values = new Float32Array(size * size);
+  for (let y = -r; y <= r; y++) {
+    for (let x = -r; x <= r; x++) {
+      const dist = Math.sqrt((x / radius) ** 2 + (y / radius) ** 2);
+      if (dist >= 1) continue;
+      let val;
+      if (dist <= 0.35) val = 0.45 + (0.15 - 0.45) * (dist / 0.35);
+      else val = 0.15 * (1 - (dist - 0.35) / 0.65);
+      values[(y + r) * size + (x + r)] = val;
+    }
+  }
+  return { radius: r, size, values };
+}
+
+function splatStamp(cx, cy, stamp) {
+  const gcx = Math.round(cx * FIELD_OVERSAMPLE);
+  const gcy = Math.round(cy * FIELD_OVERSAMPLE);
+  for (let y = -stamp.radius; y <= stamp.radius; y++) {
+    const gy = gcy + y;
+    if (gy < 0 || gy >= FIELD_ROWS) continue;
+    for (let x = -stamp.radius; x <= stamp.radius; x++) {
+      const gx = gcx + x;
+      if (gx < 0 || gx >= FIELD_COLS) continue;
+      const val = stamp.values[(y + stamp.radius) * stamp.size + (x + stamp.radius)];
+      if (val === 0) continue;
+      const idx = gy * FIELD_COLS + gx;
+      brightnessField[idx] = Math.min(1, brightnessField[idx] + val);
+    }
+  }
+}
+
+const particleStamp = createStamp(SPRITE_R * FIELD_OVERSAMPLE / COLS * 4);
+const largeAttractorStamp = createStamp(LARGE_ATTRACTOR_R * FIELD_OVERSAMPLE / COLS * 6);
+const smallAttractorStamp = createStamp(ATTRACTOR_R * FIELD_OVERSAMPLE / COLS * 4);
+
+const output = document.getElementById('ascii-output');
+
+// DDD text mask — renders "DDD" as brightness boost
+const DDD_TEXT = [
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "         DDDDD       DDDDD       DDDDD                                 ",
+  "         DD  DD      DD  DD      DD  DD                                 ",
+  "         DD   DD     DD   DD     DD   DD                                ",
+  "         DD   DD     DD   DD     DD   DD                                ",
+  "         DD   DD     DD   DD     DD   DD                                ",
+  "         DD  DD      DD  DD      DD  DD                                 ",
+  "         DDDDD       DDDDD       DDDDD                                 ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "   D I S C A G E M   D I R E T A   A   D I S T A N C I A                ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+  "                                                                        ",
+];
+
+function getDDDMask(col, row) {
+  if (row >= 0 && row < DDD_TEXT.length && col >= 0 && col < DDD_TEXT[0].length) {
+    return DDD_TEXT[row][col] !== ' ' ? 0.25 : 0;
+  }
+  return 0;
+}
+
+function render(now) {
+  // Compute attractor positions
+  const a1x = Math.cos(now * 0.0005) * COLS * 0.22 + COLS * 0.35;
+  const a1y = Math.sin(now * 0.0008) * ROWS * 0.25 + ROWS * 0.45;
+  const a2x = Math.cos(now * 0.0009 + Math.PI) * COLS * 0.18 + COLS * 0.55;
+  const a2y = Math.sin(now * 0.0006 + Math.PI) * ROWS * 0.2 + ROWS * 0.5;
+
+  // Mouse attractor (if active)
+  const mx = mouseActive ? mouseX : a1x + Math.sin(now * 0.001) * 5;
+  const my = mouseActive ? mouseY : a1y + Math.cos(now * 0.0012) * 3;
+
+  // Update particles
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i];
+
+    // Forces from attractors
+    const d1x = a1x - p.x, d1y = a1y - p.y;
+    const d2x = a2x - p.x, d2y = a2y - p.y;
+    const dmx = mx - p.x, dmy = my - p.y;
+    const dist1 = d1x * d1x + d1y * d1y;
+    const dist2 = d2x * d2x + d2y * d2y;
+    const distM = dmx * dmx + dmy * dmy;
+
+    // Find closest attractor
+    let ax, ay, force;
+    if (mouseActive && distM < dist1 && distM < dist2) {
+      ax = dmx; ay = dmy; force = 0.25;
+    } else if (dist1 < dist2) {
+      ax = d1x; ay = d1y; force = ATTRACTOR_FORCE_1;
+    } else {
+      ax = d2x; ay = d2y; force = ATTRACTOR_FORCE_2;
+    }
+
+    const dist = Math.sqrt(ax * ax + ay * ay) + 1;
+    p.vx += ax / dist * force;
+    p.vy += ay / dist * force;
+
+    // Random jitter
+    p.vx += (Math.random() - 0.5) * 0.2;
+    p.vy += (Math.random() - 0.5) * 0.1;
+
+    // Damping
+    p.vx *= 0.965;
+    p.vy *= 0.965;
+
+    // Move
+    p.x += p.vx;
+    p.y += p.vy;
+
+    // Wrap
+    if (p.x < -3) p.x += COLS + 6;
+    if (p.x > COLS + 3) p.x -= COLS + 6;
+    if (p.y < -3) p.y += ROWS + 6;
+    if (p.y > ROWS + 3) p.y -= ROWS + 6;
+  }
+
+  // Decay brightness field
+  for (let i = 0; i < brightnessField.length; i++) {
+    brightnessField[i] *= FIELD_DECAY;
+  }
+
+  // Splat particles
+  for (let i = 0; i < particles.length; i++) {
+    splatStamp(particles[i].x, particles[i].y, particleStamp);
+  }
+
+  // Splat attractors (larger glow)
+  splatStamp(a1x, a1y, largeAttractorStamp);
+  splatStamp(a2x, a2y, smallAttractorStamp);
+  if (mouseActive) {
+    splatStamp(mx, my, largeAttractorStamp);
+  }
+
+  // Render to HTML
+  const lines = [];
+  for (let row = 0; row < ROWS; row++) {
+    let lineHtml = '';
+    const fieldRowStart = row * FIELD_OVERSAMPLE * FIELD_COLS;
+    for (let col = 0; col < COLS; col++) {
+      const fieldColStart = col * FIELD_OVERSAMPLE;
+      let brightness = 0;
+      for (let sy = 0; sy < FIELD_OVERSAMPLE; sy++) {
+        const sampleRow = fieldRowStart + sy * FIELD_COLS + fieldColStart;
+        for (let sx = 0; sx < FIELD_OVERSAMPLE; sx++) {
+          brightness += brightnessField[sampleRow + sx];
+        }
+      }
+      brightness /= (FIELD_OVERSAMPLE * FIELD_OVERSAMPLE);
+
+      // Add DDD text mask contribution
+      const maskVal = getDDDMask(col, row);
+      brightness = Math.min(1, brightness + maskVal);
+
+      const byteBrightness = Math.min(255, (brightness * 255) | 0);
+      lineHtml += brightnessLookup[byteBrightness].html;
+    }
+    lines.push(lineHtml);
+  }
+
+  output.innerHTML = lines.join('\n');
+  requestAnimationFrame(render);
+}
+
+requestAnimationFrame(render);
+</script>
+
+</body>
+</html>
