@@ -16,5 +16,6 @@ Static site scaffold for a boiler room–style broadcast project in Brasília.
 ## Deploy
 The canonical deploy is the VPS (Dokploy + nginx) at https://ddd.grooveops.dev.
 
-The GitHub Pages workflow (`.github/workflows/pages.yml`) no longer runs on push;
-it can still be run manually. Pages serves the `CNAME` domain (`ddd.in.net`).
+GitHub Pages is a mirror: `.github/workflows/pages.yml` still deploys every push
+to `main` so the `CNAME` domain (`ddd.in.net`) stays current. Moving `ddd.in.net`
+to the VPS needs DNS access and is a separate decision.
