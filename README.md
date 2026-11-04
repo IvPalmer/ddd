@@ -13,6 +13,9 @@ Static site scaffold for a boiler room–style broadcast project in Brasília.
 - Live site (after first deploy): https://ivpalmer.github.io/ddd/
 - Repo: https://github.com/IvPalmer/ddd
 
-## GitHub Pages
-This repo uses GitHub Actions to deploy to GitHub Pages on every push to `main`.
-You can also add a `CNAME` file in the repo root to configure a custom domain.
+## Deploy
+The canonical deploy is the VPS (Dokploy + nginx) at https://ddd.grooveops.dev.
+
+GitHub Pages is a mirror: `.github/workflows/pages.yml` still deploys every push
+to `main` so the `CNAME` domain (`ddd.in.net`) stays current. Moving `ddd.in.net`
+to the VPS needs DNS access and is a separate decision.

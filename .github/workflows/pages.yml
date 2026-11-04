@@ -1,5 +1,7 @@
 name: Deploy static site to GitHub Pages
 
+# Mirror only: the VPS Dokploy deploy (ddd.grooveops.dev) is canonical.
+# This keeps the GitHub Pages copy at ddd.in.net (see CNAME) in sync with main.
 on:
   push:
     branches: ["main"]
