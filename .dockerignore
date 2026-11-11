@@ -1,0 +1,18 @@
+# Only the site goes into the nginx image (elder-brain#653 review)
+.git
+.github
+.agents
+AGENTS.md
+CLAUDE.md
+RUNTIME.md
+README.md
+docs
+Dockerfile
+.dockerignore
+node_modules
+recordings
+screenshots
+youtube-clips
+JacflxOZHbg.mp4
+JacflxOZHbg.en.vtt
+firebase-debug.log
