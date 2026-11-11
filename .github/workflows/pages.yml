@@ -27,6 +27,9 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Keep agent and ops docs out of the site
+        run: rm -rf AGENTS.md CLAUDE.md RUNTIME.md docs Dockerfile .dockerignore
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
