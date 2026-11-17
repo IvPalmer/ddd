@@ -1,0 +1,65 @@
+name: Deploy to Hostinger
+
+# Standard deploy for every site on the Hostinger plan (account u697762390):
+# stage the public files, rsync them over SSH into domains/<DOMAIN>/public_html,
+# then check that the live index.html matches this commit.
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-hostinger
+  cancel-in-progress: false
+
+env:
+  DOMAIN: ddd.in.net
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Stage public files
+        run: |
+          mkdir _site
+          git archive --format=tar HEAD | tar -x -C _site
+          cd _site
+          # Agent, ops and repo files are not part of the site.
+          rm -rf AGENTS.md CLAUDE.md RUNTIME.md README.md docs Dockerfile .dockerignore .github .gitignore .nojekyll CNAME
+          test -s index.html
+
+      - name: Deploy with rsync over SSH
+        env:
+          SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ vars.HOSTINGER_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/hostinger
+          chmod 600 ~/.ssh/hostinger
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          rsync -rlz --delete-after --delay-updates --chmod=D755,F644 \
+            --filter='P /.well-known/' --filter='P /.htaccess' \
+            -e 'ssh -i ~/.ssh/hostinger -p 65002 -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=20' \
+            _site/ "u697762390@212.85.9.155:domains/${DOMAIN}/public_html/"
+          rm -f ~/.ssh/hostinger
+
+      - name: Verify the live site
+        run: |
+          for i in 1 2 3 4 5 6; do
+            code=$(curl -s -o live.html -w '%{http_code}' --max-time 20 "https://${DOMAIN}/?deploy=${GITHUB_SHA}") || code=000
+            if [ "$code" = 200 ] && cmp -s live.html _site/index.html; then
+              echo "https://${DOMAIN} serves this commit's index.html"
+              exit 0
+            fi
+            echo "attempt $i: HTTP $code, waiting"
+            sleep 20
+          done
+          echo "::error::https://${DOMAIN} does not serve this commit's index.html"
+          exit 1
