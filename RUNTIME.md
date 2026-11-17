@@ -1,39 +1,11 @@
-# Runtime — VPS-only
+# Runtime: GitHub Pages at ddd.in.net
 
-**This project runs on the elder-brain VPS, not your Mac.**
+The official DDD site is **https://ddd.in.net**. The domain is registered at Hostinger and points to GitHub Pages; `www.ddd.in.net` redirects to it.
 
-This Mac dir is a **source clone for editing context only**. Local Docker
-is disabled here. Never run:
+- **Deploy:** `.github/workflows/pages.yml` publishes `main` to GitHub Pages on every push. The `CNAME` file holds `ddd.in.net`.
+- **Ship a change:** commit to a branch, open a PR to `main`, merge. Pages redeploys on its own.
+- **DNS and email** for `ddd.in.net` live in Hostinger (hPanel). The site only needs the GitHub Pages A records and the `www` CNAME there.
 
-- `docker compose up` / `make dev` / anything that boots a local DB or API.
-- A previous "local dev" stack used to live here — it's been torn down and
-  the named volumes nuked. Do not reanimate it.
+## Retired: the VPS copy
 
-## Where it actually runs
-
-- **VPS deploy type:** Dokploy app
-- **VPS source path:** `/etc/dokploy/applications/app-reboot-online-alarm-rjbizi/code`
-- **Public URL:** https://ddd.grooveops.dev
-- **Logs:** `ssh main-instance "docker logs app-reboot-online-alarm-rjbizi"`
-
-## How to debug or query prod
-
-- SSH: `ssh main-instance` then operate at the VPS path above. Production
-  DB lives only there.
-- Telegram: `@elder_brain_bot` has rw on `/home/ubuntu`, `/etc/dokploy`,
-  the docker socket, and `claude` CLI. It can grep code, run `psql`,
-  restart containers, push commits, etc.
-
-## How to ship a code change
-
-1. Edit on Mac, commit, push to the branch this project's VPS clone tracks.
-2. Dokploy-managed apps redeploy via webhook automatically. Plain-compose
-   apps (in `/home/ubuntu/<slug>/`) need a manual `git pull && docker
-   compose up -d --build` on the VPS.
-
-## Why this exists
-
-A separate Claude session (or a stale memory) tried to spin this project
-up locally, hit a Postgres without the prod data, and started proposing
-"how do we sync state from prod?" The answer is: don't. Work on prod
-directly via SSH or the bot. This file is the canonical reminder.
+Until 2026-11-17 a second copy ran on the elder-brain VPS as Dokploy application `app-reboot-online-alarm-rjbizi` (built from the `vps-deploy` branch, served at `ddd.grooveops.dev`). The operator made GitHub Pages on `ddd.in.net` canonical, so that application was stopped with autodeploy off. Its definition is kept in Dokploy, so it can be started again, but nothing serves from it.

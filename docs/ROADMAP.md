@@ -3,7 +3,7 @@ goal: Give DDD (Discagem Direta à Distância), a Brasília boiler-room-style br
 owner: operator
 lead: ddd-lead
 status: draft
-next: "Retire the duplicate VPS nginx deploy at ddd.grooveops.dev, keeping GitHub Pages at ddd.in.net."
+next: "Site is live at ddd.in.net on GitHub Pages and stays post-event until a next DDD is planned; nothing pending."
 decisions_needed: []
 blocked_by: []
 ---
@@ -28,3 +28,4 @@ Until the operator decides on the event's future, treat this as maintenance-only
 
 - Canonical site: GitHub Pages serving the official domain ddd.in.net, registered at Hostinger (operator, 2026-11-17). The VPS nginx deploy at ddd.grooveops.dev is a second copy to retire. Checked 2026-11-17: ddd.in.net resolves to GitHub Pages and returns 200.
 - Next event: none scheduled yet. The site stays in its current post-event state for now (operator, 2026-11-17).
+- VPS copy retired 2026-11-17: Dokploy app `app-reboot-online-alarm-rjbizi` stopped, autodeploy off; `RUNTIME.md` now documents GitHub Pages on ddd.in.net.
