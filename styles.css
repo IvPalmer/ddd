@@ -1946,6 +1946,13 @@ html[data-theme="oxide"] {
   }
 }
 
+#ascii-bg {
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+  text-rendering: optimizeSpeed;
+  letter-spacing: -0.5px;
+}
+
 html[data-theme="legacy"],
 html[data-theme="mint"],
 html[data-theme="oxide"] {
