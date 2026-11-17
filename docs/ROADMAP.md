@@ -3,12 +3,8 @@ goal: Give DDD (Discagem Direta à Distância), a Brasília boiler-room-style br
 owner: operator
 lead: ddd-lead
 status: draft
-next: Decide whether GitHub Pages (.github/workflows/pages.yml) or the VPS Dockerfile nginx deploy (ddd.grooveops.dev) is canonical, then retire the other path
-decisions_needed:
-  - question: Two live deploy paths exist (GH Pages via Actions + VPS Dokploy nginx at ddd.grooveops.dev) — which is canonical going forward?
-    context: RUNTIME.md documents the VPS path as authoritative, but .github/workflows/pages.yml still auto-deploys to GitHub Pages on every push to main. CNAME file present suggests GH Pages was the original mechanism.
-  - question: Is there a next DDD event planned, or does the site stay in permanent post-event/archive state?
-    context: Commit 4876ab1 ("Transition site to post-event state after DDD 001") suggests the one-off event already happened; no forward-looking content changes since.
+next: "Retire the duplicate VPS nginx deploy at ddd.grooveops.dev, keeping GitHub Pages at ddd.in.net."
+decisions_needed: []
 blocked_by: []
 ---
 
@@ -27,3 +23,8 @@ The main open question is operator-level: is this a recurring series (needs "nex
 Deploy plumbing has redundancy (GH Pages + VPS) worth collapsing to one path per the elder-brain deploy standard.
 No code-quality or security issues surfaced during this pass — the repo is small, static, and low-risk.
 Until the operator decides on the event's future, treat this as maintenance-only.
+
+## Decisions (2026-11-17)
+
+- Canonical site: GitHub Pages serving the official domain ddd.in.net, registered at Hostinger (operator, 2026-11-17). The VPS nginx deploy at ddd.grooveops.dev is a second copy to retire. Checked 2026-11-17: ddd.in.net resolves to GitHub Pages and returns 200.
+- Next event: none scheduled yet. The site stays in its current post-event state for now (operator, 2026-11-17).
