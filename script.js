@@ -31,6 +31,271 @@
     },
   };
 
+  const initAsciiBanner = () => {
+    const banner = document.getElementById("ascii-banner");
+    if (!banner) return;
+
+    const sequence = Array.from(" .:-=+*#%@ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+    if (!sequence.includes(" ")) sequence.unshift(" ");
+    const charLookup = new Map();
+    sequence.forEach((ch, idx) => {
+      if (!charLookup.has(ch)) charLookup.set(ch, idx);
+    });
+    if (!charLookup.has(" ")) charLookup.set(" ", 0);
+
+    const wordBank = [
+      "DDD",
+      "DISCAGEM",
+      "DIRETA",
+      "DISTANCIA",
+      "AO VIVO",
+      "BRASILIA",
+      "MEMORIA",
+      "ARQUIVO",
+      "ESCUTA",
+      "CENA",
+      "SOM",
+      "CIDADE",
+    ].map((word) => word.toUpperCase());
+
+    const backgroundCap = Math.min(sequence.length - 1, 9);
+    const letterHoldFrames = 240;
+
+    let cols = 0;
+    let rows = 0;
+    let cells = [];
+    let buffer = [];
+    let currentWord = "";
+    let wordIndex = 0;
+    let wordTimer = 0;
+    let rafId = 0;
+    let metrics = { width: 10, height: 16 };
+    let resizeHandle;
+
+    const sanitizeWord = (input) =>
+      input
+        .replace(/[^A-Z0-9 ]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toUpperCase();
+
+    const computeMetrics = () => {
+      const style = getComputedStyle(banner);
+      const probe = document.createElement("span");
+      probe.textContent = "█";
+      probe.style.position = "absolute";
+      probe.style.visibility = "hidden";
+      probe.style.fontFamily = style.fontFamily;
+      probe.style.fontSize = style.fontSize;
+      probe.style.fontWeight = style.fontWeight || "600";
+      probe.style.lineHeight = style.lineHeight;
+      banner.appendChild(probe);
+      const rect = probe.getBoundingClientRect();
+      banner.removeChild(probe);
+      const width = rect.width || parseFloat(style.fontSize) * 0.6 || 8;
+      const height =
+        rect.height ||
+        parseFloat(style.lineHeight) ||
+        parseFloat(style.fontSize) * 1.3 ||
+        16;
+      return {
+        width: Math.max(width, 6),
+        height: Math.max(height, 10),
+      };
+    };
+
+    const configure = () => {
+      metrics = computeMetrics();
+      const rect = banner.getBoundingClientRect();
+      const fallbackWidth =
+        rect.width || banner.parentElement?.getBoundingClientRect().width || 640;
+      const fallbackHeight = rect.height || Math.max(metrics.height * 10, 180);
+      const nextCols = Math.max(28, Math.floor(fallbackWidth / metrics.width));
+      const nextRows = Math.max(10, Math.floor(fallbackHeight / metrics.height));
+      if (nextCols === cols && nextRows === rows) return false;
+      cols = nextCols;
+      rows = nextRows;
+      cells = Array.from({ length: cols * rows }, () => ({
+        current: Math.random() * backgroundCap,
+        target: Math.floor(Math.random() * (backgroundCap + 1)),
+        hold: 0,
+        focus: false,
+      }));
+      buffer = new Array(cols * rows).fill(" ");
+      banner.dataset.cols = String(cols);
+      banner.dataset.rows = String(rows);
+      return true;
+    };
+
+    const applyWord = (word) => {
+      if (!cols || !rows) return;
+      const sanitized = sanitizeWord(word);
+      const fallback = wordBank[wordIndex] || "DDD";
+      const finalWord =
+        sanitized && sanitized.length > 0 ? sanitized : sanitizeWord(fallback);
+      const truncated =
+        finalWord.length > cols - 4 ? finalWord.slice(0, cols - 4) : finalWord;
+      currentWord = truncated;
+      wordTimer = 0;
+
+      const row = Math.floor(rows / 2);
+      const startCol = Math.max(0, Math.floor((cols - truncated.length) / 2));
+
+      cells.forEach((cell) => {
+        if (!cell.focus) {
+          cell.target = Math.floor(Math.random() * (backgroundCap + 1));
+        }
+        cell.focus = false;
+        cell.hold = 0;
+      });
+
+      for (let i = 0; i < truncated.length; i++) {
+        const ch = truncated[i];
+        const column = startCol + i;
+        if (column < 0 || column >= cols) continue;
+        const idx = row * cols + column;
+        const cell = cells[idx];
+        if (!cell) continue;
+        const targetIndex = charLookup.get(ch) ?? charLookup.get(" ") ?? 0;
+        cell.target = targetIndex;
+        cell.focus = ch !== " ";
+        cell.hold = letterHoldFrames;
+      }
+    };
+
+    const rotateWord = () => {
+      wordIndex = (wordIndex + 1) % wordBank.length;
+      applyWord(wordBank[wordIndex]);
+    };
+
+    const render = (time) => {
+      if (!cols || !rows) {
+        rafId = requestAnimationFrame(render);
+        return;
+      }
+
+      wordTimer += 1;
+      if (wordTimer > 420) {
+        rotateWord();
+      }
+
+      const t = time * 0.0008;
+      const drift = Math.sin(t * 0.6);
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const idx = r * cols + c;
+          const cell = cells[idx];
+          if (!cell) continue;
+
+          if (cell.focus) {
+            if (cell.hold > 0) {
+              cell.hold -= 1;
+            } else {
+              cell.focus = false;
+            }
+          }
+
+          if (!cell.focus) {
+            const wave =
+              Math.sin(c * 0.32 + t) +
+              Math.cos(r * 0.45 + t * 1.2) +
+              Math.sin((c + r) * 0.18 + drift);
+            const normalized = (wave + 3) / 6;
+            cell.target = Math.min(
+              backgroundCap,
+              Math.max(0, Math.floor(normalized * (backgroundCap + 1))),
+            );
+          }
+
+          const diff = cell.target - cell.current;
+          if (Math.abs(diff) > 0.001) {
+            const speed = cell.focus ? 0.6 : 0.35;
+            const jitter = cell.focus ? 0.25 : 0.15;
+            const delta =
+              diff > 0
+                ? Math.min(diff, speed + Math.random() * jitter)
+                : Math.max(diff, -speed - Math.random() * jitter);
+            cell.current = Math.max(
+              0,
+              Math.min(sequence.length - 1, cell.current + delta),
+            );
+          } else if (!cell.focus && Math.random() < 0.02) {
+            cell.current = Math.max(0, cell.current - 1);
+          } else {
+            cell.current = cell.target;
+          }
+
+          const charIndex = Math.round(
+            Math.max(0, Math.min(sequence.length - 1, cell.current)),
+          );
+          buffer[idx] = sequence[charIndex];
+        }
+      }
+
+      let output = "";
+      for (let r = 0; r < rows; r++) {
+        const start = r * cols;
+        output += buffer.slice(start, start + cols).join("");
+        if (r !== rows - 1) output += "\n";
+      }
+      if (banner.textContent !== output) {
+        banner.textContent = output;
+      }
+
+      rafId = requestAnimationFrame(render);
+    };
+
+    const start = () => {
+      const changed = configure();
+      if (changed || !currentWord) {
+        applyWord(wordBank[wordIndex]);
+      } else if (currentWord) {
+        applyWord(currentWord);
+      }
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(render);
+    };
+
+    start();
+
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(() => {
+        const changed = configure();
+        if (changed) {
+          applyWord(currentWord || wordBank[wordIndex]);
+        }
+      });
+    }
+
+    window.addEventListener(
+      "resize",
+      () => {
+        clearTimeout(resizeHandle);
+        resizeHandle = setTimeout(() => {
+          const changed = configure();
+          if (changed) {
+            applyWord(currentWord || wordBank[wordIndex]);
+          }
+        }, 150);
+      },
+      { passive: true },
+    );
+
+    const themeObserver = new MutationObserver((mutations) => {
+      if (mutations.some((mutation) => mutation.attributeName === "data-theme")) {
+        setTimeout(() => {
+          const changed = configure();
+          if (changed) {
+            applyWord(currentWord || wordBank[wordIndex]);
+          }
+        }, 80);
+      }
+    });
+
+    themeObserver.observe(rootElement, { attributes: true, attributeFilter: ["data-theme"] });
+  };
+
   const setThemeColorMeta = (color) => {
     if (!color) return;
     const metaTheme = document.querySelector('meta[name="theme-color"]') || (() => {
@@ -83,6 +348,8 @@
     const defaultTheme = rootElement.dataset.theme || "legacy";
     applyTheme(defaultTheme);
   }
+
+  initAsciiBanner();
 
   // ensure initial brand set after first paint
   window.addEventListener("load", updateBrand);
