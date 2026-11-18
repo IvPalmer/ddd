@@ -10,12 +10,9 @@ Static site scaffold for a boiler room–style broadcast project in Brasília.
 - `script.js`: set `data-datetime` in `#countdown` or remove it
 
 ## Links
-- Live site (after first deploy): https://ivpalmer.github.io/ddd/
+- Live site: https://ddd.in.net
 - Repo: https://github.com/IvPalmer/ddd
 
 ## Deploy
-The canonical deploy is the VPS (Dokploy + nginx) at https://ddd.grooveops.dev.
-
-GitHub Pages is a mirror: `.github/workflows/pages.yml` still deploys every push
-to `main` so the `CNAME` domain (`ddd.in.net`) stays current. Moving `ddd.in.net`
-to the VPS needs DNS access and is a separate decision.
+A push to `main` deploys to Hostinger with `.github/workflows/deploy-hostinger.yml`
+(rsync over SSH to `domains/ddd.in.net/public_html`, then a live check). See `RUNTIME.md`.

@@ -8,7 +8,7 @@ Read docs/ROADMAP.md first: goal, open tasks, path forward and decisions needed.
 
 ## Run and deploy
 - Canonical: https://ddd.in.net on Hostinger (the shared "Unlimited" plan that also hosts dsrptvrec.com). A push to `main` runs `.github/workflows/deploy-hostinger.yml`: it stages the public files (no agent/ops docs), rsyncs them over SSH to `domains/ddd.in.net/public_html` with the shared `HOSTINGER_SSH_KEY` secret and the pinned `HOSTINGER_KNOWN_HOSTS` variable, then checks that the live index.html matches the commit.
-- GitHub Pages (`pages.yml`, `CNAME`) stays only until the old DNS has expired, then gets removed (#9). The VPS Dokploy mirror at https://ddd.grooveops.dev, built from the `vps-deploy` branch with the nginx `Dockerfile`, is unchanged.
+- There is no other copy: GitHub Pages was removed on 2026-11-18 (#9), and the old VPS Dokploy copy (`ddd.grooveops.dev`, `vps-deploy` branch) is stopped (see `RUNTIME.md`).
 - `RUNTIME.md`: the Mac folder is an editing clone; never start a local stack.
 - Verify a change: open `index.html` locally, then check the live URL after the deploy.
 - Heavy research artifacts (`JacflxOZHbg.mp4`, `recordings/`, `screenshots/`, `firebase-debug.log`) are gitignored and local only.

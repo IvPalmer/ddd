@@ -32,7 +32,7 @@ jobs:
           git archive --format=tar HEAD | tar -x -C _site
           cd _site
           # Agent, ops and repo files are not part of the site.
-          rm -rf AGENTS.md CLAUDE.md RUNTIME.md README.md docs Dockerfile .dockerignore .github .gitignore .nojekyll CNAME
+          rm -rf AGENTS.md CLAUDE.md RUNTIME.md README.md docs Dockerfile .dockerignore .github .gitignore
           test -s index.html
 
       - name: Deploy with rsync over SSH
